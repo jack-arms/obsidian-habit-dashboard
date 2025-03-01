@@ -4,18 +4,34 @@ import {
   ObsidianHabitDashboardView,
 } from "./ObsidianHabitDashboardView";
 
-interface ObsidianHabitDashboardPluginSettings {}
+export interface ObsidianHabitDashboardPluginSettings {
+  habits: Habit[];
+}
 
-const DEFAULT_SETTINGS: ObsidianHabitDashboardPluginSettings = {};
+export interface Habit {
+  name: string;
+  noteKey: string;
+  goalInfo?: {
+    goal: number;
+    goalTimeUnit: null | "m" | "h";
+    interval: number;
+    intervalTimeUnit: null | "d" | "w" | "m";
+  };
+}
+
+const DEFAULT_SETTINGS: ObsidianHabitDashboardPluginSettings = {
+  habits: [],
+};
 
 export default class ObsidianHabitDashboardPlugin extends Plugin {
-  settings: ObsidianHabitDashboardPluginSettings;
-
   async onload() {
-    await this.loadSettings();
+    const settings = await this.loadSettings();
     this.registerView(
       OBSIDIAN_HABIT_DASHBOARD_VIEW,
-      (leaf) => new ObsidianHabitDashboardView(leaf)
+      (leaf) =>
+        new ObsidianHabitDashboardView(leaf, settings, (settings) =>
+          this.saveSettings(settings)
+        )
     );
     this.addRibbonIcon("clipboard-list", "Habit Dashboard", () => {
       this.activateView();
@@ -25,11 +41,11 @@ export default class ObsidianHabitDashboardPlugin extends Plugin {
   onunload() {}
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    return Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
   }
 
-  async saveSettings() {
-    await this.saveData(this.settings);
+  async saveSettings(settings: ObsidianHabitDashboardPluginSettings) {
+    await this.saveData(settings);
   }
 
   async activateView() {

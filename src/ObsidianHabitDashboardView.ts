@@ -1,13 +1,22 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
-import { mount, unmount } from "svelte";
+import { mount, unmount, type ComponentProps } from "svelte";
 import ObsidianHabitDashboard from "./ObsidianHabitDashboard.svelte";
+import type { ObsidianHabitDashboardPluginSettings } from "./main";
 
 export const OBSIDIAN_HABIT_DASHBOARD_VIEW = "obsidian-habit-dashboard-view";
 
 export class ObsidianHabitDashboardView extends ItemView {
-  counter: ReturnType<typeof ObsidianHabitDashboard> | undefined;
-  constructor(leaf: WorkspaceLeaf) {
+  dashboard: ReturnType<typeof ObsidianHabitDashboard> | undefined;
+  settings: ObsidianHabitDashboardPluginSettings;
+  saveSettings: (settings: ObsidianHabitDashboardPluginSettings) => void;
+  constructor(
+    leaf: WorkspaceLeaf,
+    settings: ObsidianHabitDashboardPluginSettings,
+    saveSettings: (settings: ObsidianHabitDashboardPluginSettings) => void
+  ) {
     super(leaf);
+    this.settings = settings;
+    this.saveSettings = saveSettings;
   }
 
   getViewType() {
@@ -19,14 +28,19 @@ export class ObsidianHabitDashboardView extends ItemView {
   }
 
   async onOpen() {
-    this.counter = mount(ObsidianHabitDashboard, {
+    this.dashboard = mount(ObsidianHabitDashboard, {
       target: this.contentEl,
+      props: {
+        app: this.app,
+        settings: this.settings,
+        saveSettings: this.saveSettings,
+      },
     });
   }
 
   async onClose() {
-    if (this.counter) {
-      unmount(this.counter);
+    if (this.dashboard) {
+      unmount(this.dashboard);
     }
   }
 }
