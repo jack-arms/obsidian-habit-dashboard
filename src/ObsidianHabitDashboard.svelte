@@ -1,7 +1,10 @@
 <script lang="ts">
-  import { App, getIcon } from "obsidian";
-  import type { ObsidianHabitDashboardPluginSettings } from "./main";
-  import { Plus } from "lucide-svelte";
+  import { App } from "obsidian";
+  import type { Habit, ObsidianHabitDashboardPluginSettings } from "./main";
+  import { Flag, Plus } from "lucide-svelte";
+  import { Card, Button } from "flowbite-svelte";
+  import HabitEditModal from "./HabitEditModal.svelte";
+  import { goalIntervalTimeUnitToString, goalTimeUnitToString } from "./utils";
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -10,24 +13,58 @@
 
   let { app, settings, saveSettings }: Props = $props();
 
-  const onClick = () => {
-    console.log("I am clicked");
-  };
+  let habits = $state<Habit[]>(settings.habits);
+
+  let modalState = $state<
+    { isOpen: true; habit: Habit | null } | { isOpen: false }
+  >({
+    isOpen: false,
+  });
 </script>
 
-<div class="dashboard-container">
-  <h1>Obsidian Habit Dashboard</h1>
-  {#if settings.habits.length === 0}
-    <button onclick={onClick}> <Plus />New habit </button>
-  {/if}
+<div>
+  <h1 class="font-bold underline">Obsidian Habit Dashboard</h1>
+  <Button
+    on:click={() => {
+      modalState = {
+        isOpen: true,
+        habit: null,
+      };
+    }}
+    class="bg-primary-500! hover:bg-primary-600! active:bg-primary-700!"
+  >
+    <Plus class="w-5 h-5" />New</Button
+  >
+  {#each habits as habit}
+    <Card>
+      <h5 class="mb-2 text-2xl font-bold text-gray-900">
+        {habit.name}
+      </h5>
+      {#if habit.goalInfo != null}
+        <span>
+          <Flag class="inline mr-2" />{habit.goalInfo.goal}
+          {goalTimeUnitToString(
+            habit.goalInfo.goalTimeUnit,
+            habit.goalInfo.goal,
+          )}
+          every {habit.goalInfo.interval}
+          {goalIntervalTimeUnitToString(
+            habit.goalInfo.intervalTimeUnit,
+            habit.goalInfo.interval,
+          )}
+        </span>
+      {/if}
+    </Card>
+  {/each}
+  <HabitEditModal
+    open={modalState.isOpen}
+    onClose={(habit) => {
+      modalState = {
+        isOpen: false,
+      };
+      habits.push(habit);
+      // save back to settings
+    }}
+    habit={modalState.isOpen ? modalState.habit : null}
+  />
 </div>
-
-<style>
-  .dashboard-container {
-    border: 1px solid black;
-  }
-
-  .dashboard-container > button:active {
-    background: blue;
-  }
-</style>

@@ -47,6 +47,7 @@ const context = await esbuild.context({
             preprocess: sveltePreprocess(),
         }),
     ],
+	conditions: ['svelte'],
 });
 
 if (prod) {

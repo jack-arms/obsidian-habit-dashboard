@@ -3,6 +3,7 @@ import {
   OBSIDIAN_HABIT_DASHBOARD_VIEW,
   ObsidianHabitDashboardView,
 } from "./ObsidianHabitDashboardView";
+import type { GoalTimeUnit, GoalIntervalTimeUnit } from "./types";
 
 export interface ObsidianHabitDashboardPluginSettings {
   habits: Habit[];
@@ -13,9 +14,9 @@ export interface Habit {
   noteKey: string;
   goalInfo?: {
     goal: number;
-    goalTimeUnit: null | "m" | "h";
+    goalTimeUnit: GoalTimeUnit;
     interval: number;
-    intervalTimeUnit: null | "d" | "w" | "m";
+    intervalTimeUnit: GoalIntervalTimeUnit;
   };
 }
 
