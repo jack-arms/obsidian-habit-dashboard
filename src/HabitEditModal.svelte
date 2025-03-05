@@ -9,7 +9,6 @@
     Toggle,
     DropdownItem,
     Dropdown,
-    Helper,
   } from "flowbite-svelte";
   import { goalIntervalTimeUnitToString, goalTimeUnitToString } from "./utils";
   import type { GoalIntervalTimeUnit, GoalTimeUnit } from "./types";
@@ -43,12 +42,6 @@
       habitState.goalInfo != null && habitState.goalInfo.goal < 1;
     goalIntervalInputError =
       habitState.goalInfo != null && habitState.goalInfo.interval < 1;
-    console.log({
-      habitNameInputError,
-      habitNoteKeyInputError,
-      goalTimeInputError,
-      goalIntervalInputError,
-    });
     return !(
       habitNameInputError ||
       habitNoteKeyInputError ||

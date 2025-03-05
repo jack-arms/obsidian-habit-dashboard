@@ -52,8 +52,6 @@ export default class ObsidianHabitDashboardPlugin extends Plugin {
   async activateView() {
     const { workspace } = this.app;
 
-    workspace.setActiveLeaf;
-
     let leaf: WorkspaceLeaf | null = null;
     const leaves = workspace.getLeavesOfType(OBSIDIAN_HABIT_DASHBOARD_VIEW);
 

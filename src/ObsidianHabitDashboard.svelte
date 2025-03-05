@@ -63,7 +63,9 @@
         isOpen: false,
       };
       habits.push(habit);
-      // save back to settings
+      saveSettings({
+        habits,
+      });
     }}
     habit={modalState.isOpen ? modalState.habit : null}
   />
