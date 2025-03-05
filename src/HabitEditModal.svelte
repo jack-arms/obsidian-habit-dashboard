@@ -15,16 +15,19 @@
   interface Props {
     open: boolean;
     habit: Habit | null;
-    onClose: (habit: Habit) => void;
+    onSave: (habit: Habit) => void;
+    onDelete: (habit: Habit) => void;
   }
 
-  let { open, habit, onClose }: Props = $props();
+  let { open, habit, onSave, onDelete }: Props = $props();
 
-  let habitState = $state<Habit>(
-    habit ?? {
-      name: "",
-      noteKey: "",
-    },
+  let habitState = $derived<Habit>(
+    habit == null || !open
+      ? {
+          name: "",
+          noteKey: "",
+        }
+      : { ...habit },
   );
 
   let goalTimeUnitDropDownOpen = $state(false);
@@ -69,7 +72,6 @@
       <Input
         id="large-input"
         size="lg"
-        placeholder=""
         bind:value={habitState.name}
         class={habitNameInputError ? "border-red-500!" : ""}
       />
@@ -80,7 +82,6 @@
       <Input
         id="large-input"
         size="lg"
-        placeholder=""
         bind:value={habitState.noteKey}
         class={habitNoteKeyInputError ? "border-red-500!" : ""}
       />
@@ -163,12 +164,19 @@
   </div>
   <svelte:fragment slot="footer">
     <div>
+      {#if habit !== null}
+        <Button
+          outline={false}
+          class="flex justfiy-end  bg-red-500! hover:bg-red-600! active:bg-red-700! text-white!"
+          on:click={() => onDelete(habit)}>Delete</Button
+        >
+      {/if}
       <Button
         outline={false}
         class="flex justfiy-end"
         on:click={() => {
           if (validateForm()) {
-            onClose(habitState);
+            onSave(habitState);
           }
         }}>Save</Button
       >

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { App } from "obsidian";
   import type { Habit, ObsidianHabitDashboardPluginSettings } from "./main";
-  import { Flag, Plus } from "lucide-svelte";
-  import { Card, Button } from "flowbite-svelte";
+  import { Plus } from "lucide-svelte";
+  import { Button } from "flowbite-svelte";
   import HabitEditModal from "./HabitEditModal.svelte";
-  import { goalIntervalTimeUnitToString, goalTimeUnitToString } from "./utils";
+  import HabitCard from "./HabitCard.svelte";
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -20,10 +20,50 @@
   >({
     isOpen: false,
   });
+
+  $effect(() => {
+    if (modalState.isOpen) {
+      console.log(modalState.habit);
+    }
+  });
 </script>
 
-<div>
+<div class="flex flex-col max-w-sm">
   <h1 class="font-bold underline">Obsidian Habit Dashboard</h1>
+  {#each habits as habit}
+    <div class="py-2">
+      <HabitCard
+        {habit}
+        onEdit={() =>
+          (modalState = {
+            isOpen: true,
+            habit,
+          })}
+      />
+    </div>
+  {/each}
+  <HabitEditModal
+    open={modalState.isOpen}
+    onSave={(habit) => {
+      modalState = {
+        isOpen: false,
+      };
+      habits.push(habit);
+      saveSettings({
+        habits,
+      });
+    }}
+    onDelete={(habit) => {
+      habits = habits.filter((h) => h.noteKey !== habit.noteKey);
+      modalState = {
+        isOpen: false,
+      };
+      saveSettings({
+        habits,
+      });
+    }}
+    habit={modalState.isOpen ? modalState.habit : null}
+  />
   <Button
     on:click={() => {
       modalState = {
@@ -33,40 +73,6 @@
     }}
     class="bg-primary-500! hover:bg-primary-600! active:bg-primary-700!"
   >
-    <Plus class="w-5 h-5" />New</Button
-  >
-  {#each habits as habit}
-    <Card>
-      <h5 class="mb-2 text-2xl font-bold text-gray-900">
-        {habit.name}
-      </h5>
-      {#if habit.goalInfo != null}
-        <span>
-          <Flag class="inline mr-2" />{habit.goalInfo.goal}
-          {goalTimeUnitToString(
-            habit.goalInfo.goalTimeUnit,
-            habit.goalInfo.goal,
-          )}
-          every {habit.goalInfo.interval}
-          {goalIntervalTimeUnitToString(
-            habit.goalInfo.intervalTimeUnit,
-            habit.goalInfo.interval,
-          )}
-        </span>
-      {/if}
-    </Card>
-  {/each}
-  <HabitEditModal
-    open={modalState.isOpen}
-    onClose={(habit) => {
-      modalState = {
-        isOpen: false,
-      };
-      habits.push(habit);
-      saveSettings({
-        habits,
-      });
-    }}
-    habit={modalState.isOpen ? modalState.habit : null}
-  />
+    <Plus class="w-5 h-5" /> New
+  </Button>
 </div>
