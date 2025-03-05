@@ -16,15 +16,10 @@
   let habits = $state<Habit[]>(settings.habits);
 
   let modalState = $state<
-    { isOpen: true; habit: Habit | null } | { isOpen: false }
+    | { isOpen: true; habit: Habit; currentHabit: Habit | null }
+    | { isOpen: false }
   >({
     isOpen: false,
-  });
-
-  $effect(() => {
-    if (modalState.isOpen) {
-      console.log(modalState.habit);
-    }
   });
 </script>
 
@@ -37,18 +32,26 @@
         onEdit={() =>
           (modalState = {
             isOpen: true,
-            habit,
+            habit: { ...habit },
+            currentHabit: habit,
           })}
       />
     </div>
   {/each}
   <HabitEditModal
-    open={modalState.isOpen}
-    onSave={(habit) => {
+    onSave={(habit, currentHabit) => {
       modalState = {
         isOpen: false,
       };
-      habits.push(habit);
+
+      if (currentHabit == null) {
+        habits = [...habits, habit];
+      } else {
+        habits = habits.map((h) =>
+          h.noteKey === currentHabit.noteKey ? habit : h,
+        );
+      }
+
       saveSettings({
         habits,
       });
@@ -62,13 +65,17 @@
         habits,
       });
     }}
-    habit={modalState.isOpen ? modalState.habit : null}
+    {modalState}
   />
   <Button
     on:click={() => {
       modalState = {
         isOpen: true,
-        habit: null,
+        habit: {
+          name: "",
+          noteKey: "",
+        },
+        currentHabit: null,
       };
     }}
     class="bg-primary-500! hover:bg-primary-600! active:bg-primary-700!"
