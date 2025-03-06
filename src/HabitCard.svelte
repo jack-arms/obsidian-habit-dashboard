@@ -1,14 +1,18 @@
 <script lang="ts">
   import type { Habit } from "./main";
-  import { Flag, Pencil } from "lucide-svelte";
+  import { Flag, Pencil, History } from "lucide-svelte";
   import { Button, Card } from "flowbite-svelte";
   import { goalIntervalTimeUnitToString, goalTimeUnitToString } from "./utils";
   interface Props {
     habit: Habit;
     onEdit: () => void;
+    habitProgress: Array<{
+      date: string;
+      value: string;
+    }>;
   }
 
-  let { habit, onEdit }: Props = $props();
+  let { habit, onEdit, habitProgress }: Props = $props();
 </script>
 
 <Card>
@@ -26,7 +30,16 @@
       </Button>
     </div>
   </div>
-  <div>Last done on {"{date}"}</div>
+  <div class="flex flex-row items-center">
+    <History class="mr-2" />
+    {#if Object.keys(habitProgress).length === 0}
+      Never done!
+    {:else}
+      Last done on {Object.values(habitProgress)[
+        Object.keys(habitProgress).length - 1
+      ].date}
+    {/if}
+  </div>
   {#if habit.goalInfo != null}
     <span>
       <Flag class="inline mr-2" />{habit.goalInfo.goal}

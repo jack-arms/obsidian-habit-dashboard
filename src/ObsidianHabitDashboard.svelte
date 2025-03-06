@@ -5,6 +5,7 @@
   import { Button } from "flowbite-svelte";
   import HabitEditModal from "./HabitEditModal.svelte";
   import HabitCard from "./HabitCard.svelte";
+  import { getHabitProgressByDate } from "./utils";
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -20,7 +21,13 @@
   >({
     isOpen: false,
   });
-  let isModalOpen = $derived(modalState.isOpen);
+
+  let habitProgressByDate = $derived(
+    getHabitProgressByDate(
+      app,
+      habits.map((h) => h.noteKey),
+    ),
+  );
 </script>
 
 <div class="flex flex-col max-w-sm">
@@ -34,6 +41,7 @@
             isOpen: true,
             currentHabit: habit,
           })}
+        habitProgress={habitProgressByDate[habit.noteKey]}
       />
     </div>
   {/each}
