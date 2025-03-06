@@ -23,12 +23,20 @@
       };
 
   interface Props {
-    modalState: HabitEditModalState;
+    onClose: () => void;
     onSave: (habit: Habit, currentHabit: Habit | null) => void;
     onDelete: (habit: Habit) => void;
+    currentHabit: Habit | null;
   }
 
-  let { modalState, onSave, onDelete }: Props = $props();
+  let { onSave, onDelete, onClose, currentHabit }: Props = $props();
+
+  let habit = $state({
+    ...(currentHabit ?? {
+      name: "",
+      noteKey: "",
+    }),
+  });
 
   let goalTimeUnitDropDownOpen = $state(false);
   let goalIntervalUnitDropDownOpen = $state(false);
@@ -39,16 +47,11 @@
   let goalIntervalInputError = $state(false);
 
   const validateForm = () => {
-    if (!modalState.isOpen) {
-      return;
-    }
-    habitNameInputError = modalState.habit.name == "";
-    habitNoteKeyInputError = modalState.habit.noteKey == "";
-    goalTimeInputError =
-      modalState.habit.goalInfo != null && modalState.habit.goalInfo.goal < 1;
+    habitNameInputError = habit.name == "";
+    habitNoteKeyInputError = habit.noteKey == "";
+    goalTimeInputError = habit.goalInfo != null && habit.goalInfo.goal < 1;
     goalIntervalInputError =
-      modalState.habit.goalInfo != null &&
-      modalState.habit.goalInfo.interval < 1;
+      habit.goalInfo != null && habit.goalInfo.interval < 1;
     return !(
       habitNameInputError ||
       habitNoteKeyInputError ||
@@ -59,12 +62,8 @@
 </script>
 
 <Modal
-  bind:open={modalState.isOpen}
-  title={modalState.isOpen
-    ? modalState.currentHabit == null
-      ? "New habit"
-      : "Edit habit"
-    : undefined}
+  open={true}
+  title={currentHabit == null ? "New habit" : "Edit habit"}
   outsideclose
   classFooter="flex justify-end"
   on:close={() => {
@@ -72,132 +71,120 @@
     habitNoteKeyInputError = false;
     goalTimeInputError = false;
     goalIntervalInputError = false;
+    onClose();
   }}
 >
-  {#if modalState.isOpen}
-    <div class="flex flex-col justify-evenly habit-modal">
-      <div class="p-1 mb-2">
-        <Label for="large-input" class="block mb-2">Name</Label>
-        <Input
-          id="large-input"
-          size="lg"
-          bind:value={modalState.habit.name}
-          class={habitNameInputError ? "border-red-500!" : ""}
-        />
-      </div>
+  <div class="flex flex-col justify-evenly habit-modal">
+    <div class="p-1 mb-2">
+      <Label for="large-input" class="block mb-2">Name</Label>
+      <Input
+        id="large-input"
+        size="lg"
+        bind:value={habit.name}
+        class={habitNameInputError ? "border-red-500!" : ""}
+      />
+    </div>
 
-      <div class="p-1 mb-2">
-        <Label for="large-input" class="block">Notebook key</Label>
-        <Input
-          id="large-input"
-          size="lg"
-          bind:value={modalState.habit.noteKey}
-          class={habitNoteKeyInputError ? "border-red-500!" : ""}
-        />
-      </div>
+    <div class="p-1 mb-2">
+      <Label for="large-input" class="block">Notebook key</Label>
+      <Input
+        id="large-input"
+        size="lg"
+        bind:value={habit.noteKey}
+        class={habitNoteKeyInputError ? "border-red-500!" : ""}
+      />
+    </div>
 
-      <div class="flex flex-row items-center">
-        <Label for="goal-toggle" class="pr-2 flex flex-row p-2">
-          <Flag class="w-5 h-5 mr-2" />
-          Goal
-        </Label>
-        <Toggle
-          id="goal-toggle"
-          checked={modalState.habit.goalInfo != null}
-          on:change={() => {
-            if (modalState.habit.goalInfo == null) {
-              modalState.habit.goalInfo = {
-                goal: 1,
-                goalTimeUnit: null,
-                interval: 1,
-                intervalTimeUnit: "d",
-              };
-            } else {
-              modalState.habit.goalInfo = undefined;
-            }
-          }}
-        />
-        {#if modalState.habit.goalInfo != null}
-          <div class="flex flex-row items-center space-x-4 overflow-x-scroll">
-            <Input
-              type="number"
-              bind:value={modalState.habit.goalInfo.goal}
-              class="{goalTimeInputError ? 'border-red-500!' : ''} w-10"
-            />
-            <Button
-              >{goalTimeUnitToString(
-                modalState.habit.goalInfo.goalTimeUnit,
-              )}</Button
-            >
-            <Dropdown bind:open={goalTimeUnitDropDownOpen}>
-              {#each [null, "m", "h"] as Array<GoalTimeUnit> as goalTimeUnit}
-                <DropdownItem
-                  on:click={() => {
-                    if (modalState.habit.goalInfo == null) {
-                      return;
-                    }
-                    modalState.habit.goalInfo.goalTimeUnit = goalTimeUnit;
-                    goalTimeUnitDropDownOpen = false;
-                  }}>{goalTimeUnitToString(goalTimeUnit)}</DropdownItem
-                >
-              {/each}
-            </Dropdown>
+    <div class="flex flex-row items-center">
+      <Label for="goal-toggle" class="pr-2 flex flex-row p-2">
+        <Flag class="w-5 h-5 mr-2" />
+        Goal
+      </Label>
+      <Toggle
+        id="goal-toggle"
+        checked={habit.goalInfo != null}
+        on:change={() => {
+          if (habit.goalInfo == null) {
+            habit.goalInfo = {
+              goal: 1,
+              goalTimeUnit: null,
+              interval: 1,
+              intervalTimeUnit: "d",
+            };
+          } else {
+            habit.goalInfo = undefined;
+          }
+        }}
+      />
+      {#if habit.goalInfo != null}
+        <div class="flex flex-row items-center space-x-4 overflow-x-scroll">
+          <Input
+            type="number"
+            bind:value={habit.goalInfo.goal}
+            class="{goalTimeInputError ? 'border-red-500!' : ''} w-10"
+          />
+          <Button>{goalTimeUnitToString(habit.goalInfo.goalTimeUnit)}</Button>
+          <Dropdown bind:open={goalTimeUnitDropDownOpen}>
+            {#each [null, "m", "h"] as Array<GoalTimeUnit> as goalTimeUnit}
+              <DropdownItem
+                on:click={() => {
+                  if (habit.goalInfo == null) {
+                    return;
+                  }
+                  habit.goalInfo.goalTimeUnit = goalTimeUnit;
+                  goalTimeUnitDropDownOpen = false;
+                }}>{goalTimeUnitToString(goalTimeUnit)}</DropdownItem
+              >
+            {/each}
+          </Dropdown>
 
-            <span class="text-base">every</span>
+          <span class="text-base">every</span>
 
-            <Input
-              type="number"
-              bind:value={modalState.habit.goalInfo.interval}
-              class="{goalIntervalInputError ? 'border-red-500!' : ''} w-10"
-            />
-            <Button
-              >{goalIntervalTimeUnitToString(
-                modalState.habit.goalInfo.intervalTimeUnit,
-              )}</Button
-            >
-            <Dropdown bind:open={goalIntervalUnitDropDownOpen}>
-              {#each ["d", "w", "m"] as Array<GoalIntervalTimeUnit> as intervalTimeUnit}
-                <DropdownItem
-                  on:click={() => {
-                    if (!modalState.habit.goalInfo) {
-                      return;
-                    }
-                    modalState.habit.goalInfo.intervalTimeUnit =
-                      intervalTimeUnit;
-                    goalIntervalUnitDropDownOpen = false;
-                  }}
-                  >{goalIntervalTimeUnitToString(
-                    intervalTimeUnit,
-                  )}</DropdownItem
-                >{/each}
-            </Dropdown>
-          </div>
-        {/if}
-      </div>
-      <div class="flex justify-end mt-4">
-        {#if modalState.currentHabit != null}
+          <Input
+            type="number"
+            bind:value={habit.goalInfo.interval}
+            class="{goalIntervalInputError ? 'border-red-500!' : ''} w-10"
+          />
           <Button
-            outline={false}
-            class="flex justfiy-end bg-red-500! hover:bg-red-600! active:bg-red-700! text-white! m-1"
-            on:click={() => {
-              if (modalState.currentHabit != null) {
-                onDelete(modalState.currentHabit);
-              }
-            }}>Delete</Button
+            >{goalIntervalTimeUnitToString(
+              habit.goalInfo.intervalTimeUnit,
+            )}</Button
           >
-        {/if}
+          <Dropdown bind:open={goalIntervalUnitDropDownOpen}>
+            {#each ["d", "w", "m"] as Array<GoalIntervalTimeUnit> as intervalTimeUnit}
+              <DropdownItem
+                on:click={() => {
+                  if (!habit.goalInfo) {
+                    return;
+                  }
+                  habit.goalInfo.intervalTimeUnit = intervalTimeUnit;
+                  goalIntervalUnitDropDownOpen = false;
+                }}
+                >{goalIntervalTimeUnitToString(intervalTimeUnit)}</DropdownItem
+              >{/each}
+          </Dropdown>
+        </div>
+      {/if}
+    </div>
+    <div class="flex justify-end mt-4">
+      {#if currentHabit != null}
         <Button
           outline={false}
-          class="flex justfiy-end m-1"
-          on:click={() => {
-            if (validateForm()) {
-              onSave(modalState.habit, modalState.currentHabit);
-            }
-          }}>Save</Button
+          class="flex justfiy-end bg-red-500! hover:bg-red-600! active:bg-red-700! text-white! m-1"
+          on:click={() => onDelete(currentHabit)}>Delete</Button
         >
-      </div>
+      {/if}
+      <Button
+        outline={false}
+        class="flex justfiy-end m-1"
+        on:click={() => {
+          if (validateForm()) {
+            onSave(habit, currentHabit);
+          }
+        }}>Save</Button
+      >
     </div>
-  {/if}
+  </div>
 </Modal>
 
 <style>

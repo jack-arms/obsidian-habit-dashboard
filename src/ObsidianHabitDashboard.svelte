@@ -16,11 +16,11 @@
   let habits = $state<Habit[]>(settings.habits);
 
   let modalState = $state<
-    | { isOpen: true; habit: Habit; currentHabit: Habit | null }
-    | { isOpen: false }
+    { isOpen: true; currentHabit: Habit | null } | { isOpen: false }
   >({
     isOpen: false,
   });
+  let isModalOpen = $derived(modalState.isOpen);
 </script>
 
 <div class="flex flex-col max-w-sm">
@@ -32,49 +32,48 @@
         onEdit={() =>
           (modalState = {
             isOpen: true,
-            habit: { ...habit },
             currentHabit: habit,
           })}
       />
     </div>
   {/each}
-  <HabitEditModal
-    onSave={(habit, currentHabit) => {
-      modalState = {
-        isOpen: false,
-      };
-
-      if (currentHabit == null) {
-        habits = [...habits, habit];
-      } else {
-        habits = habits.map((h) =>
-          h.noteKey === currentHabit.noteKey ? habit : h,
-        );
-      }
-
-      saveSettings({
-        habits,
-      });
-    }}
-    onDelete={(habit) => {
-      habits = habits.filter((h) => h.noteKey !== habit.noteKey);
-      modalState = {
-        isOpen: false,
-      };
-      saveSettings({
-        habits,
-      });
-    }}
-    {modalState}
-  />
+  {#if modalState.isOpen}
+    <HabitEditModal
+      onClose={() =>
+        (modalState = {
+          isOpen: false,
+        })}
+      onSave={(habit, currentHabit) => {
+        modalState = {
+          isOpen: false,
+        };
+        if (currentHabit == null) {
+          habits = [...habits, habit];
+        } else {
+          habits = habits.map((h) =>
+            h.noteKey === currentHabit.noteKey ? habit : h,
+          );
+        }
+        saveSettings({
+          habits,
+        });
+      }}
+      onDelete={(habit) => {
+        modalState = {
+          isOpen: false,
+        };
+        habits = habits.filter((h) => h.noteKey !== habit.noteKey);
+        saveSettings({
+          habits,
+        });
+      }}
+      currentHabit={modalState.currentHabit}
+    />
+  {/if}
   <Button
     on:click={() => {
       modalState = {
         isOpen: true,
-        habit: {
-          name: "",
-          noteKey: "",
-        },
         currentHabit: null,
       };
     }}
