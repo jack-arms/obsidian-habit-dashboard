@@ -76,3 +76,10 @@ export function getHabitProgressByDate(app: App, habitNoteKeys: Array<string>) {
   });
   return habitProgressByDate;
 }
+
+export function daysBetween(date1: Date, date2: Date) {
+  return (
+    Math.floor(date1.getTime() / (1000 * 3600 * 24)) -
+    Math.floor(date2.getTime() / (1000 * 3600 * 24))
+  );
+}
