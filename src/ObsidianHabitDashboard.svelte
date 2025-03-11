@@ -6,6 +6,7 @@
   import HabitEditModal from "./HabitEditModal.svelte";
   import HabitCard from "./HabitCard.svelte";
   import { getHabitProgressByDate } from "./utils";
+  import ScrollableCalendar from "./scrollable_calendar/ScrollableCalendar.svelte";
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -32,6 +33,7 @@
 
 <div class="flex flex-col max-w-sm">
   <h1 class="font-bold underline">Obsidian Habit Dashboard</h1>
+  <ScrollableCalendar centerDate={new Date()} />
   {#each habits as habit}
     <div class="py-2">
       <HabitCard
