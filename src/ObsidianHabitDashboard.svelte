@@ -31,7 +31,7 @@
   );
 </script>
 
-<div class="flex flex-col max-w-sm">
+<div class="flex flex-col max-w-md">
   <h1 class="font-bold underline">Obsidian Habit Dashboard</h1>
   <ScrollableCalendar centerDate={new Date()} />
   {#each habits as habit}

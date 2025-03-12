@@ -1,58 +1,40 @@
-export type WeekInfo = {
-  days: Date[];
+export type DateCellInfo = {
+  date: Date;
   isLastWeek: boolean;
+  isLastDayOfMonth: boolean;
 };
 
-export function getCalendarRow(date: Date): WeekInfo | WeekInfo[] {
+export function getCalendarRow(date: Date): DateCellInfo[] {
   const startOfWeek = new Date(date.valueOf());
   startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() - 1));
   const endOfWeek = new Date(startOfWeek.valueOf());
   endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-  if (startOfWeek.getMonth() !== endOfWeek.getMonth()) {
-    const week1 = [startOfWeek];
-    const week2 = [];
-    let crossedMonth = false;
-    for (let i = 1; i < 7; i++) {
-      let date = new Date(startOfWeek.valueOf());
-      date.setDate(startOfWeek.getDate() + i);
-      crossedMonth = date.getMonth() === endOfWeek.getMonth();
+  const week: DateCellInfo[] = [];
+  for (let i = 0; i < 7; i++) {
+    let date = new Date(startOfWeek.valueOf());
+    date.setDate(startOfWeek.getDate() + i);
 
-      if (!crossedMonth) {
-        week1.push(date);
-      } else {
-        week2.push(date);
-      }
-    }
-    return [
-      { days: week1, isLastWeek: true },
-      { days: week2, isLastWeek: false },
-    ];
-  } else {
-    const week = [startOfWeek];
-    for (let i = 1; i < 7; i++) {
-      let date = new Date(startOfWeek.valueOf());
-      date.setDate(startOfWeek.getDate() + i);
-      week.push(date);
-    }
-    let nextDay = new Date(endOfWeek.getDate());
-    nextDay.setDate(endOfWeek.getDate() + 1);
+    let dateNextWeek = new Date(date.valueOf());
+    dateNextWeek.setDate(date.getDate() + 7);
 
-    return {
-      days: week,
-      isLastWeek: nextDay.getMonth() !== endOfWeek.getMonth(),
-    };
+    let dateTomorrow = new Date(date.valueOf());
+    dateTomorrow.setDate(date.getDate() + 1);
+    week.push({
+      date,
+      isLastWeek: date.getMonth() !== dateNextWeek.getMonth(),
+      isLastDayOfMonth: date.getMonth() !== dateTomorrow.getMonth(),
+    });
   }
+  return week;
 }
 
 export function getWeekRowsByMonth(
-  weeks: Array<WeekInfo | WeekInfo[]>
-): Map<string, Array<WeekInfo | WeekInfo[]>> {
-  const weekRowsByMonth = new Map<string, Array<WeekInfo | WeekInfo[]>>();
+  weeks: Array<DateCellInfo[]>
+): Map<string, Array<DateCellInfo[]>> {
+  const weekRowsByMonth = new Map<string, Array<DateCellInfo>[]>();
   weeks.forEach((week) => {
-    let startOfMonth = new Date(
-      Array.isArray(week) ? week[0].days[0] : week.days[0]
-    );
+    let startOfMonth = new Date(week[0].date);
     startOfMonth.setDate(1);
     let date = startOfMonth.toDateString();
     if (weekRowsByMonth.has(date)) {

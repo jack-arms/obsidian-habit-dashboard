@@ -21,51 +21,46 @@
   );
 </script>
 
-<div class="m-2 overflow-y-scroll h-50 pl-12 pr-12">
-  {#each weeksByMonth.entries() as [month, weeks]}
-    <div class="month flex flex-row">
-      <div class="month-label">
-        {new Date(month).toLocaleString("default", { month: "long" })}
+<div class="flex flex-col m-2 h-50 self-start">
+  <div class="flex flex-row ml-auto border-l mr-2 bg-gray-100 font-bold">
+    {#each ["M", "Tu", "W", "Th", "F", "Sa", "Su"] as day}
+      <div
+        class="w-8 p-2 border-r border-t border-b z-2 border-gray-600 text-center day-label"
+      >
+        {day}
       </div>
-      <div>
-        {#each weeks as week}
-          {#if Array.isArray(week)}
-            <div class="flex flex-row relative">
-              <div class="week-row border-b border-r">
-                {#each week[0].days as day}
-                  <CalendarDay {day} />
-                {/each}
-              </div>
-              <div class="week-row border-t">
-                {#each week[1].days as day}
-                  <CalendarDay {day} />
-                {/each}
-              </div>
-            </div>
-          {:else}
-            <div class="week-row">
-              {#each week.days as day}
-                <CalendarDay {day} />
+    {/each}
+  </div>
+  <div class="overflow-y-scroll h-50 pr-2">
+    {#each weeksByMonth.entries() as [month, weeks]}
+      <div class="flex flex-row">
+        <div class="month-label">
+          {new Date(month).toLocaleString("default", { month: "long" })}
+        </div>
+        <div class="">
+          {#each weeks as week}
+            <div class="flex flex-row">
+              {#each week as { date, isLastWeek, isLastDayOfMonth }}
+                <CalendarDay {date} {isLastWeek} {isLastDayOfMonth} />
               {/each}
             </div>
-          {/if}
-        {/each}
+          {/each}
+        </div>
       </div>
-    </div>
-  {/each}
+    {/each}
+  </div>
 </div>
 
 <style>
-  .week-row {
-    display: flex;
-    flex-direction: row;
-    text-align: center;
-  }
-
   .month-label {
     writing-mode: tb-rl;
     transform: rotate(-180deg);
     margin-right: 8px;
     text-align: center;
+  }
+
+  .day-label {
+    margin-right: -1px;
+    margin-bottom: -1px;
   }
 </style>
