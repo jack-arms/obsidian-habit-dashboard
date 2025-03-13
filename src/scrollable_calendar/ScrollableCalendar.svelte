@@ -21,7 +21,7 @@
   );
 </script>
 
-<div class="flex flex-col m-2 h-50 self-start">
+<div class="flex flex-col m-2 h-50">
   <div class="flex flex-row border-l -ml-px bg-gray-100 font-bold ml-8">
     {#each ["M", "Tu", "W", "Th", "F", "Sa", "Su"] as day}
       <div

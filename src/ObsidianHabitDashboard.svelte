@@ -6,6 +6,7 @@
   import HabitCard from "./HabitCard.svelte";
   import { getHabitProgressByDate } from "./utils";
   import ScrollableCalendar from "./scrollable_calendar/ScrollableCalendar.svelte";
+  import { Pencil } from "lucide-svelte";
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -31,16 +32,16 @@
   );
 </script>
 
-<div class="flex flex-col">
-  <h1 class="font-bold underline">Obsidian Habit Dashboard</h1>
-  <div class="flex flex-row">
-    <div class="flex flex-col max-w-sm">
+<div class="flex flex-col h-full p-1">
+  <h1 class="font-bold text-center">Obsidian Habit Dashboard</h1>
+  <div class="flex flex-row flex-grow">
+    <div class="flex flex-col max-w-sm border-r border-gray-300 pr-4">
       <div class="flex flex-row justify-between items-center">
-        <h5
+        <h3
           class="text-xl font-bold leading-none text-gray-900 dark:text-white"
         >
           Habits
-        </h5>
+        </h3>
         <Button
           class="text-sm! font-medium text-primary-600! dark:text-primary-500"
           on:click={() => {
@@ -102,7 +103,35 @@
       {/if}
     </div>
     {#if activeHabit != null}
-      <ScrollableCalendar centerDate={new Date()} />
+      <div class="flex flex-col flex-grow px-4">
+        <div class="flex flex-row items-center">
+          <h2 class="self-start flex-grow">{activeHabit.name}</h2>
+          <div class="flex justify-end">
+            <Button
+              outline={true}
+              class="shadow-none! p-2!"
+              on:click={() =>
+                (modalState = {
+                  isOpen: true,
+                  currentHabit: activeHabit,
+                })}
+            >
+              <Pencil class="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+        {#if Object.keys(habitProgressByDate[activeHabit.noteKey]).length === 0}
+          Never done!
+        {:else}
+          Last done on {Object.values(habitProgressByDate[activeHabit.noteKey])[
+            Object.keys(habitProgressByDate[activeHabit.noteKey]).length - 1
+          ].date}.
+        {/if}
+        <h3 class="self-start">Progress</h3>
+        <div class="self-center">
+          <ScrollableCalendar centerDate={new Date()} />
+        </div>
+      </div>
     {/if}
   </div>
 </div>
