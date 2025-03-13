@@ -1,7 +1,12 @@
 <script lang="ts">
   import type { Habit } from "./main";
   import { Flag, Pencil, History, Hourglass } from "lucide-svelte";
-  import { Accordion, AccordionItem, Button } from "flowbite-svelte";
+  import {
+    Accordion,
+    AccordionItem,
+    Button,
+    ListgroupItem,
+  } from "flowbite-svelte";
   import {
     daysBetween,
     goalIntervalTimeUnitToString,
@@ -14,9 +19,10 @@
       date: string;
       value: string;
     }>;
+    onClick: () => void;
   }
 
-  let { habit, onEdit, habitProgress }: Props = $props();
+  let { habit, onEdit, habitProgress, onClick }: Props = $props();
   let daysSince = $derived(
     daysBetween(
       new Date(),
@@ -25,20 +31,43 @@
   );
 </script>
 
-<Accordion
+<ListgroupItem
+  class="flex box-border! h-auto! rounded-md!"
+  on:click={() => {
+    console.log("A");
+    onClick();
+  }}
+>
+  <div class="p-2 flex flex-row flex-grow">
+    <p
+      class="text-sm font-medium text-gray-900 truncate dark:text-white flex-grow"
+    >
+      {habit.name}
+    </p>
+    <!-- <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+      {item.email}
+    </p> -->
+    <div
+      class="inline-flex items-center text-base text-gray-900 dark:text-white"
+    >
+      <Hourglass />
+      {daysSince}
+    </div>
+  </div>
+</ListgroupItem>
+
+<!-- <Accordion
   class="accordion border border-gray-200 dark:border-gray-700 rounded-md"
   flush
 >
   <AccordionItem
-    class="p-4! h-auto! border-b! border-gray-200! dark:border-gray-700! bg-gray-50! hover:bg-gray-100!"
+    class="p-4! h-auto! border-b! border-gray-200! dark:border-gray-700! bg-gray-50! hover:bg-gray-100! box-border!"
     tag="div"
   >
     <div slot="header" class="flex flex-row flex-grow items-center pr-2">
       <h5 class="mb-0! mt-0! text-2xl font-bold text-gray-900 flex-grow">
         {habit.name}
       </h5>
-      <Hourglass />
-      {daysSince}
     </div>
     <div>
       <div class="flex flex-row p-2">
@@ -78,4 +107,4 @@
       {/if}
     </div>
   </AccordionItem>
-</Accordion>
+</Accordion> -->

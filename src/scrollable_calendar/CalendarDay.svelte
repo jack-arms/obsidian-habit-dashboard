@@ -9,7 +9,7 @@
 </script>
 
 <div
-  class="w-8 p-2 text-center border-r border-b border-gray-200 day-cell {isLastWeek
+  class="w-8 p-2 text-center [&:not(:last-child)]:border-r border-b border-gray-200 day-cell {isLastWeek
     ? 'day-last-week'
     : ''} {isLastDayOfMonth ? 'day-last-of-month' : ''} order-{date.getDay() ===
   0

@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex flex-col m-2 h-50 self-start">
-  <div class="flex flex-row ml-auto border-l mr-2 bg-gray-100 font-bold">
+  <div class="flex flex-row border-l -ml-px bg-gray-100 font-bold ml-8">
     {#each ["M", "Tu", "W", "Th", "F", "Sa", "Su"] as day}
       <div
         class="w-8 p-2 border-r border-t border-b z-2 border-gray-600 text-center day-label"
@@ -31,10 +31,17 @@
       </div>
     {/each}
   </div>
-  <div class="overflow-y-scroll h-50 pr-2">
+  <div
+    class="w-full overflow-y-scroll h-50 relative r-0 flex flex-col items-start border -ml-px"
+  >
     {#each weeksByMonth.entries() as [month, weeks]}
       <div class="flex flex-row">
-        <div class="month-label">
+        <div
+          class="month-label pr-2 pl-2 w-4 border-b-2 border-gray-400 {month ===
+          [...weeksByMonth.entries()][0][0]
+            ? '-mt-6'
+            : '-mt-px'}"
+        >
           {new Date(month).toLocaleString("default", { month: "long" })}
         </div>
         <div class="">
@@ -55,7 +62,7 @@
   .month-label {
     writing-mode: tb-rl;
     transform: rotate(-180deg);
-    margin-right: 8px;
+    /* margin-right: 8px; */
     text-align: center;
   }
 

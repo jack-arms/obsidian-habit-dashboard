@@ -1,8 +1,7 @@
 <script lang="ts">
   import { App } from "obsidian";
   import type { Habit, ObsidianHabitDashboardPluginSettings } from "./main";
-  import { Plus } from "lucide-svelte";
-  import { Button } from "flowbite-svelte";
+  import { Button, Listgroup } from "flowbite-svelte";
   import HabitEditModal from "./HabitEditModal.svelte";
   import HabitCard from "./HabitCard.svelte";
   import { getHabitProgressByDate } from "./utils";
@@ -16,6 +15,7 @@
   let { app, settings, saveSettings }: Props = $props();
 
   let habits = $state<Habit[]>(settings.habits);
+  let activeHabit = $state<Habit | null>(null);
 
   let modalState = $state<
     { isOpen: true; currentHabit: Habit | null } | { isOpen: false }
@@ -31,64 +31,78 @@
   );
 </script>
 
-<div class="flex flex-col max-w-md">
+<div class="flex flex-col">
   <h1 class="font-bold underline">Obsidian Habit Dashboard</h1>
-  <ScrollableCalendar centerDate={new Date()} />
-  {#each habits as habit}
-    <div class="py-2">
-      <HabitCard
-        {habit}
-        onEdit={() =>
-          (modalState = {
-            isOpen: true,
-            currentHabit: habit,
-          })}
-        habitProgress={habitProgressByDate[habit.noteKey]}
-      />
+  <div class="flex flex-row">
+    <div class="flex flex-col max-w-sm">
+      <div class="flex flex-row justify-between items-center">
+        <h5
+          class="text-xl font-bold leading-none text-gray-900 dark:text-white"
+        >
+          Habits
+        </h5>
+        <Button
+          class="text-sm! font-medium text-primary-600! dark:text-primary-500"
+          on:click={() => {
+            modalState = {
+              isOpen: true,
+              currentHabit: null,
+            };
+          }}
+        >
+          Add new
+        </Button>
+      </div>
+      <Listgroup active>
+        {#each habits as habit}
+          <HabitCard
+            {habit}
+            onEdit={() =>
+              (modalState = {
+                isOpen: true,
+                currentHabit: habit,
+              })}
+            habitProgress={habitProgressByDate[habit.noteKey]}
+            onClick={() => (activeHabit = habit)}
+          />
+        {/each}
+      </Listgroup>
+      {#if modalState.isOpen}
+        <HabitEditModal
+          onClose={() =>
+            (modalState = {
+              isOpen: false,
+            })}
+          onSave={(habit, currentHabit) => {
+            modalState = {
+              isOpen: false,
+            };
+            if (currentHabit == null) {
+              habits = [...habits, habit];
+            } else {
+              habits = habits.map((h) =>
+                h.noteKey === currentHabit.noteKey ? habit : h,
+              );
+            }
+            saveSettings({
+              habits,
+            });
+          }}
+          onDelete={(habit) => {
+            modalState = {
+              isOpen: false,
+            };
+            habits = habits.filter((h) => h.noteKey !== habit.noteKey);
+            saveSettings({
+              habits,
+            });
+          }}
+          currentHabit={modalState.currentHabit}
+        />
+      {/if}
     </div>
-  {/each}
-  {#if modalState.isOpen}
-    <HabitEditModal
-      onClose={() =>
-        (modalState = {
-          isOpen: false,
-        })}
-      onSave={(habit, currentHabit) => {
-        modalState = {
-          isOpen: false,
-        };
-        if (currentHabit == null) {
-          habits = [...habits, habit];
-        } else {
-          habits = habits.map((h) =>
-            h.noteKey === currentHabit.noteKey ? habit : h,
-          );
-        }
-        saveSettings({
-          habits,
-        });
-      }}
-      onDelete={(habit) => {
-        modalState = {
-          isOpen: false,
-        };
-        habits = habits.filter((h) => h.noteKey !== habit.noteKey);
-        saveSettings({
-          habits,
-        });
-      }}
-      currentHabit={modalState.currentHabit}
-    />
-  {/if}
-  <Button
-    on:click={() => {
-      modalState = {
-        isOpen: true,
-        currentHabit: null,
-      };
-    }}
-    class="bg-primary-500! hover:bg-primary-600! active:bg-primary-700!"
-  >
-    <Plus class="w-5 h-5" /> New
-  </Button>
+    {#if activeHabit != null}
+      <ScrollableCalendar centerDate={new Date()} />
+    {/if}
+  </div>
 </div>
