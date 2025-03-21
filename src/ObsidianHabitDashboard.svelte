@@ -103,7 +103,7 @@
       {/if}
     </div>
     {#if activeHabit != null}
-      <div class="flex flex-col flex-grow px-4">
+      <div class="flex flex-col max-w-lg px-4">
         <div class="flex flex-row items-center">
           <h2 class="self-start flex-grow">{activeHabit.name}</h2>
           <div class="flex justify-end">
