@@ -4,9 +4,14 @@
   import { Button, Listgroup } from "flowbite-svelte";
   import HabitEditModal from "./HabitEditModal.svelte";
   import HabitCard from "./HabitCard.svelte";
-  import { getHabitProgressByDate } from "./utils";
+  import {
+    dateKeyFormat,
+    getHabitDatesToStreakType,
+    getHabitProgressByDate,
+  } from "./utils";
   import ScrollableCalendar from "./scrollable_calendar/ScrollableCalendar.svelte";
   import { Pencil } from "lucide-svelte";
+  import CalendarStreakDay from "./scrollable_calendar/CalendarStreakDay.svelte";
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -29,6 +34,10 @@
       app,
       habits.map((h) => h.noteKey),
     ),
+  );
+
+  let habitDatesToStreakType = $derived(
+    getHabitDatesToStreakType(habitProgressByDate),
   );
 </script>
 
@@ -129,7 +138,26 @@
         {/if}
         <h3 class="self-start">Progress</h3>
         <div class="self-center">
-          <ScrollableCalendar centerDate={new Date()} />
+          <ScrollableCalendar centerDate={new Date()}>
+            {#snippet dayComponent(
+              date: Date,
+              isLastWeek: boolean,
+              isLastDayOfMonth: boolean,
+            )}
+              {@const streakType =
+                activeHabit == null
+                  ? null
+                  : habitDatesToStreakType[activeHabit.noteKey][
+                      dateKeyFormat(date)
+                    ]}
+              <CalendarStreakDay
+                {date}
+                {isLastWeek}
+                {isLastDayOfMonth}
+                {streakType}
+              />
+            {/snippet}
+          </ScrollableCalendar>
         </div>
       </div>
     {/if}

@@ -1,12 +1,16 @@
 <script lang="ts">
   import { getCalendarRow, getWeekRowsByMonth } from "./CalendarUtils";
   import CalendarDay from "./CalendarDay.svelte";
+  import type { Snippet } from "svelte";
 
   interface Props {
     centerDate: Date;
+    dayComponent: Snippet<
+      [date: Date, isLastDayOfMonth: boolean, isLastWeek: boolean]
+    >;
   }
 
-  let { centerDate }: Props = $props();
+  let { centerDate, dayComponent }: Props = $props();
 
   let weeksByMonth = $derived(
     (() => {
@@ -52,7 +56,7 @@
           {#each weeks as week}
             <div class="flex flex-row">
               {#each week as { date, isLastWeek, isLastDayOfMonth }}
-                <CalendarDay {date} {isLastWeek} {isLastDayOfMonth} />
+                {@render dayComponent(date, isLastWeek, isLastDayOfMonth)}
               {/each}
             </div>
           {/each}

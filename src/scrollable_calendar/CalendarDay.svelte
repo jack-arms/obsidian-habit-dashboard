@@ -9,12 +9,9 @@
 </script>
 
 <div
-  class="flex flex-1 h-15 items-center justify-center min-w-2 p-2 text-xs [&:not(:last-child)]:border-r border-b border-gray-200 day-cell {isLastWeek
-    ? 'day-last-week'
-    : ''} {isLastDayOfMonth ? 'day-last-of-month' : ''} order-{date.getDay() ===
-  0
-    ? 7
-    : date.getDay()}"
+  class="flex flex-1 h-15 items-center justify-center min-w-2 p-2 text-xs [&:not(:last-child)]:border-r border-b border-gray-200
+  {isLastWeek ? 'day-last-week' : ''}
+  {isLastDayOfMonth ? 'day-last-of-month' : ''}"
 >
   {date.getDate()}
 </div>
