@@ -35,7 +35,7 @@
 <div class="flex flex-col h-full p-1">
   <h1 class="font-bold text-center">Obsidian Habit Dashboard</h1>
   <div class="flex flex-row flex-grow">
-    <div class="flex flex-col max-w-sm border-r border-gray-300 pr-4">
+    <div class="flex flex-col min-w-sm w-sm border-r border-gray-300 pr-4">
       <div class="flex flex-row justify-between items-center">
         <h3
           class="text-xl font-bold leading-none text-gray-900 dark:text-white"
@@ -103,7 +103,7 @@
       {/if}
     </div>
     {#if activeHabit != null}
-      <div class="flex flex-col max-w-lg px-4">
+      <div class="flex flex-col px-4">
         <div class="flex flex-row items-center">
           <h2 class="self-start flex-grow">{activeHabit.name}</h2>
           <div class="flex justify-end">
