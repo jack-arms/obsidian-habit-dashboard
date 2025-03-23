@@ -5,15 +5,15 @@
   import { daysBetween } from "./utils";
   interface Props {
     habit: Habit;
-    onEdit: () => void;
     habitProgress: Array<{
       date: string;
       value: string;
     }>;
     onClick: () => void;
+    isSelected: boolean;
   }
 
-  let { habit, onEdit, habitProgress, onClick }: Props = $props();
+  let { habit, habitProgress, onClick, isSelected }: Props = $props();
   let daysSince = $derived(
     daysBetween(
       new Date(),
@@ -23,7 +23,10 @@
 </script>
 
 <ListgroupItem
-  class="flex box-border! h-auto! rounded-md!"
+  class="h-auto! relative rounded-none! shadow-none! bg-transparent! {isSelected
+    ? 'bg-gray-100!'
+    : ''}"
+  focusClass=""
   on:click={() => onClick()}
 >
   <div class="p-2 flex flex-row flex-grow">

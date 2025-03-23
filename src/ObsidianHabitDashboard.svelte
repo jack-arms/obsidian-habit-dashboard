@@ -63,17 +63,16 @@
           Add new
         </Button>
       </div>
-      <Listgroup active>
+      <Listgroup
+        active
+        defaultClass="divide-y! divide-gray-200! dark:divide-gray-600!"
+      >
         {#each habits as habit}
           <HabitCard
             {habit}
-            onEdit={() =>
-              (modalState = {
-                isOpen: true,
-                currentHabit: habit,
-              })}
             habitProgress={habitProgressByDate[habit.noteKey]}
             onClick={() => (activeHabit = habit)}
+            isSelected={habit.noteKey === activeHabit?.noteKey}
           />
         {/each}
       </Listgroup>
