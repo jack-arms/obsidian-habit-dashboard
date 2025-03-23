@@ -1,17 +1,11 @@
 <script lang="ts">
   import { App } from "obsidian";
   import type { Habit, ObsidianHabitDashboardPluginSettings } from "./main";
-  import { Button, Listgroup } from "flowbite-svelte";
+  import { TabItem, Tabs } from "flowbite-svelte";
   import HabitEditModal from "./HabitEditModal.svelte";
-  import HabitCard from "./HabitCard.svelte";
-  import {
-    dateKeyFormat,
-    getHabitDatesToStreakType,
-    getHabitProgressByDate,
-  } from "./utils";
-  import ScrollableCalendar from "./scrollable_calendar/ScrollableCalendar.svelte";
-  import { Pencil } from "lucide-svelte";
-  import CalendarStreakDay from "./scrollable_calendar/CalendarStreakDay.svelte";
+  import { getHabitProgressByDate } from "./utils";
+  import HabitCalendarMasterDetail from "./calendar_master_detail/HabitCalendarMasterDetail.svelte";
+  import HabitOverview from "./habit_overview/HabitOverview.svelte";
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -21,7 +15,8 @@
   let { app, settings, saveSettings }: Props = $props();
 
   let habits = $state<Habit[]>(settings.habits);
-  let activeHabit = $state<Habit | null>(null);
+
+  let tab = $state<"overview" | "calendar_master_detail">("overview");
 
   let modalState = $state<
     { isOpen: true; currentHabit: Habit | null } | { isOpen: false }
@@ -36,129 +31,69 @@
     ),
   );
 
-  let habitDatesToStreakType = $derived(
-    getHabitDatesToStreakType(habitProgressByDate),
-  );
+  const onEdit = (habit: Habit | null) =>
+    (modalState = {
+      isOpen: true,
+      currentHabit: habit,
+    });
 </script>
 
 <div class="flex flex-col h-full p-1">
   <h1 class="font-bold text-center">Obsidian Habit Dashboard</h1>
-  <div class="flex flex-row flex-grow">
-    <div class="flex flex-col min-w-sm w-sm border-r border-gray-300 pr-4">
-      <div class="flex flex-row justify-between items-center">
-        <h3
-          class="text-xl font-bold leading-none text-gray-900 dark:text-white"
-        >
-          Habits
-        </h3>
-        <Button
-          class="text-sm! font-medium text-primary-600! dark:text-primary-500"
-          on:click={() => {
-            modalState = {
-              isOpen: true,
-              currentHabit: null,
-            };
-          }}
-        >
-          Add new
-        </Button>
-      </div>
-      <Listgroup
-        active
-        defaultClass="divide-y! divide-gray-200! dark:divide-gray-600!"
-      >
-        {#each habits as habit}
-          <HabitCard
-            {habit}
-            habitProgress={habitProgressByDate[habit.noteKey]}
-            onClick={() => (activeHabit = habit)}
-            isSelected={habit.noteKey === activeHabit?.noteKey}
-          />
-        {/each}
-      </Listgroup>
-      {#if modalState.isOpen}
-        <HabitEditModal
-          onClose={() =>
-            (modalState = {
-              isOpen: false,
-            })}
-          onSave={(habit, currentHabit) => {
-            modalState = {
-              isOpen: false,
-            };
-            if (currentHabit == null) {
-              habits = [...habits, habit];
-            } else {
-              habits = habits.map((h) =>
-                h.noteKey === currentHabit.noteKey ? habit : h,
-              );
-            }
-            saveSettings({
-              habits,
-            });
-          }}
-          onDelete={(habit) => {
-            modalState = {
-              isOpen: false,
-            };
-            habits = habits.filter((h) => h.noteKey !== habit.noteKey);
-            saveSettings({
-              habits,
-            });
-          }}
-          currentHabit={modalState.currentHabit}
-        />
-      {/if}
-    </div>
-    {#if activeHabit != null}
-      <div class="flex flex-col px-4">
-        <div class="flex flex-row items-center">
-          <h2 class="self-start flex-grow">{activeHabit.name}</h2>
-          <div class="flex justify-end">
-            <Button
-              outline={true}
-              class="shadow-none! p-2!"
-              on:click={() =>
-                (modalState = {
-                  isOpen: true,
-                  currentHabit: activeHabit,
-                })}
-            >
-              <Pencil class="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-        {#if Object.keys(habitProgressByDate[activeHabit.noteKey]).length === 0}
-          Never done!
-        {:else}
-          Last done on {Object.values(habitProgressByDate[activeHabit.noteKey])[
-            Object.keys(habitProgressByDate[activeHabit.noteKey]).length - 1
-          ].date}.
-        {/if}
-        <h3 class="self-start">Progress</h3>
-        <div class="self-center">
-          <ScrollableCalendar centerDate={new Date()}>
-            {#snippet dayComponent(
-              date: Date,
-              isLastWeek: boolean,
-              isLastDayOfMonth: boolean,
-            )}
-              {@const streakType =
-                activeHabit == null
-                  ? null
-                  : habitDatesToStreakType[activeHabit.noteKey][
-                      dateKeyFormat(date)
-                    ]}
-              <CalendarStreakDay
-                {date}
-                {isLastWeek}
-                {isLastDayOfMonth}
-                {streakType}
-              />
-            {/snippet}
-          </ScrollableCalendar>
-        </div>
-      </div>
-    {/if}
-  </div>
+  <Tabs
+    contentClass="flex flex-grow border-t border-gray-300"
+    activeClasses="bg-gray-100! shadow-none!"
+    inactiveClasses="shadow-none!"
+    divider={false}
+  >
+    <TabItem
+      open={tab === "overview"}
+      title="Overview"
+      on:click={() => tab === "overview"}
+      divClass="flex flex-grow"
+    >
+      <HabitOverview {habits} {habitProgressByDate} {onEdit} />
+    </TabItem>
+    <TabItem
+      open={tab === "calendar_master_detail"}
+      title="Calendar"
+      on:click={() => tab === "calendar_master_detail"}
+      divClass="flex flex-grow"
+    >
+      <HabitCalendarMasterDetail {habits} {habitProgressByDate} {onEdit} />
+    </TabItem>
+  </Tabs>
+  {#if modalState.isOpen}
+    <HabitEditModal
+      onClose={() =>
+        (modalState = {
+          isOpen: false,
+        })}
+      onSave={(habit, currentHabit) => {
+        modalState = {
+          isOpen: false,
+        };
+        if (currentHabit == null) {
+          habits = [...habits, habit];
+        } else {
+          habits = habits.map((h) =>
+            h.noteKey === currentHabit.noteKey ? habit : h,
+          );
+        }
+        saveSettings({
+          habits,
+        });
+      }}
+      onDelete={(habit) => {
+        modalState = {
+          isOpen: false,
+        };
+        habits = habits.filter((h) => h.noteKey !== habit.noteKey);
+        saveSettings({
+          habits,
+        });
+      }}
+      currentHabit={modalState.currentHabit}
+    />
+  {/if}
 </div>
