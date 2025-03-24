@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Habit } from "../main";
   import { Hourglass } from "lucide-svelte";
-  import { ListgroupItem } from "flowbite-svelte";
+  import { Card, Checkbox } from "flowbite-svelte";
   import { daysBetween } from "../utils";
   interface Props {
     habit: Habit;
@@ -22,15 +22,14 @@
   );
 </script>
 
-<ListgroupItem
-  class="h-auto! relative rounded-none! shadow-none! bg-transparent! {isSelected
+<Card
+  class="p-1! rounded-none! shadow-none! bg-transparent! {isSelected
     ? 'bg-gray-100!'
     : ''}"
-  hoverClass={!isSelected ? "hover:bg-gray-50!" : ""}
-  focusClass=""
   on:click={() => onClick()}
 >
-  <div class="p-2 flex flex-row flex-grow items-center">
+  <div class="p-2 flex flex-row flex-grow items-center space-x-2">
+    <Checkbox checked={isSelected} />
     <p
       class="text-sm font-medium text-gray-900 truncate dark:text-white flex-grow"
     >
@@ -43,4 +42,4 @@
       {daysSince}
     </div>
   </div>
-</ListgroupItem>
+</Card>
