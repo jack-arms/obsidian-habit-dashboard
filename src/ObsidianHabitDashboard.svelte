@@ -36,6 +36,19 @@
       isOpen: true,
       currentHabit: habit,
     });
+
+  const onMoveHabit = (habit: Habit, change: 1 | -1) => {
+    const habitIndex = habits.findIndex((h) => h.noteKey === habit.noteKey);
+    if (habitIndex < 0) {
+      return;
+    }
+    if (habitIndex + change < 0 || habitIndex + change > habits.length - 1) {
+      return;
+    }
+    const temp = habits[habitIndex + change];
+    habits[habitIndex + change] = habits[habitIndex];
+    habits[habitIndex] = temp;
+  };
 </script>
 
 <div class="flex flex-col h-full p-1">
@@ -52,7 +65,7 @@
       on:click={() => tab === "overview"}
       divClass="flex flex-grow"
     >
-      <HabitOverview {habits} {habitProgressByDate} {onEdit} />
+      <HabitOverview {habits} {habitProgressByDate} {onEdit} {onMoveHabit} />
     </TabItem>
     <TabItem
       open={tab === "calendar_master_detail"}

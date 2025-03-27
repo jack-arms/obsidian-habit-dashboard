@@ -12,9 +12,10 @@
       }[];
     };
     onEdit: (habit: Habit | null) => void;
+    onMoveHabit: (habit: Habit, change: 1 | -1) => void;
   }
 
-  let { habits, habitProgressByDate, onEdit }: Props = $props();
+  let { habits, habitProgressByDate, onEdit, onMoveHabit }: Props = $props();
 </script>
 
 <div class="flex flex-col flex-grow">
@@ -31,7 +32,15 @@
   </div>
   <div class="space-y-4">
     {#each habits as habit}
-      <HabitCard {habit} habitProgress={habitProgressByDate[habit.noteKey]} />
+      {#key habit.noteKey}
+        <HabitCard
+          {habit}
+          habitProgress={habitProgressByDate[habit.noteKey]}
+          onEdit={() => onEdit(habit)}
+          onMoveDown={() => onMoveHabit(habit, 1)}
+          onMoveUp={() => onMoveHabit(habit, -1)}
+        />
+      {/key}
     {/each}
   </div>
 </div>
