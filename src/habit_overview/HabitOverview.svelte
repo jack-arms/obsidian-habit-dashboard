@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Button } from "flowbite-svelte";
+  import { Accordion, Button } from "flowbite-svelte";
   import type { Habit } from "../main";
-  import HabitCard from "./HabitCard.svelte";
+  import HabitAccordionItem from "./HabitAccordionItem.svelte";
 
   interface Props {
     habits: Habit[];
@@ -30,10 +30,10 @@
       Add new
     </Button>
   </div>
-  <div class="space-y-4">
+  <Accordion class="w-xl">
     {#each habits as habit}
       {#key habit.noteKey}
-        <HabitCard
+        <HabitAccordionItem
           {habit}
           habitProgress={habitProgressByDate[habit.noteKey]}
           onEdit={() => onEdit(habit)}
@@ -42,5 +42,5 @@
         />
       {/key}
     {/each}
-  </div>
+  </Accordion>
 </div>
