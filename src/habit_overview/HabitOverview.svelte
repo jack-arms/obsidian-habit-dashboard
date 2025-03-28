@@ -16,6 +16,11 @@
   }
 
   let { habits, habitProgressByDate, onEdit, onMoveHabit }: Props = $props();
+  let openHabit = $state<string | null>(null);
+
+  $effect(() => {
+    console.log(openHabit);
+  });
 </script>
 
 <div class="flex flex-col flex-grow">
@@ -39,6 +44,14 @@
           onEdit={() => onEdit(habit)}
           onMoveDown={() => onMoveHabit(habit, 1)}
           onMoveUp={() => onMoveHabit(habit, -1)}
+          open={habit.noteKey === openHabit}
+          setIsOpen={(isOpen: boolean) => {
+            if (isOpen) {
+              openHabit = habit.noteKey;
+            } else if (openHabit === habit.noteKey) {
+              openHabit = null;
+            }
+          }}
         />
       {/key}
     {/each}

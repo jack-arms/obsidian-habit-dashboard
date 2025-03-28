@@ -12,15 +12,32 @@
     onEdit: () => void;
     onMoveUp: () => void;
     onMoveDown: () => void;
+    open: boolean;
+    setIsOpen: (isOpen: boolean) => void;
   }
 
-  let { habit, habitProgress, onEdit, onMoveDown, onMoveUp }: Props = $props();
+  let {
+    habit,
+    habitProgress,
+    onEdit,
+    onMoveDown,
+    onMoveUp,
+    open,
+    setIsOpen,
+  }: Props = $props();
   let daysSince = $derived(
     daysBetween(
       new Date(),
       new Date(habitProgress[habitProgress.length - 1].date),
     ),
   );
+
+  /* card content:
+    - last done date
+    - scrollable calendar
+    - goal info
+    - summary of progress in last 2 weeks, if there's data
+*/
 </script>
 
 <AccordionItem
@@ -33,6 +50,7 @@
   borderClass="border-s! border-e! group-first:border-t!"
   borderBottomClass="border-b!"
   borderSharedClass="border-gray-200! dark:border-gray-700!"
+  bind:open={() => open, (isOpen) => setIsOpen(isOpen)}
 >
   <div
     slot="header"
@@ -52,12 +70,6 @@
   </div>
   <div class="flex flex-row items-center relative min-h-5">
     <div class="flex items-center space-x-2 absolute right-0">
-    {/* card content:
-        - last done date
-        - scrollable calendar
-        - goal info
-        - summary of progress in last 2 weeks, if there's data
-    */}
       <Button
         class="p-2! h-auto! hover:text-primary-700!"
         on:click={(e) => {
