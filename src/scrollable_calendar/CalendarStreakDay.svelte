@@ -11,7 +11,7 @@
 </script>
 
 <div
-  class="flex flex-1 h-15 items-center justify-center min-w-2 text-xs [&:not(:last-child)]:border-r border-b border-gray-200 relative
+  class="flex flex-1 items-center justify-center min-w-2 text-xs [&:not(:last-child)]:border-r border-b border-gray-200 relative
   {isLastWeek ? 'day-last-week' : ''}
   {isLastDayOfMonth ? 'day-last-of-month' : ''}"
 >

@@ -6,6 +6,7 @@
   import { getHabitProgressByDate } from "./utils";
   import HabitCalendarMasterDetail from "./calendar_master_detail/HabitCalendarMasterDetail.svelte";
   import HabitOverview from "./habit_overview/HabitOverview.svelte";
+  import HabitAccordion from "./habit_overview/HabitAccordion.svelte";
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -16,7 +17,9 @@
 
   let habits = $state<Habit[]>(settings.habits);
 
-  let tab = $state<"overview" | "calendar_master_detail">("overview");
+  let tab = $state<
+    "overview" | "calendar_master_detail" | "calendar_accordion"
+  >("overview");
 
   let modalState = $state<
     { isOpen: true; currentHabit: Habit | null } | { isOpen: false }
@@ -74,6 +77,14 @@
       divClass="flex flex-grow"
     >
       <HabitCalendarMasterDetail {habits} {habitProgressByDate} {onEdit} />
+    </TabItem>
+    <TabItem
+      open={tab === "calendar_accordion"}
+      title="Accordion"
+      on:click={() => tab === "calendar_accordion"}
+      divClass="flex flex-grow"
+    >
+      <HabitAccordion {habits} {habitProgressByDate} {onEdit} {onMoveHabit} />
     </TabItem>
   </Tabs>
   {#if modalState.isOpen}

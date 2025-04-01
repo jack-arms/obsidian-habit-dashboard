@@ -53,7 +53,7 @@
   <div class="flex flex-col px-4">
     <h2>Calendar</h2>
     <div class="self-center">
-      <ScrollableCalendar centerDate={new Date()}>
+      <ScrollableCalendar endDate={new Date()} numWeeks={12}>
         {#snippet dayComponent(
           date: Date,
           isLastWeek: boolean,

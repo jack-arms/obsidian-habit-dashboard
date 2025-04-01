@@ -1,20 +1,23 @@
 <script lang="ts">
   import type { Habit } from "../main";
-  import { ArrowDown, ArrowUp, Hourglass, Pencil } from "lucide-svelte";
+  import { ArrowDown, ArrowUp, ChevronRight } from "lucide-svelte";
   import { Button, Card } from "flowbite-svelte";
   import { daysBetween } from "../utils";
+  import HabitHeader from "./HabitHeader.svelte";
   interface Props {
     habit: Habit;
     habitProgress: Array<{
       date: string;
       value: string;
     }>;
-    onEdit: () => void;
     onMoveUp: () => void;
     onMoveDown: () => void;
+    isOpen: boolean;
+    onOpen: () => void;
   }
 
-  let { habit, habitProgress, onEdit, onMoveDown, onMoveUp }: Props = $props();
+  let { habit, habitProgress, onMoveDown, onMoveUp, isOpen, onOpen }: Props =
+    $props();
   let daysSince = $derived(
     daysBetween(
       new Date(),
@@ -23,42 +26,41 @@
   );
 </script>
 
-<Card class="h-auto! relative rounded-none! shadow-none! bg-transparent!">
-  <div class="flex flex-row items-center">
-    <div class="flex flex-grow items-center">
-      <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-        {habit.name}
-      </p>
-      <div
-        class="inline-flex items-center text-base text-gray-900 dark:text-white"
-      >
-        <Hourglass class="h-4" />
-        {daysSince}
+<div class="flex flex-row items-center">
+  <Card
+    class="h-auto! relative rounded-none! shadow-none! {isOpen
+      ? 'bg-gray-100!'
+      : 'bg-transparent!'}"
+    on:click={() => onOpen()}
+  >
+    <div class="flex flex-row items-center">
+      <div class="flex flex-col flex-grow">
+        <div class="flex flex-row items-center">
+          <HabitHeader habitName={habit.name} {daysSince} />
+        </div>
+        <div>Card body</div>
       </div>
+      <ChevronRight />
     </div>
-    <div class="flex items-center space-x-2">
-      <Button
-        outline
-        class="border-none! shadow-none! p-1!"
-        on:click={() => onMoveUp()}
-      >
-        <ArrowUp class="h-4" />
-      </Button>
-      <Button
-        outline
-        class="border-none! shadow-none! p-1!"
-        on:click={() => onMoveDown()}
-      >
-        <ArrowDown class="h-4" />
-      </Button>
-      <Button
-        outline
-        class="border-none! shadow-none! p-1!"
-        on:click={() => onEdit()}
-      >
-        <Pencil class="h-4" />
-      </Button>
-    </div>
+  </Card>
+  <div class="flex flex-col">
+    <Button
+      class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-primary-700!"
+      on:click={(e) => {
+        e.stopPropagation();
+        onMoveUp();
+      }}
+    >
+      <ArrowUp class="h-5 stroke-current" />
+    </Button>
+    <Button
+      class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-primary-700!"
+      on:click={(e) => {
+        e.stopPropagation();
+        onMoveDown();
+      }}
+    >
+      <ArrowDown class="h-5 stroke-current" />
+    </Button>
   </div>
-  <div>Card body</div>
-</Card>
+</div>
