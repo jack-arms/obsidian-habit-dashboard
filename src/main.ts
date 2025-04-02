@@ -17,6 +17,7 @@ export interface Habit {
     goalTimeUnit: GoalTimeUnit;
     interval: number;
     intervalTimeUnit: GoalIntervalTimeUnit;
+    trackingStartDate: string | null;
   };
 }
 
