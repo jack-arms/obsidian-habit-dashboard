@@ -21,7 +21,8 @@
   let habitDatesToStreakType = $derived(
     getHabitDatesToStreakType(habitProgressByDate),
   );
-  let openHabit = $state<Habit | null>(null);
+  let openHabitKey = $state<string | null>(null);
+  let openHabit = $derived(habits.find((h) => h.noteKey === openHabitKey));
 </script>
 
 <div class="flex flex-row">
@@ -38,15 +39,17 @@
       </Button>
     </div>
     <div class="flex flex-col">
-      {#each habits as habit}
+      {#each habits as habit, index}
         {#key habit.noteKey}
           <HabitCard
             {habit}
             isOpen={habit.noteKey === openHabit?.noteKey}
             habitProgress={habitProgressByDate[habit.noteKey]}
-            onMoveDown={() => onMoveHabit(habit, 1)}
-            onMoveUp={() => onMoveHabit(habit, -1)}
-            onOpen={() => (openHabit = habit)}
+            onMoveDown={index === habits.length - 1
+              ? null
+              : () => onMoveHabit(habit, 1)}
+            onMoveUp={index === 0 ? null : () => onMoveHabit(habit, -1)}
+            onOpen={() => (openHabitKey = habit.noteKey)}
           />
         {/key}
       {/each}

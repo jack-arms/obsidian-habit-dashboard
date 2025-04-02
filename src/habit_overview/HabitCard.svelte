@@ -10,8 +10,8 @@
       date: string;
       value: string;
     }>;
-    onMoveUp: () => void;
-    onMoveDown: () => void;
+    onMoveUp: (() => void) | null;
+    onMoveDown: (() => void) | null;
     isOpen: boolean;
     onOpen: () => void;
   }
@@ -34,30 +34,27 @@
     on:click={() => onOpen()}
   >
     <div class="flex flex-row items-center">
-      <div class="flex flex-col flex-grow">
-        <div class="flex flex-row items-center">
-          <HabitHeader habitName={habit.name} {daysSince} />
-        </div>
-        <div>Card body</div>
-      </div>
+      <HabitHeader habitName={habit.name} {daysSince} />
       <ChevronRight />
     </div>
   </Card>
   <div class="flex flex-col">
     <Button
+      disabled={onMoveUp == null}
       class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-primary-700!"
       on:click={(e) => {
         e.stopPropagation();
-        onMoveUp();
+        onMoveUp?.();
       }}
     >
       <ArrowUp class="h-5 stroke-current" />
     </Button>
     <Button
+      disabled={onMoveDown == null}
       class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-primary-700!"
       on:click={(e) => {
         e.stopPropagation();
-        onMoveDown();
+        onMoveDown?.();
       }}
     >
       <ArrowDown class="h-5 stroke-current" />
