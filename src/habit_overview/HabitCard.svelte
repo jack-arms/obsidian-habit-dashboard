@@ -35,8 +35,8 @@
     on:click={() => onOpen()}
   >
     <div class="flex flex-row items-center">
-      <div class="flex flex-row items-center flex-grow space-x-1">
-        <span>{habit.name}</span>
+      <div class="flex flex-row items-center flex-grow space-x-2">
+        <span class="font-bold">{habit.name}</span>
         <HabitTimeSinceBadge {daysSince} />
         {#if habit.goalInfo != null}
           {@const { goalInfo } = habit}
