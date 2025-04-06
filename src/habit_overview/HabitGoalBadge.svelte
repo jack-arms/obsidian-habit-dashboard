@@ -18,9 +18,9 @@
   <Flag class="h-4 w-auto" />
   <span class="text-lg font-bold px-1">&middot;</span>
   <span>
-    {goalProgress} / {goal}{goalTimeUnit}
-  </span>
-  <span class="ml-1 px-1 py-px text-sm font-semibold">
-    {interval}{intervalTimeUnit}
+    {goalProgress} / {goal}{goalTimeUnit ?? "X"},
+    <span class="text-sm font-semibold">
+      {interval}{intervalTimeUnit}
+    </span>
   </span>
 </div>

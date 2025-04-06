@@ -145,31 +145,30 @@ export function dateKeyFormat(date: Date) {
 }
 
 export function getHabitGoalProgress(
-  goalInfo: Habit["goalInfo"],
+  goalInfo: NonNullable<Habit["goalInfo"]>,
   habitProgress: Array<{
     date: string;
     value: string;
   }>
 ): number {
-  return 0;
-}
+  const days = goalIntervalToDays(goalInfo.interval, goalInfo.intervalTimeUnit);
+  let startDate = new Date(habitProgress[habitProgress.length - 1].date);
+  startDate.setDate(startDate.getDate() - days);
 
-export function getHabitGoalProgressStringShort(
-  goalInfo: NonNullable<Habit["goalInfo"]>,
-  habitGoalProgress: number
-) {
-  return (
-    `${habitGoalProgress} / ${goalInfo.goal}${goalInfo.goalTimeUnit}` +
-    ", " +
-    (goalInfo.interval === 1 && goalInfo.intervalTimeUnit === "d"
-      ? "today"
-      : `past ${
-          goalInfo.interval > 1 ? goalInfo.interval : ""
-        } ${goalIntervalTimeUnitToString(
-          goalInfo.intervalTimeUnit,
-          goalInfo.interval
-        )}`)
-  );
+  let progress = 0;
+  let i = habitProgress.length - 1;
+  let date = new Date(habitProgress[i].date);
+  while (date.getTime() > startDate.getTime()) {
+    if (goalInfo.goalTimeUnit == null) {
+      progress++;
+    } else {
+      progress += Number(habitProgress[i].value); // TODO support non-numeric data, e.g. "30m" in note data
+    }
+    console.log({ progress, entry: habitProgress[i] });
+    i--;
+    date = new Date(habitProgress[i].date);
+  }
+  return progress;
 }
 
 export function getHabitGoalProgressString(
@@ -191,4 +190,18 @@ export function getHabitGoalProgressString(
           goalInfo.interval
         )}`)
   );
+}
+
+export function goalIntervalToDays(
+  interval: number,
+  intervalTimeUnit: GoalIntervalTimeUnit
+) {
+  switch (intervalTimeUnit) {
+    case "d":
+      return interval;
+    case "w":
+      return interval * 7;
+    case "m":
+      return interval * 30;
+  }
 }
