@@ -2,8 +2,9 @@
   import type { Habit } from "../main";
   import { ArrowDown, ArrowUp, ChevronRight } from "lucide-svelte";
   import { Button, Card } from "flowbite-svelte";
-  import { daysBetween } from "../utils";
-  import HabitHeader from "./HabitHeader.svelte";
+  import { daysBetween, getHabitGoalProgress } from "../utils";
+  import HabitGoalBadge from "./HabitGoalBadge.svelte";
+  import HabitTimeSinceBadge from "./HabitTimeSinceBadge.svelte";
   interface Props {
     habit: Habit;
     habitProgress: Array<{
@@ -28,13 +29,21 @@
 
 <div class="flex flex-row items-center">
   <Card
-    class="h-auto! relative rounded-none! shadow-none! {isOpen
+    class="h-auto! relative rounded-none! shadow-none! text-base text-gray-900 dark:text-white{isOpen
       ? 'bg-gray-100!'
       : 'bg-transparent!'}"
     on:click={() => onOpen()}
   >
     <div class="flex flex-row items-center">
-      <HabitHeader habitName={habit.name} {daysSince} />
+      <div class="flex flex-row items-center flex-grow space-x-1">
+        <span>{habit.name}</span>
+        <HabitTimeSinceBadge {daysSince} />
+        {#if habit.goalInfo != null}
+          {@const { goalInfo } = habit}
+          {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
+          <HabitGoalBadge {goalProgress} {...goalInfo} />
+        {/if}
+      </div>
       <ChevronRight />
     </div>
   </Card>

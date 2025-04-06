@@ -1,3 +1,4 @@
+import type { Habit } from "./main";
 import type { StreakType } from "./scrollable_calendar/CalendarStreakDay.svelte";
 import type { GoalTimeUnit, GoalIntervalTimeUnit } from "./types";
 import type { App } from "obsidian";
@@ -8,11 +9,11 @@ export function goalTimeUnitToString(
 ) {
   switch (goalTimeUnit) {
     case null:
-      return time == null ? "time(s)" : time > 1 ? "times" : "time";
+      return time == null ? "time(s)" : time === 1 ? "time" : "times";
     case "m":
-      return time == null ? "minute(s)" : time > 1 ? "minutes" : "hour";
+      return time == null ? "minute(s)" : time === 1 ? "minute" : "minutes";
     case "h":
-      return time == null ? "hour(s)" : time > 1 ? "hours" : "hour";
+      return time == null ? "hour(s)" : time === 1 ? "hour" : "hours";
   }
 }
 
@@ -22,11 +23,15 @@ export function goalIntervalTimeUnitToString(
 ) {
   switch (intervalTimeUnit) {
     case "d":
-      return interval == null ? "day(s)" : interval > 1 ? "days" : "days";
+      return interval == null ? "day(s)" : interval === 1 ? "day" : "days";
     case "w":
-      return interval == null ? "week(s)" : interval > 1 ? "weeks" : "weeks";
+      return interval == null ? "week(s)" : interval === 1 ? "week" : "weeks";
     case "m":
-      return interval == null ? "month(s)" : interval > 1 ? "months" : "months";
+      return interval == null
+        ? "month(s)"
+        : interval === 1
+        ? "month"
+        : "months";
   }
 }
 
@@ -137,4 +142,53 @@ export function getHabitDatesToStreakType(habitProgress: {
 
 export function dateKeyFormat(date: Date) {
   return date.toISOString().split("T")[0];
+}
+
+export function getHabitGoalProgress(
+  goalInfo: Habit["goalInfo"],
+  habitProgress: Array<{
+    date: string;
+    value: string;
+  }>
+): number {
+  return 0;
+}
+
+export function getHabitGoalProgressStringShort(
+  goalInfo: NonNullable<Habit["goalInfo"]>,
+  habitGoalProgress: number
+) {
+  return (
+    `${habitGoalProgress} / ${goalInfo.goal}${goalInfo.goalTimeUnit}` +
+    ", " +
+    (goalInfo.interval === 1 && goalInfo.intervalTimeUnit === "d"
+      ? "today"
+      : `past ${
+          goalInfo.interval > 1 ? goalInfo.interval : ""
+        } ${goalIntervalTimeUnitToString(
+          goalInfo.intervalTimeUnit,
+          goalInfo.interval
+        )}`)
+  );
+}
+
+export function getHabitGoalProgressString(
+  goalInfo: NonNullable<Habit["goalInfo"]>,
+  habitGoalProgress: number
+) {
+  return (
+    `${habitGoalProgress} / ${goalInfo.goal} ${goalTimeUnitToString(
+      goalInfo.goalTimeUnit,
+      habitGoalProgress
+    )}` +
+    ", " +
+    (goalInfo.interval === 1 && goalInfo.intervalTimeUnit === "d"
+      ? "today"
+      : `past ${
+          goalInfo.interval > 1 ? goalInfo.interval : ""
+        } ${goalIntervalTimeUnitToString(
+          goalInfo.intervalTimeUnit,
+          goalInfo.interval
+        )}`)
+  );
 }

@@ -35,6 +35,7 @@
     ...(currentHabit ?? {
       name: "",
       noteKey: "",
+      createDate: new Date().toLocaleDateString(),
     }),
   });
 
@@ -112,7 +113,7 @@
                 goalTimeUnit: null,
                 interval: 1,
                 intervalTimeUnit: "d",
-                trackingStartDate: null,
+                goalCreateDate: new Date().toLocaleDateString(),
               };
             } else {
               habit.goalInfo = undefined;
@@ -170,18 +171,6 @@
                   )}</DropdownItem
                 >{/each}
             </Dropdown>
-          </div>
-
-          <div class="flex flex-row items-center space-x-2">
-            <Label for="tracking-start-date" class="inline"
-              >Skip note data before (optional):
-            </Label>
-            <Input
-              id="tracking-start-date"
-              type="date"
-              bind:value={habit.goalInfo.trackingStartDate}
-              class="w-auto"
-            />
           </div>
         </div>
       {/if}

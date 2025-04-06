@@ -1,7 +1,11 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
   import type { Habit } from "../main";
-  import { dateKeyFormat } from "src/utils";
+  import {
+    dateKeyFormat,
+    getHabitGoalProgress,
+    getHabitGoalProgressString,
+  } from "src/utils";
   import { Calendar, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay, {
@@ -48,6 +52,19 @@
   </Button>
 </div>
 <div class="flex flex-col space-y-2">
+  {#if habit.goalInfo != null}
+    {@const { goalInfo } = habit}
+    {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
+    <div class="flex flex-col">
+      <div class="flex flex-row items-center space-x-2">
+        <Notebook />
+        <h3 class="m-0!">Goal</h3>
+      </div>
+      <div>
+        {getHabitGoalProgressString(habit.goalInfo, goalProgress)}
+      </div>
+    </div>
+  {/if}
   <div class="flex flex-col">
     <div class="flex flex-row items-center space-x-2">
       <Notebook />

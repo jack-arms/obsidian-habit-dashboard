@@ -12,12 +12,13 @@ export interface ObsidianHabitDashboardPluginSettings {
 export interface Habit {
   name: string;
   noteKey: string;
+  createDate: string;
   goalInfo?: {
     goal: number;
     goalTimeUnit: GoalTimeUnit;
     interval: number;
     intervalTimeUnit: GoalIntervalTimeUnit;
-    trackingStartDate: string | null;
+    goalCreateDate: string;
   };
 }
 

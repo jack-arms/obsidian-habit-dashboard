@@ -13,7 +13,7 @@
   import CalendarStreakDay, {
     type StreakType,
   } from "src/scrollable_calendar/CalendarStreakDay.svelte";
-  import HabitHeader from "./HabitHeader.svelte";
+  import HabitHeader from "./HabitTimeSinceBadge.svelte";
   interface Props {
     habit: Habit;
     habitProgress: Array<{
