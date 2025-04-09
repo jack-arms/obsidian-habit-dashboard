@@ -35,7 +35,7 @@
     on:click={() => onOpen()}
   >
     <div class="flex flex-row items-center">
-      <div class="flex flex-row items-center flex-grow space-x-2">
+      <div class="flex flex-row items-center flex-grow space-x-3 h-14">
         <span class="font-bold">{habit.name}</span>
         <HabitTimeSinceBadge {daysSince} />
         {#if habit.goalInfo != null}
@@ -44,7 +44,7 @@
           <HabitGoalBadge {goalProgress} {...goalInfo} />
         {/if}
       </div>
-      <ChevronRight />
+      <ChevronRight class="ml-2" />
     </div>
   </Card>
   <div class="flex flex-col">

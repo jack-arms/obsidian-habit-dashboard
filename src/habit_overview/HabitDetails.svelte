@@ -6,11 +6,12 @@
     getHabitGoalProgress,
     getHabitGoalProgressString,
   } from "src/utils";
-  import { Calendar, Notebook, Pencil } from "lucide-svelte";
+  import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay, {
     type StreakType,
   } from "src/scrollable_calendar/CalendarStreakDay.svelte";
+  import HabitGoalProgressBar from "./HabitGoalProgressBar.svelte";
 
   interface Props {
     habit: Habit;
@@ -57,11 +58,11 @@
     {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
     <div class="flex flex-col">
       <div class="flex flex-row items-center space-x-2">
-        <Notebook />
+        <Flag />
         <h3 class="m-0!">Goal</h3>
       </div>
-      <div>
-        {getHabitGoalProgressString(habit.goalInfo, goalProgress)}
+      <div class="flex w-100 h-15">
+        <HabitGoalProgressBar {...goalInfo} {goalProgress} />
       </div>
     </div>
   {/if}

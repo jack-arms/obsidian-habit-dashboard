@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Flag } from "lucide-svelte";
   import type { GoalIntervalTimeUnit, GoalTimeUnit } from "src/types";
+  import HabitGoalProgressBar from "./HabitGoalProgressBar.svelte";
 
   interface Props {
     goal: number;
@@ -14,13 +15,13 @@
     $props();
 </script>
 
-<div class="flex flex-row items-center py-0.5 px-2 border rounded-lg">
-  <Flag class="h-4 w-auto" />
-  <span class="text-lg font-bold px-1">&middot;</span>
-  <span>
-    {goalProgress} / {goal}{goalTimeUnit ?? "X"},
-    <span class="text-sm font-semibold">
-      {interval}{intervalTimeUnit}
-    </span>
-  </span>
+<div class="flex flex-row flex-grow self-stretch items-center py-0.5">
+  <Flag class="h-4 w-auto mr-2" />
+  <HabitGoalProgressBar
+    {goal}
+    {goalTimeUnit}
+    {interval}
+    {intervalTimeUnit}
+    {goalProgress}
+  />
 </div>
