@@ -152,7 +152,7 @@ export function getHabitGoalProgress(
   }>
 ): number {
   const days = goalIntervalToDays(goalInfo.interval, goalInfo.intervalTimeUnit);
-  let startDate = new Date(habitProgress[habitProgress.length - 1].date);
+  let startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
 
   let progress = 0;
@@ -164,7 +164,6 @@ export function getHabitGoalProgress(
     } else {
       progress += Number(habitProgress[i].value); // TODO support non-numeric data, e.g. "30m" in note data
     }
-    console.log({ progress, entry: habitProgress[i] });
     i--;
     date = new Date(habitProgress[i].date);
   }
