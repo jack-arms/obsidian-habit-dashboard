@@ -4,14 +4,12 @@
   import { getHabitDatesToStreakType } from "src/utils";
   import HabitCard from "./HabitCard.svelte";
   import HabitDetails from "./HabitDetails.svelte";
+  import type { HabitDayProgress } from "src/types";
 
   interface Props {
     habits: Habit[];
     habitProgressByDate: {
-      [noteKey: string]: {
-        date: string;
-        value: string;
-      }[];
+      [noteKey: string]: HabitDayProgress[];
     };
     onEdit: (habit: Habit | null) => void;
     onMoveHabit: (habit: Habit, change: 1 | -1) => void;

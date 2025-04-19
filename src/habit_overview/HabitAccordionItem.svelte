@@ -14,12 +14,10 @@
     type StreakType,
   } from "src/scrollable_calendar/CalendarStreakDay.svelte";
   import HabitHeader from "./HabitTimeSinceBadge.svelte";
+  import type { HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;
-    habitProgress: Array<{
-      date: string;
-      value: string;
-    }>;
+    habitProgress: HabitDayProgress[];
     streakData: { [date: string]: StreakType };
     onEdit: () => void;
     onMoveUp: () => void;
@@ -82,7 +80,7 @@
     slot="header"
     class="flex flex-grow items-center pl-5 pt-5 pb-5 space-x-2!"
   >
-    <HabitHeader habitName={habit.name} {daysSince} />
+    <HabitHeader {daysSince} />
   </div>
   <div class="flex flex-col space-y-3 relative">
     <div class="flex items-center space-x-2 absolute right-0">

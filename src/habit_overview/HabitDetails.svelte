@@ -4,7 +4,6 @@
   import {
     dateKeyFormat,
     getHabitGoalProgress,
-    getHabitGoalProgressString,
   } from "src/utils";
   import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
@@ -12,13 +11,11 @@
     type StreakType,
   } from "src/scrollable_calendar/CalendarStreakDay.svelte";
   import HabitGoalProgressBar from "./HabitGoalProgressBar.svelte";
+  import type { HabitDayProgress } from "src/types";
 
   interface Props {
     habit: Habit;
-    habitProgress: Array<{
-      date: string;
-      value: string;
-    }>;
+    habitProgress: HabitDayProgress[];
     streakData: { [date: string]: StreakType };
     onEdit: (habit: Habit | null) => void;
   }

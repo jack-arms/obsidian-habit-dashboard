@@ -3,12 +3,10 @@
   import { Hourglass } from "lucide-svelte";
   import { Card, Checkbox } from "flowbite-svelte";
   import { daysBetween } from "../utils";
+  import type { HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;
-    habitProgress: Array<{
-      date: string;
-      value: string;
-    }>;
+    habitProgress: HabitDayProgress[];
     onClick: () => void;
     isSelected: boolean;
   }

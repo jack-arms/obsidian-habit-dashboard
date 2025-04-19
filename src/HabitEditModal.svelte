@@ -11,7 +11,7 @@
     Dropdown,
   } from "flowbite-svelte";
   import { goalIntervalTimeUnitToString, goalTimeUnitToString } from "./utils";
-  import type { GoalIntervalTimeUnit, GoalTimeUnit } from "./types";
+  import type { GoalIntervalTimeUnit, HabitTimeUnit } from "./types";
   export type HabitEditModalState =
     | {
         isOpen: true;
@@ -131,7 +131,7 @@
             />
             <Button>{goalTimeUnitToString(habit.goalInfo.goalTimeUnit)}</Button>
             <Dropdown bind:open={goalTimeUnitDropDownOpen}>
-              {#each [null, "m", "h"] as Array<GoalTimeUnit> as goalTimeUnit}
+              {#each [null, "m", "h"] as HabitTimeUnit[] as goalTimeUnit}
                 <DropdownItem
                   on:click={() => {
                     if (habit.goalInfo == null) {

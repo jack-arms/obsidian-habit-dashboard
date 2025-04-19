@@ -5,12 +5,10 @@
   import { daysBetween, getHabitGoalProgress } from "../utils";
   import HabitGoalBadge from "./HabitGoalBadge.svelte";
   import HabitTimeSinceBadge from "./HabitTimeSinceBadge.svelte";
+  import type { HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;
-    habitProgress: Array<{
-      date: string;
-      value: string;
-    }>;
+    habitProgress: HabitDayProgress[];
     onMoveUp: (() => void) | null;
     onMoveDown: (() => void) | null;
     isOpen: boolean;

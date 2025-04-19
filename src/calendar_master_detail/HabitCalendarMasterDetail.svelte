@@ -1,18 +1,16 @@
 <script lang="ts">
-  import { Button, Listgroup } from "flowbite-svelte";
+  import { Button } from "flowbite-svelte";
   import type { Habit } from "../main";
   import { dateKeyFormat, getHabitDatesToStreakType } from "../utils";
   import HabitListItem from "./HabitListItem.svelte";
   import ScrollableCalendar from "../scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay from "../scrollable_calendar/CalendarStreakDay.svelte";
+  import type { HabitDayProgress } from "src/types";
 
   interface Props {
     habits: Habit[];
     habitProgressByDate: {
-      [noteKey: string]: {
-        date: string;
-        value: string;
-      }[];
+      [noteKey: string]: HabitDayProgress[];
     };
     onEdit: (habit: Habit | null) => void;
   }
