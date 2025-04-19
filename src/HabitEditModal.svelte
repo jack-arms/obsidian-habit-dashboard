@@ -31,13 +31,14 @@
 
   let { onSave, onDelete, onClose, currentHabit }: Props = $props();
 
-  let habit = $state({
-    ...(currentHabit ?? {
+  console.log(currentHabit);
+  let habit = $state(
+    currentHabit == null ? {
       name: "",
       noteKey: "",
       createDate: new Date().toLocaleDateString(),
-    }),
-  });
+    } : JSON.parse(JSON.stringify(currentHabit))
+  );
 
   let goalTimeUnitDropDownOpen = $state(false);
   let goalIntervalUnitDropDownOpen = $state(false);
