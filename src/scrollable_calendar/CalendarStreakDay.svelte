@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { areDatesSameDay } from "src/utils";
+
   interface Props {
     date: Date;
     isLastWeek: boolean;
@@ -8,25 +10,37 @@
   export type StreakType = "start" | "middle" | "end" | "isolated";
 
   let { date, isLastWeek, isLastDayOfMonth, streakType }: Props = $props();
+  let today = new Date();
+  let isToday = $derived(areDatesSameDay(date, new Date()));
 </script>
 
 <div
   class="flex flex-1 items-center justify-center min-w-2 text-xs [&:not(:last-child)]:border-r border-b border-gray-200 relative
   {isLastWeek ? 'day-last-week' : ''}
-  {isLastDayOfMonth ? 'day-last-of-month' : ''}"
+  {isLastDayOfMonth ? 'day-last-of-month' : ''}
+  {isToday ? 'font-bold' : ''}"
 >
-  <div
-    class="bg-primary-600 opacity-20 w-auto h-1/2 absolute
+  {#if streakType != null}
+    <div
+      class="
+       w-auto h-1/2 absolute bg-primary-600 opacity-20
       {streakType === 'start'
-      ? 'rounded-tl-full rounded-bl-full left-1/3 right-0'
-      : ''}
+        ? 'rounded-tl-full rounded-bl-full left-1/3 right-0'
+        : ''}
       {streakType === 'middle' ? 'left-0 right-0' : ''}
       {streakType === 'end'
-      ? 'rounded-tr-full rounded-br-full left-0 right-1/3'
-      : ''}
-      {streakType === 'isolated' ? 'w-2/3 rounded-full left-1/3 right-1/3' : ''}
-      "
-  ></div>
+        ? 'rounded-tr-full rounded-br-full left-0 right-1/3'
+        : ''}
+      {streakType === 'isolated'
+        ? 'w-2/3 rounded-full left-1/3 right-1/3'
+        : ''}"
+    ></div>
+  {/if}
+  {#if isToday}
+    <div
+      class="w-12 h-12 rounded-full border-2 border-gray-600 border-dashed absolute"
+    ></div>
+  {/if}
   {date.getDate()}
 </div>
 
