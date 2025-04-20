@@ -12,6 +12,7 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 const prod = (process.argv[2] === "production");
+const isDev = prod ? "" : "1";
 
 const context = await esbuild.context({
 	banner: {
@@ -19,6 +20,10 @@ const context = await esbuild.context({
 	},
 	entryPoints: ["src/main.ts"],
 	bundle: true,
+	define: {
+		'process.env.NODE_ENV': isDev,
+		'window.IS_DEV': isDev
+	},
 	external: [
 		"obsidian",
 		"electron",

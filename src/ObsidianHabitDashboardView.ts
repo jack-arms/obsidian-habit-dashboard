@@ -34,6 +34,7 @@ export class ObsidianHabitDashboardView extends ItemView {
         app: this.app,
         settings: this.settings,
         saveSettings: this.saveSettings,
+        isDev: Boolean(process.env.NODE_ENV),
       },
     });
   }
