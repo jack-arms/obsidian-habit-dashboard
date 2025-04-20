@@ -31,7 +31,6 @@
 
   let { onSave, onDelete, onClose, currentHabit }: Props = $props();
 
-  console.log(currentHabit);
   let habit = $state(
     currentHabit == null ? {
       name: "",

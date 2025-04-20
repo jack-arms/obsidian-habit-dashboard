@@ -171,13 +171,17 @@ export function getHabitGoalProgress(
   habitProgress: HabitDayProgress[]
 ): number {
   const days = goalIntervalToDays(goalInfo.interval, goalInfo.intervalTimeUnit);
+  let date = new Date(habitProgress[habitProgress.length - 1].date);
+
+  const lookbackDays =
+    date.getTime() === new Date().getTime() ? days - 1 : days;
   let startDate = new Date();
-  startDate.setDate(startDate.getDate() - days);
+  startDate.setDate(startDate.getDate() - lookbackDays);
 
   let progress = 0;
   let i = habitProgress.length - 1;
-  let date = new Date(habitProgress[i].date);
-  while (date.getTime() > startDate.getTime()) {
+
+  while (date.getTime() >= startDate.getTime()) {
     let { progressMinutes } = habitProgress[i];
     switch (goalInfo.goalTimeUnit) {
       case null:
