@@ -1,10 +1,6 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-  import {
-    localDateKeyFormat,
-    getHabitDatesToStreakType,
-    getLocalDate,
-  } from "../utils";
+  import { localDateKeyFormat, getHabitDatesToStreakType } from "../utils";
   import HabitListItem from "./HabitListItem.svelte";
   import ScrollableCalendar from "../scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay from "../scrollable_calendar/CalendarStreakDay.svelte";
@@ -54,7 +50,7 @@
   <div class="flex flex-col px-4">
     <h2>Calendar</h2>
     <div class="self-center">
-      <ScrollableCalendar endDate={getLocalDate(new Date())} numWeeks={12}>
+      <ScrollableCalendar endDate={new Date()} numWeeks={12}>
         {#snippet dayComponent(
           date: Date,
           isLastWeek: boolean,

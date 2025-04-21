@@ -7,7 +7,7 @@
     Pencil,
   } from "lucide-svelte";
   import { AccordionItem, Button } from "flowbite-svelte";
-  import { localDateKeyFormat, daysBetween, getLocalDate } from "../utils";
+  import { localDateKeyFormat, daysBetween } from "../utils";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay, {
     type StreakType,
@@ -132,7 +132,7 @@
           </div>
         </div>
         <ScrollableCalendar
-          endDate={getLocalDate(new Date())}
+          endDate={new Date()}
           numWeeks={4}
           bind:calendarElement
         >

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getLocalDate } from "src/utils";
   import { getCalendarRow, getWeekRowsByMonth } from "./CalendarUtils";
   import type { Snippet } from "svelte";
 
@@ -20,7 +21,7 @@
 
   let weeksByMonth = $derived(
     (() => {
-      let day = new Date(endDate.valueOf());
+      let day = getLocalDate(new Date(endDate.valueOf()));
       let rows = [getCalendarRow(day)];
       for (let i = 1; i < numWeeks; i++) {
         day.setDate(day.getDate() - 7);
