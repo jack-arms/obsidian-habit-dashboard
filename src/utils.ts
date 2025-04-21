@@ -220,6 +220,10 @@ export function getHabitGoalProgress(
     date.getTime() === new Date().getTime() ? days - 1 : days;
   let startDate = new Date();
   startDate.setDate(startDate.getDate() - lookbackDays);
+  startDate.setHours(0);
+  startDate.setMinutes(0);
+  startDate.setSeconds(0);
+  startDate.setMilliseconds(0);
 
   let progress = 0;
   let i = habitProgress.length - 1;
@@ -251,7 +255,7 @@ export function getHabitGoalProgress(
       // TODO: handle other goal units
     }
     i--;
-    date = new Date(habitProgress[i].date);
+    date = getLocalDate(new Date(habitProgress[i].date));
   }
   return progress;
 }
