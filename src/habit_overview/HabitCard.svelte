@@ -1,11 +1,10 @@
 <script lang="ts">
-  import type { Habit } from "../main";
   import { ArrowDown, ArrowUp, ChevronRight } from "lucide-svelte";
   import { Button, Card } from "flowbite-svelte";
   import { daysBetween, getHabitGoalProgress } from "../utils";
   import HabitGoalBadge from "./HabitGoalBadge.svelte";
   import HabitTimeSinceBadge from "./HabitTimeSinceBadge.svelte";
-  import type { HabitDayProgress } from "src/types";
+  import type { Habit, HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;
     habitProgress: HabitDayProgress[];

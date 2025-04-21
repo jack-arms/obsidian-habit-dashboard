@@ -1,9 +1,10 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-  import type { Habit } from "../main";
   import {
     dateKeyFormat,
+    formatMinutes,
     getHabitGoalProgress,
+    getHabitProgressSince,
   } from "src/utils";
   import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
@@ -11,7 +12,7 @@
     type StreakType,
   } from "src/scrollable_calendar/CalendarStreakDay.svelte";
   import HabitGoalProgressBar from "./HabitGoalProgressBar.svelte";
-  import type { HabitDayProgress } from "src/types";
+  import type { Habit, HabitDayProgress } from "src/types";
 
   interface Props {
     habit: Habit;
@@ -21,12 +22,11 @@
   }
 
   let { habit, habitProgress, streakData, onEdit }: Props = $props();
-
-  const fourWeeksAgo = (() => {
-    let date = new Date();
-    date.setDate(date.getDate() - (7 * 4 - 1));
-    return date;
-  })();
+  let lastMonth = new Date();
+  lastMonth.setDate(lastMonth.getDate() - 30);
+  let habitProgressLastMonth = $derived(
+    getHabitProgressSince(habitProgress, lastMonth),
+  );
 
   let calendarElement = $state<HTMLElement | undefined>(undefined);
   $effect(() => {
@@ -58,7 +58,7 @@
         <Flag />
         <h3 class="m-0!">Goal</h3>
       </div>
-      <div class="flex w-100 h-15">
+      <div class="flex w-60 h-15">
         <HabitGoalProgressBar {...goalInfo} {goalProgress} />
       </div>
     </div>
@@ -68,10 +68,18 @@
       <Notebook />
       <h3 class="m-0!">Progress</h3>
     </div>
-    <div>
-      <p>Last done on X</p>
-      <p>Twice in last 30 days</p>
-    </div>
+    <ul>
+      <li>
+        Last done on {new Date(
+          habitProgress[habitProgress.length - 1].date,
+        ).toLocaleDateString()}
+      </li>
+      {#if habitProgressLastMonth.totalTimes > 0}
+        <li>{habitProgressLastMonth.totalTimes} times in last 30 days</li>
+      {:else}
+        <li>Not done in the last 30 days.</li>
+      {/if}
+    </ul>
   </div>
   <div class="flex flex-col space-y-3">
     <div class="flex flex-row items-center">

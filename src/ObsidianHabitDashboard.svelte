@@ -1,6 +1,7 @@
 <script lang="ts">
   import { App } from "obsidian";
-  import type { Habit, ObsidianHabitDashboardPluginSettings } from "./main";
+  import { type Habit } from "./types";
+  import type { ObsidianHabitDashboardPluginSettings } from "./main";
   import { TabItem, Tabs } from "flowbite-svelte";
   import HabitEditModal from "./HabitEditModal.svelte";
   import { getHabitProgressByDate } from "./utils";

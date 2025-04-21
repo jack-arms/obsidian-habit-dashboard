@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { Habit } from "./main";
   import { Flag } from "lucide-svelte";
   import {
     Button,
@@ -10,8 +9,8 @@
     DropdownItem,
     Dropdown,
   } from "flowbite-svelte";
-  import { goalIntervalTimeUnitToString, goalTimeUnitToString } from "./utils";
-  import type { GoalIntervalTimeUnit, HabitTimeUnit } from "./types";
+  import { goalIntervalTimeUnitToString, goalUnitToString } from "./utils";
+  import type { Habit, GoalIntervalTimeUnit, HabitProgressUnit } from "./types";
   export type HabitEditModalState =
     | {
         isOpen: true;
@@ -32,11 +31,13 @@
   let { onSave, onDelete, onClose, currentHabit }: Props = $props();
 
   let habit = $state(
-    currentHabit == null ? {
-      name: "",
-      noteKey: "",
-      createDate: new Date().toLocaleDateString(),
-    } : JSON.parse(JSON.stringify(currentHabit))
+    currentHabit == null
+      ? {
+          name: "",
+          noteKey: "",
+          createDate: new Date().toLocaleDateString(),
+        }
+      : JSON.parse(JSON.stringify(currentHabit)),
   );
 
   let goalTimeUnitDropDownOpen = $state(false);
@@ -129,9 +130,9 @@
               bind:value={habit.goalInfo.goal}
               class="{goalTimeInputError ? 'border-red-500!' : ''} w-10"
             />
-            <Button>{goalTimeUnitToString(habit.goalInfo.goalTimeUnit)}</Button>
+            <Button>{goalUnitToString(habit.goalInfo.goalTimeUnit)}</Button>
             <Dropdown bind:open={goalTimeUnitDropDownOpen}>
-              {#each [null, "m", "h"] as HabitTimeUnit[] as goalTimeUnit}
+              {#each [null, "m", "h"] as HabitProgressUnit[] as goalTimeUnit}
                 <DropdownItem
                   on:click={() => {
                     if (habit.goalInfo == null) {
@@ -139,7 +140,7 @@
                     }
                     habit.goalInfo.goalTimeUnit = goalTimeUnit;
                     goalTimeUnitDropDownOpen = false;
-                  }}>{goalTimeUnitToString(goalTimeUnit)}</DropdownItem
+                  }}>{goalUnitToString(goalTimeUnit)}</DropdownItem
                 >
               {/each}
             </Dropdown>

@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { GoalIntervalTimeUnit, HabitTimeUnit } from "src/types";
+  import type { GoalIntervalTimeUnit, HabitProgressUnit } from "src/types";
   import { goalIntervalTimeUnitToString } from "src/utils";
 
   interface Props {
     goal: number;
-    goalTimeUnit: HabitTimeUnit;
+    goalUnit: HabitProgressUnit;
     interval: number;
     intervalTimeUnit: GoalIntervalTimeUnit;
     goalProgress: number;
   }
 
-  let { goal, goalTimeUnit, interval, intervalTimeUnit, goalProgress }: Props =
+  let { goal, goalUnit, interval, intervalTimeUnit, goalProgress }: Props =
     $props();
   let progressPercent = $derived((goalProgress * 100.0) / goal);
 
@@ -33,7 +33,7 @@
 
 <div class="flex flex-col flex-grow items-center">
   <span class="text-sm font-semibold">
-    {goalProgress} / {goal}{goalTimeUnit ?? "X"}
+    {goalProgress} / {goal}{goalUnit ?? "X"}
   </span>
   <div class="border rounded-sm overflow-hidden w-full">
     <div

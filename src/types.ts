@@ -1,7 +1,21 @@
-export type HabitTimeUnit = null | "x" | "m" | "h";
+export type HabitProgressUnit = null | "x" | "m" | "h" | string;
 export type GoalIntervalTimeUnit = "d" | "w" | "m";
 
 export type HabitDayProgress = {
   date: string;
-  progressMinutes: number | null;
+  value: number | null;
+  unit: HabitProgressUnit | null;
 };
+
+export interface Habit {
+  name: string;
+  noteKey: string;
+  createDate: string;
+  goalInfo?: {
+    goal: number;
+    goalUnit: HabitProgressUnit;
+    interval: number;
+    intervalTimeUnit: GoalIntervalTimeUnit;
+    goalCreateDate: string;
+  };
+}

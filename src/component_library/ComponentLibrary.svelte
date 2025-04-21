@@ -8,7 +8,7 @@
   {#each [...new Array(60 / 5 + 1)] as _, i}
     <HabitGoalProgressBar
       goal={60}
-      goalTimeUnit="m"
+      goalUnit="m"
       interval={7}
       intervalTimeUnit="d"
       goalProgress={i * 5}

@@ -1,17 +1,17 @@
 <script lang="ts">
   import { Flag } from "lucide-svelte";
-  import type { GoalIntervalTimeUnit, HabitTimeUnit } from "src/types";
+  import type { GoalIntervalTimeUnit, HabitProgressUnit } from "src/types";
   import HabitGoalProgressBar from "./HabitGoalProgressBar.svelte";
 
   interface Props {
     goal: number;
-    goalTimeUnit: HabitTimeUnit;
+    goalUnit: HabitProgressUnit;
     interval: number;
     intervalTimeUnit: GoalIntervalTimeUnit;
     goalProgress: number;
   }
 
-  let { goal, goalTimeUnit, interval, intervalTimeUnit, goalProgress }: Props =
+  let { goal, goalUnit, interval, intervalTimeUnit, goalProgress }: Props =
     $props();
 </script>
 
@@ -19,7 +19,7 @@
   <Flag class="h-4 w-auto mr-2" />
   <HabitGoalProgressBar
     {goal}
-    {goalTimeUnit}
+    {goalUnit}
     {interval}
     {intervalTimeUnit}
     {goalProgress}

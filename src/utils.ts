@@ -1,17 +1,17 @@
-import type { Habit } from "./main";
 import type { StreakType } from "./scrollable_calendar/CalendarStreakDay.svelte";
 import type {
+  Habit,
   GoalIntervalTimeUnit,
   HabitDayProgress,
-  HabitTimeUnit,
+  HabitProgressUnit,
 } from "./types";
 import type { App } from "obsidian";
 
-export function goalTimeUnitToString(
-  timeUnit: HabitTimeUnit,
+export function goalUnitToString(
+  unit: HabitProgressUnit,
   time: number | null = null
 ) {
-  switch (timeUnit) {
+  switch (unit) {
     case null:
       return time == null ? "time(s)" : time === 1 ? "time" : "times";
     case "m":
@@ -19,6 +19,7 @@ export function goalTimeUnitToString(
     case "h":
       return time == null ? "hour(s)" : time === 1 ? "hour" : "hours";
   }
+  return "";
 }
 
 export function goalIntervalTimeUnitToString(
@@ -61,11 +62,15 @@ export function getHabitProgressByDate(
           frontMatter[habitNoteKey] != null &&
           frontMatter[habitNoteKey] !== ""
         ) {
+          const progress = getFrontmatterDataToProgress(
+            String(frontMatter[habitNoteKey])
+          );
           habitsWithData[habitNoteKey] = {
             date: dateKeyFormat(new Date(f.basename)),
-            progressMinutes: getFrontmatterDataToMinuteProgress(
-              String(frontMatter[habitNoteKey])
-            ),
+            ...(progress ?? {
+              value: null,
+              unit: null,
+            }),
           };
         }
       });
@@ -92,10 +97,11 @@ export function getHabitProgressByDate(
   return habitProgressByDate;
 }
 
-export function getFrontmatterDataToMinuteProgress(
-  data: string
-): number | null {
-  const match = data.match(/([\d\.]+)(h)?/);
+export function getFrontmatterDataToProgress(data: string): {
+  value: number;
+  unit: HabitProgressUnit | null;
+} | null {
+  const match = data.match(/([\d\.]+)(m|h)?/);
   if (match == null || match[1] == null) {
     return null;
   }
@@ -103,7 +109,10 @@ export function getFrontmatterDataToMinuteProgress(
   if (value === Number.NaN) {
     return null;
   }
-  return match[2] === "h" ? value * 60 : value;
+  return {
+    value,
+    unit: match[2] as HabitProgressUnit | null,
+  };
 }
 
 export function daysBetween(date1: Date, date2: Date) {
@@ -166,6 +175,34 @@ export function dateKeyFormat(date: Date) {
   return date.toISOString().split("T")[0];
 }
 
+export function getHabitProgressSince(
+  habitProgress: HabitDayProgress[],
+  since: Date,
+  interpretUntypedNumberAsMinutes: boolean = false
+): {
+  totalTimes: number;
+} {
+  let totalTimes = 0;
+
+  let i = habitProgress.length - 1;
+  let date = new Date(habitProgress[habitProgress.length - 1].date);
+  while (date.getTime() >= since.getTime()) {
+    totalTimes++;
+    const progressUnit = habitProgress[i].unit;
+    if (
+      (progressUnit != null && ["m", "h"].includes(progressUnit)) ||
+      (progressUnit == null && interpretUntypedNumberAsMinutes)
+    ) {
+      // TODO: handle progress for different types of units
+    }
+    i--;
+    date = new Date(habitProgress[i].date);
+  }
+  return {
+    totalTimes,
+  };
+}
+
 export function getHabitGoalProgress(
   goalInfo: NonNullable<Habit["goalInfo"]>,
   habitProgress: HabitDayProgress[]
@@ -182,22 +219,30 @@ export function getHabitGoalProgress(
   let i = habitProgress.length - 1;
 
   while (date.getTime() >= startDate.getTime()) {
-    let { progressMinutes } = habitProgress[i];
-    switch (goalInfo.goalTimeUnit) {
+    let { value, unit } = habitProgress[i];
+    switch (goalInfo.goalUnit) {
       case null:
       case "x":
-        progress++;
+        if (value != null) {
+          progress++;
+        }
         break;
       case "m":
-        if (progressMinutes != null) {
-          progress += progressMinutes;
+        if (unit === "m" && value != null) {
+          progress += value;
+        } else if (unit === "h" && value != null) {
+          progress += value * 60;
         }
         break;
       case "h":
-        if (progressMinutes != null) {
-          progress += progressMinutes / 60.0;
+        if (unit === "m" && value != null) {
+          progress += value / 60.0;
+        } else if (unit === "h" && value != null) {
+          progress += value;
         }
         break;
+      default:
+      // TODO: handle other goal units
     }
     i--;
     date = new Date(habitProgress[i].date);
@@ -210,8 +255,8 @@ export function getHabitGoalProgressString(
   habitGoalProgress: number
 ) {
   return (
-    `${habitGoalProgress} / ${goalInfo.goal} ${goalTimeUnitToString(
-      goalInfo.goalTimeUnit,
+    `${habitGoalProgress} / ${goalInfo.goal} ${goalUnitToString(
+      goalInfo.goalUnit,
       habitGoalProgress
     )}` +
     ", " +
@@ -238,4 +283,13 @@ export function goalIntervalToDays(
     case "m":
       return interval * 30;
   }
+}
+
+export function formatMinutes(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const modMinutes = minutes % 60;
+  const hourString = hours > 0 ? `${hours} hour${hours > 1 ? "s" : ""}` : "";
+  const minuteString =
+    modMinutes > 0 ? `${modMinutes} minute${modMinutes > 1 ? "s" : ""}` : "";
+  return [hourString, minuteString].join(", ");
 }
