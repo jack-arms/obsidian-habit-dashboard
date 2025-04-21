@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
   import {
-    dateKeyFormat,
-    formatMinutes,
+    localDateKeyFormat,
     getHabitGoalProgress,
     getHabitProgressSince,
+    getLocalDate,
   } from "src/utils";
   import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
@@ -88,13 +88,17 @@
         <h3 class="m-0!">Calendar</h3>
       </div>
     </div>
-    <ScrollableCalendar endDate={new Date()} numWeeks={12} bind:calendarElement>
+    <ScrollableCalendar
+      endDate={getLocalDate(new Date())}
+      numWeeks={12}
+      bind:calendarElement
+    >
       {#snippet dayComponent(
         date: Date,
         isLastWeek: boolean,
         isLastDayOfMonth: boolean,
       )}
-        {@const streakType = streakData[dateKeyFormat(date)]}
+        {@const streakType = streakData[localDateKeyFormat(date)]}
         <CalendarStreakDay
           {date}
           {isLastWeek}

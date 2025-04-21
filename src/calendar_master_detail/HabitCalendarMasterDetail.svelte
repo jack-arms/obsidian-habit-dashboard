@@ -1,11 +1,14 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-  import type { Habit } from "../main";
-  import { dateKeyFormat, getHabitDatesToStreakType } from "../utils";
+  import {
+    localDateKeyFormat,
+    getHabitDatesToStreakType,
+    getLocalDate,
+  } from "../utils";
   import HabitListItem from "./HabitListItem.svelte";
   import ScrollableCalendar from "../scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay from "../scrollable_calendar/CalendarStreakDay.svelte";
-  import type { HabitDayProgress } from "src/types";
+  import type { Habit, HabitDayProgress } from "src/types";
 
   interface Props {
     habits: Habit[];
@@ -51,7 +54,7 @@
   <div class="flex flex-col px-4">
     <h2>Calendar</h2>
     <div class="self-center">
-      <ScrollableCalendar endDate={new Date()} numWeeks={12}>
+      <ScrollableCalendar endDate={getLocalDate(new Date())} numWeeks={12}>
         {#snippet dayComponent(
           date: Date,
           isLastWeek: boolean,
@@ -61,7 +64,7 @@
             activeHabit == null
               ? null
               : habitDatesToStreakType[activeHabit.noteKey][
-                  dateKeyFormat(date)
+                  localDateKeyFormat(date)
                 ]}
           <CalendarStreakDay
             {date}

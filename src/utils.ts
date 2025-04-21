@@ -66,7 +66,7 @@ export function getHabitProgressByDate(
             String(frontMatter[habitNoteKey])
           );
           habitsWithData[habitNoteKey] = {
-            date: dateKeyFormat(new Date(f.basename)),
+            date: f.basename,
             ...(progress ?? {
               value: null,
               unit: null,
@@ -171,8 +171,14 @@ export function getHabitDatesToStreakType(habitProgress: {
   return datesToStreakTypePerHabit;
 }
 
-export function dateKeyFormat(date: Date) {
-  return date.toISOString().split("T")[0];
+export function localDateKeyFormat(date: Date) {
+  const localDate = new Date(date.valueOf());
+  localDate.setMinutes(localDate.getMinutes() + localDate.getTimezoneOffset());
+  return [
+    localDate.getFullYear(),
+    String(localDate.getMonth() + 1).padStart(2, "0"),
+    String(localDate.getDate()).padStart(2, "0"),
+  ].join("-");
 }
 
 export function getHabitProgressSince(
@@ -292,4 +298,9 @@ export function formatMinutes(minutes: number) {
   const minuteString =
     modMinutes > 0 ? `${modMinutes} minute${modMinutes > 1 ? "s" : ""}` : "";
   return [hourString, minuteString].join(", ");
+}
+
+export function getLocalDate(date: Date) {
+  date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+  return date;
 }

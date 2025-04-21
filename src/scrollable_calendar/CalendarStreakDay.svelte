@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { areDatesSameDay } from "src/utils";
+  import { areDatesSameDay, getLocalDate } from "src/utils";
 
   interface Props {
     date: Date;
@@ -10,8 +10,8 @@
   export type StreakType = "start" | "middle" | "end" | "isolated";
 
   let { date, isLastWeek, isLastDayOfMonth, streakType }: Props = $props();
-  let today = new Date();
-  let isToday = $derived(areDatesSameDay(date, new Date()));
+  let today = getLocalDate(new Date());
+  let isToday = $derived(areDatesSameDay(date, today));
 </script>
 
 <div

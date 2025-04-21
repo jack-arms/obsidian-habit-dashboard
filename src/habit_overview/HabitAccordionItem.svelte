@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { Habit } from "../main";
   import {
     ArrowDown,
     ArrowUp,
@@ -8,13 +7,13 @@
     Pencil,
   } from "lucide-svelte";
   import { AccordionItem, Button } from "flowbite-svelte";
-  import { dateKeyFormat, daysBetween } from "../utils";
+  import { localDateKeyFormat, daysBetween, getLocalDate } from "../utils";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay, {
     type StreakType,
   } from "src/scrollable_calendar/CalendarStreakDay.svelte";
   import HabitHeader from "./HabitTimeSinceBadge.svelte";
-  import type { HabitDayProgress } from "src/types";
+  import type { Habit, HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;
     habitProgress: HabitDayProgress[];
@@ -133,7 +132,7 @@
           </div>
         </div>
         <ScrollableCalendar
-          endDate={new Date()}
+          endDate={getLocalDate(new Date())}
           numWeeks={4}
           bind:calendarElement
         >
@@ -142,7 +141,7 @@
             isLastWeek: boolean,
             isLastDayOfMonth: boolean,
           )}
-            {@const streakType = streakData[dateKeyFormat(date)]}
+            {@const streakType = streakData[localDateKeyFormat(date)]}
             <CalendarStreakDay
               {date}
               {isLastWeek}
