@@ -109,3 +109,14 @@
     </ScrollableCalendar>
   </div>
 </div>
+
+<style>
+  li::before {
+    content: "\2014" !important;
+    padding-right: calc(var(--spacing) * 2);
+  }
+
+  li {
+    padding-left: calc(var(--spacing) * 2);
+  }
+</style>
