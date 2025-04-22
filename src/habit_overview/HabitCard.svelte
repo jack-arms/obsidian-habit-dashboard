@@ -7,7 +7,7 @@
   import type { Habit, HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;
-    habitProgress: HabitDayProgress[];
+    habitProgress: { [date: string]: HabitDayProgress };
     onMoveUp: (() => void) | null;
     onMoveDown: (() => void) | null;
     isOpen: boolean;
@@ -19,7 +19,12 @@
   let daysSince = $derived(
     daysBetween(
       new Date(),
-      new Date(habitProgress[habitProgress.length - 1].date),
+      new Date(
+        Object.values(habitProgress).reduce(
+          (a, b) => (a.date > b.date ? a : b),
+          Object.values(habitProgress)[0],
+        ).date,
+      ),
     ),
   );
 </script>

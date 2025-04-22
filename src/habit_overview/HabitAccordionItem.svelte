@@ -7,17 +7,22 @@
     Pencil,
   } from "lucide-svelte";
   import { AccordionItem, Button } from "flowbite-svelte";
-  import { localDateKeyFormat, daysBetween } from "../utils";
+  import {
+    localDateKeyFormat,
+    daysBetween,
+    latestHabitProgress,
+  } from "../utils";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay, {
     type StreakType,
-  } from "src/scrollable_calendar/CalendarStreakDay.svelte";
+  } from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
   import HabitHeader from "./HabitTimeSinceBadge.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;
-    habitProgress: HabitDayProgress[];
-    streakData: { [date: string]: StreakType };
+    habitProgress: {
+      [date: string]: HabitDayProgress & { streakType: StreakType };
+    };
     onEdit: () => void;
     onMoveUp: () => void;
     onMoveDown: () => void;
@@ -28,7 +33,6 @@
   let {
     habit,
     habitProgress,
-    streakData,
     onEdit,
     onMoveDown,
     onMoveUp,
@@ -38,7 +42,7 @@
   let daysSince = $derived(
     daysBetween(
       new Date(),
-      new Date(habitProgress[habitProgress.length - 1].date),
+      new Date(latestHabitProgress(Object.values(habitProgress)).date),
     ),
   );
   let calendarElement = $state<HTMLElement | undefined>(undefined);
@@ -57,8 +61,8 @@
     return date;
   })();
   const hasDataInLast4Weeks = $derived(
-    habitProgress.some(
-      (h) => new Date(h.date).getTime() > fourWeeksAgo.getTime(),
+    Object.keys(habitProgress).some(
+      (h) => new Date(h).getTime() > fourWeeksAgo.getTime(),
     ),
   );
 </script>
@@ -141,12 +145,12 @@
             isLastWeek: boolean,
             isLastDayOfMonth: boolean,
           )}
-            {@const streakType = streakData[localDateKeyFormat(date)]}
+            {@const dateKey = localDateKeyFormat(date)}
             <CalendarStreakDay
               {date}
               {isLastWeek}
               {isLastDayOfMonth}
-              {streakType}
+              habitProgress={habitProgress[dateKey]}
             />
           {/snippet}
         </ScrollableCalendar>

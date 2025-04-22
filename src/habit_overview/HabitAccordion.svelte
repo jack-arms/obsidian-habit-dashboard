@@ -1,22 +1,23 @@
 <script lang="ts">
   import { Accordion, Button } from "flowbite-svelte";
-  import type { Habit } from "../main";
-  import { getHabitDatesToStreakType } from "src/utils";
+  import { getHabitProgressWithStreakType } from "src/utils";
   import HabitAccordionItem from "./HabitAccordionItem.svelte";
-  import type { HabitDayProgress } from "src/types";
+  import type { Habit, HabitDayProgress } from "src/types";
 
   interface Props {
     habits: Habit[];
     habitProgressByDate: {
-      [noteKey: string]: HabitDayProgress[];
+      [noteKey: string]: {
+        [date: string]: HabitDayProgress;
+      };
     };
     onEdit: (habit: Habit | null) => void;
     onMoveHabit: (habit: Habit, change: 1 | -1) => void;
   }
 
   let { habits, habitProgressByDate, onEdit, onMoveHabit }: Props = $props();
-  let habitDatesToStreakType = $derived(
-    getHabitDatesToStreakType(habitProgressByDate),
+  let habitProgressWithStreakType = $derived(
+    getHabitProgressWithStreakType(habitProgressByDate),
   );
   let openHabit = $state<string | null>(null);
 </script>
@@ -38,7 +39,7 @@
       {#key habit.noteKey}
         <HabitAccordionItem
           {habit}
-          habitProgress={habitProgressByDate[habit.noteKey]}
+          habitProgress={habitProgressWithStreakType[habit.noteKey]}
           onEdit={() => onEdit(habit)}
           onMoveDown={() => onMoveHabit(habit, 1)}
           onMoveUp={() => onMoveHabit(habit, -1)}
@@ -50,7 +51,6 @@
               openHabit = null;
             }
           }}
-          streakData={habitDatesToStreakType[habit.noteKey]}
         />
       {/key}
     {/each}

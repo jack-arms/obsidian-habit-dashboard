@@ -5,23 +5,27 @@
     getHabitGoalProgress,
     getHabitProgressSince,
     getLocalDate,
+    latestHabitProgress,
   } from "src/utils";
   import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
-  import CalendarStreakDay, {
+  import CalendarDayWithNoteData, {
     type StreakType,
-  } from "src/scrollable_calendar/CalendarStreakDay.svelte";
+  } from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
   import HabitGoalProgressBar from "./HabitGoalProgressBar.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
 
   interface Props {
     habit: Habit;
-    habitProgress: HabitDayProgress[];
-    streakData: { [date: string]: StreakType };
+    habitProgress: {
+      [date: string]: HabitDayProgress & {
+        streakType: StreakType;
+      };
+    };
     onEdit: (habit: Habit | null) => void;
   }
 
-  let { habit, habitProgress, streakData, onEdit }: Props = $props();
+  let { habit, habitProgress, onEdit }: Props = $props();
   let lastMonth = new Date();
   lastMonth.setDate(lastMonth.getDate() - 30);
   let habitProgressLastMonth = $derived(
@@ -71,7 +75,7 @@
     <ul>
       <li>
         Last done on {new Date(
-          habitProgress[habitProgress.length - 1].date,
+          latestHabitProgress(Object.values(habitProgress)).date,
         ).toLocaleDateString()}
       </li>
       {#if habitProgressLastMonth.totalTimes > 0}
@@ -98,12 +102,12 @@
         isLastWeek: boolean,
         isLastDayOfMonth: boolean,
       )}
-        {@const streakType = streakData[localDateKeyFormat(date)]}
-        <CalendarStreakDay
+        {@const dateKey = localDateKeyFormat(date)}
+        <CalendarDayWithNoteData
           {date}
           {isLastWeek}
           {isLastDayOfMonth}
-          {streakType}
+          habitProgress={habitProgress[dateKey]}
         />
       {/snippet}
     </ScrollableCalendar>

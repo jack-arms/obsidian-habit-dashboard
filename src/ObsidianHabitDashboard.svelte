@@ -9,6 +9,7 @@
   import HabitOverview from "./habit_overview/HabitOverview.svelte";
   import HabitAccordion from "./habit_overview/HabitAccordion.svelte";
   import ComponentLibrary from "./component_library/ComponentLibrary.svelte";
+  import { setContext } from "svelte";
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -17,6 +18,8 @@
   }
 
   let { app, settings, saveSettings, isDev }: Props = $props();
+
+  setContext<App>("obsidian-app", app);
 
   let habits = $state<Habit[]>(settings.habits);
 

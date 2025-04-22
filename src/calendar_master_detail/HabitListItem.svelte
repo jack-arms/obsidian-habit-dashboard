@@ -1,12 +1,11 @@
 <script lang="ts">
-  import type { Habit } from "../main";
   import { Hourglass } from "lucide-svelte";
   import { Card, Checkbox } from "flowbite-svelte";
-  import { daysBetween } from "../utils";
-  import type { HabitDayProgress } from "src/types";
+  import { daysBetween, latestHabitProgress } from "../utils";
+  import type { Habit, HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;
-    habitProgress: HabitDayProgress[];
+    habitProgress: { [date: string]: HabitDayProgress };
     onClick: () => void;
     isSelected: boolean;
   }
@@ -15,7 +14,7 @@
   let daysSince = $derived(
     daysBetween(
       new Date(),
-      new Date(habitProgress[habitProgress.length - 1].date),
+      new Date(latestHabitProgress(Object.values(habitProgress)).date),
     ),
   );
 </script>

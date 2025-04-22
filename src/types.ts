@@ -3,6 +3,7 @@ export type GoalIntervalTimeUnit = "d" | "w" | "m";
 
 export type HabitDayProgress = {
   date: string;
+  noteHref: string;
   value: number | null;
   unit: HabitProgressUnit | null;
 };

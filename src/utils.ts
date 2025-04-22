@@ -1,4 +1,4 @@
-import type { StreakType } from "./scrollable_calendar/CalendarStreakDay.svelte";
+import type { StreakType } from "./scrollable_calendar/CalendarDayWithNoteData.svelte";
 import type {
   Habit,
   GoalIntervalTimeUnit,
@@ -44,19 +44,26 @@ export function getHabitProgressByDate(
   app: App,
   habitNoteKeys: Array<string>
 ): {
-  [noteKey: string]: HabitDayProgress[];
+  [noteKey: string]: {
+    [noteHref: string]: HabitDayProgress;
+  };
 } {
-  const frontmatterPerDate = app.vault
+  const data: {
+    [noteKey: string]: {
+      [noteHref: string]: HabitDayProgress;
+    };
+  } = {};
+  habitNoteKeys.forEach((habitNoteKey) => {
+    data[habitNoteKey] = {};
+  });
+  app.vault
     .getMarkdownFiles()
     .filter((f) => !Number.isNaN(new Date(f.basename).getTime()))
-    .map((f) => {
+    .forEach((f) => {
       const frontMatter = app.metadataCache.getFileCache(f)?.frontmatter;
       if (frontMatter == null) {
-        return {};
+        return;
       }
-      const habitsWithData: {
-        [noteKey: string]: HabitDayProgress;
-      } = {};
       habitNoteKeys.forEach((habitNoteKey) => {
         if (
           frontMatter[habitNoteKey] != null &&
@@ -65,8 +72,9 @@ export function getHabitProgressByDate(
           const progress = getFrontmatterDataToProgress(
             String(frontMatter[habitNoteKey])
           );
-          habitsWithData[habitNoteKey] = {
+          data[habitNoteKey][f.basename] = {
             date: f.basename,
+            noteHref: f.name,
             ...(progress ?? {
               value: null,
               unit: null,
@@ -74,27 +82,8 @@ export function getHabitProgressByDate(
           };
         }
       });
-      return habitsWithData;
-    })
-    .filter((data) => Object.keys(data).length > 0);
-
-  const habitProgressByDate = frontmatterPerDate.reduce((acc, obj) => {
-    Object.keys(obj).forEach((noteKey) => {
-      if (noteKey in acc) {
-        acc[noteKey].push(obj[noteKey]);
-      } else {
-        acc[noteKey] = [obj[noteKey]];
-      }
     });
-    return acc;
-  }, {} as { [noteKey: string]: HabitDayProgress[] });
-
-  Object.keys(habitProgressByDate).forEach((habitNoteKey) => {
-    habitProgressByDate[habitNoteKey].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
-  });
-  return habitProgressByDate;
+  return data;
 }
 
 export function getFrontmatterDataToProgress(data: string): {
@@ -130,45 +119,66 @@ export function areDatesSameDay(d1: Date, d2: Date) {
   );
 }
 
-export function getHabitDatesToStreakType(habitProgress: {
-  [noteKey: string]: HabitDayProgress[];
-}) {
-  const datesToStreakTypePerHabit: {
+export function getHabitProgressWithStreakType(habitProgress: {
+  [noteKey: string]: {
+    [date: string]: HabitDayProgress;
+  };
+}): {
+  [noteKey: string]: {
+    [date: string]: HabitDayProgress & {
+      streakType: StreakType;
+    };
+  };
+} {
+  const data: {
     [noteKey: string]: {
-      [date: string]: StreakType;
+      [date: string]: HabitDayProgress & { streakType: StreakType };
     };
   } = {};
-  Object.keys(habitProgress).forEach((noteKey) => {
-    const datesToStreakType: { [date: string]: StreakType } = {};
-    for (let i = 0; i < habitProgress[noteKey].length; i++) {
-      const date = new Date(habitProgress[noteKey][i].date);
-      const previousDay = new Date(date.valueOf());
-      previousDay.setDate(previousDay.getDate() - 1);
-      const nextDay = new Date(date.valueOf());
-      nextDay.setDate(nextDay.getDate() + 1);
 
-      const hasPreviousDay =
-        i != 0 &&
-        areDatesSameDay(
-          previousDay,
-          new Date(habitProgress[noteKey][i - 1].date)
-        );
-      const hasNextDay =
-        i != habitProgress[noteKey].length - 1 &&
-        areDatesSameDay(nextDay, new Date(habitProgress[noteKey][i + 1].date));
-      if (!hasPreviousDay && !hasNextDay) {
-        datesToStreakType[habitProgress[noteKey][i].date] = "isolated";
-      } else if (!hasPreviousDay && hasNextDay) {
-        datesToStreakType[habitProgress[noteKey][i].date] = "start";
-      } else if (hasPreviousDay && !hasNextDay) {
-        datesToStreakType[habitProgress[noteKey][i].date] = "end";
-      } else {
-        datesToStreakType[habitProgress[noteKey][i].date] = "middle";
-      }
-    }
-    datesToStreakTypePerHabit[noteKey] = datesToStreakType;
+  Object.keys(habitProgress).forEach((noteKey) => {
+    const streakData = getStreakData(habitProgress[noteKey]);
+    data[noteKey] = {};
+    Object.keys(habitProgress[noteKey]).forEach((date) => {
+      data[noteKey][date] = {
+        ...habitProgress[noteKey][date],
+        streakType: streakData[date],
+      };
+    });
   });
-  return datesToStreakTypePerHabit;
+
+  return data;
+}
+
+export function getStreakData(progress: { [date: string]: HabitDayProgress }): {
+  [date: string]: StreakType;
+} {
+  const streakData: { [date: string]: StreakType } = {};
+  Object.values(progress).forEach(({ date }) => {
+    const previousDate = (() => {
+      const d = new Date(date);
+      d.setDate(d.getDate() - 1);
+      return localDateKeyFormat(d);
+    })();
+    const nextDate = (() => {
+      const d = new Date(date);
+      d.setDate(d.getDate() + 1);
+      return localDateKeyFormat(d);
+    })();
+
+    const hasPreviousDay = progress[previousDate] != null;
+    const hasNextDay = progress[nextDate] != null;
+    if (!hasPreviousDay && !hasNextDay) {
+      streakData[date] = "isolated";
+    } else if (!hasPreviousDay && hasNextDay) {
+      streakData[date] = "start";
+    } else if (hasPreviousDay && !hasNextDay) {
+      streakData[date] = "end";
+    } else {
+      streakData[date] = "middle";
+    }
+  });
+  return streakData;
 }
 
 export function localDateKeyFormat(date: Date) {
@@ -182,28 +192,29 @@ export function localDateKeyFormat(date: Date) {
 }
 
 export function getHabitProgressSince(
-  habitProgress: HabitDayProgress[],
+  habitProgress: {
+    [date: string]: HabitDayProgress & {
+      streakType: StreakType;
+    };
+  },
   since: Date,
   interpretUntypedNumberAsMinutes: boolean = false
 ): {
   totalTimes: number;
 } {
   let totalTimes = 0;
-
-  let i = habitProgress.length - 1;
-  let date = new Date(habitProgress[habitProgress.length - 1].date);
-  while (date.getTime() >= since.getTime()) {
+  Object.values(habitProgress).forEach(({ date, unit, value }) => {
+    if (new Date(date).getTime() < since.getTime()) {
+      return;
+    }
     totalTimes++;
-    const progressUnit = habitProgress[i].unit;
     if (
-      (progressUnit != null && ["m", "h"].includes(progressUnit)) ||
-      (progressUnit == null && interpretUntypedNumberAsMinutes)
+      (unit != null && ["m", "h"].includes(unit)) ||
+      (unit == null && interpretUntypedNumberAsMinutes)
     ) {
       // TODO: handle progress for different types of units
     }
-    i--;
-    date = new Date(habitProgress[i].date);
-  }
+  });
   return {
     totalTimes,
   };
@@ -211,13 +222,15 @@ export function getHabitProgressSince(
 
 export function getHabitGoalProgress(
   goalInfo: NonNullable<Habit["goalInfo"]>,
-  habitProgress: HabitDayProgress[]
+  habitProgress: { [date: string]: HabitDayProgress }
 ): number {
   const days = goalIntervalToDays(goalInfo.interval, goalInfo.intervalTimeUnit);
-  let date = new Date(habitProgress[habitProgress.length - 1].date);
+  let latestDate = new Date(
+    latestHabitProgress(Object.values(habitProgress)).date
+  );
 
   const lookbackDays =
-    date.getTime() === new Date().getTime() ? days - 1 : days;
+    latestDate.getTime() === new Date().getTime() ? days - 1 : days;
   let startDate = new Date();
   startDate.setDate(startDate.getDate() - lookbackDays);
   startDate.setHours(0);
@@ -226,10 +239,10 @@ export function getHabitGoalProgress(
   startDate.setMilliseconds(0);
 
   let progress = 0;
-  let i = habitProgress.length - 1;
-
-  while (date.getTime() >= startDate.getTime()) {
-    let { value, unit } = habitProgress[i];
+  Object.values(habitProgress).forEach(({ date, unit, value }) => {
+    if (new Date(date).getTime() < startDate.getTime()) {
+      return;
+    }
     switch (goalInfo.goalUnit) {
       case null:
       case "x":
@@ -254,9 +267,7 @@ export function getHabitGoalProgress(
       default:
       // TODO: handle other goal units
     }
-    i--;
-    date = getLocalDate(new Date(habitProgress[i].date));
-  }
+  });
   return progress;
 }
 
@@ -307,4 +318,11 @@ export function formatMinutes(minutes: number) {
 export function getLocalDate(date: Date) {
   date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
   return date;
+}
+
+export function latestHabitProgress(habitProgress: HabitDayProgress[]) {
+  return habitProgress.reduce(
+    (a, b) => (a.date > b.date ? a : b),
+    habitProgress[0]
+  );
 }

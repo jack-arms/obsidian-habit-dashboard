@@ -1,15 +1,16 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-  import { localDateKeyFormat, getHabitDatesToStreakType } from "../utils";
+  import { getHabitProgressWithStreakType, localDateKeyFormat } from "../utils";
   import HabitListItem from "./HabitListItem.svelte";
   import ScrollableCalendar from "../scrollable_calendar/ScrollableCalendar.svelte";
-  import CalendarStreakDay from "../scrollable_calendar/CalendarStreakDay.svelte";
+  import CalendarStreakDay from "../scrollable_calendar/CalendarDayWithNoteData.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
+  import CalendarDayWithNoteData from "../scrollable_calendar/CalendarDayWithNoteData.svelte";
 
   interface Props {
     habits: Habit[];
     habitProgressByDate: {
-      [noteKey: string]: HabitDayProgress[];
+      [noteKey: string]: { [date: string]: HabitDayProgress };
     };
     onEdit: (habit: Habit | null) => void;
   }
@@ -18,8 +19,8 @@
 
   let activeHabit = $state<Habit | null>(null);
   let activeHabitKey = $derived(activeHabit?.noteKey);
-  let habitDatesToStreakType = $derived(
-    getHabitDatesToStreakType(habitProgressByDate),
+  let habitProgressWithStreakType = $derived(
+    getHabitProgressWithStreakType(habitProgressByDate),
   );
 </script>
 
@@ -56,17 +57,14 @@
           isLastWeek: boolean,
           isLastDayOfMonth: boolean,
         )}
-          {@const streakType =
-            activeHabit == null
-              ? null
-              : habitDatesToStreakType[activeHabit.noteKey][
-                  localDateKeyFormat(date)
-                ]}
-          <CalendarStreakDay
+          {@const dateKey = localDateKeyFormat(date)}
+          <CalendarDayWithNoteData
             {date}
             {isLastWeek}
             {isLastDayOfMonth}
-            {streakType}
+            habitProgress={activeHabit != null
+              ? habitProgressWithStreakType[activeHabit.noteKey][dateKey]
+              : null}
           />
         {/snippet}
       </ScrollableCalendar>
