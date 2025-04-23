@@ -119,20 +119,18 @@ export function areDatesSameDay(d1: Date, d2: Date) {
   );
 }
 
-export function getHabitProgressWithStreakType(habitProgress: {
+export function getStreakDataByHabit(habitProgress: {
   [noteKey: string]: {
     [date: string]: HabitDayProgress;
   };
 }): {
   [noteKey: string]: {
-    [date: string]: HabitDayProgress & {
-      streakType: StreakType;
-    };
+    [date: string]: StreakType;
   };
 } {
   const data: {
     [noteKey: string]: {
-      [date: string]: HabitDayProgress & { streakType: StreakType };
+      [date: string]: StreakType;
     };
   } = {};
 
@@ -140,10 +138,7 @@ export function getHabitProgressWithStreakType(habitProgress: {
     const streakData = getStreakData(habitProgress[noteKey]);
     data[noteKey] = {};
     Object.keys(habitProgress[noteKey]).forEach((date) => {
-      data[noteKey][date] = {
-        ...habitProgress[noteKey][date],
-        streakType: streakData[date],
-      };
+      data[noteKey][date] = streakData[date];
     });
   });
 
@@ -193,9 +188,7 @@ export function localDateKeyFormat(date: Date) {
 
 export function getHabitProgressSince(
   habitProgress: {
-    [date: string]: HabitDayProgress & {
-      streakType: StreakType;
-    };
+    [date: string]: HabitDayProgress;
   },
   since: Date,
   interpretUntypedNumberAsMinutes: boolean = false

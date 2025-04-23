@@ -1,9 +1,8 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-  import { getHabitProgressWithStreakType, localDateKeyFormat } from "../utils";
+  import { getStreakDataByHabit, localDateKeyFormat } from "../utils";
   import HabitListItem from "./HabitListItem.svelte";
   import ScrollableCalendar from "../scrollable_calendar/ScrollableCalendar.svelte";
-  import CalendarStreakDay from "../scrollable_calendar/CalendarDayWithNoteData.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
   import CalendarDayWithNoteData from "../scrollable_calendar/CalendarDayWithNoteData.svelte";
 
@@ -19,9 +18,7 @@
 
   let activeHabit = $state<Habit | null>(null);
   let activeHabitKey = $derived(activeHabit?.noteKey);
-  let habitProgressWithStreakType = $derived(
-    getHabitProgressWithStreakType(habitProgressByDate),
-  );
+  let streakDataByHabit = $derived(getStreakDataByHabit(habitProgressByDate));
 </script>
 
 <div class="flex flex-row flex-grow">
@@ -63,7 +60,10 @@
             {isLastWeek}
             {isLastDayOfMonth}
             habitProgress={activeHabit != null
-              ? habitProgressWithStreakType[activeHabit.noteKey][dateKey]
+              ? habitProgressByDate[activeHabit.noteKey][dateKey]
+              : null}
+            streakType={activeHabit != null
+              ? streakDataByHabit[activeHabit.noteKey][dateKey]
               : null}
           />
         {/snippet}

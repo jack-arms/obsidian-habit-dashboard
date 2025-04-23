@@ -18,14 +18,15 @@
   interface Props {
     habit: Habit;
     habitProgress: {
-      [date: string]: HabitDayProgress & {
-        streakType: StreakType;
-      };
+      [date: string]: HabitDayProgress;
+    };
+    streakData: {
+      [date: string]: StreakType;
     };
     onEdit: (habit: Habit | null) => void;
   }
 
-  let { habit, habitProgress, onEdit }: Props = $props();
+  let { habit, habitProgress, streakData, onEdit }: Props = $props();
   let lastMonth = new Date();
   lastMonth.setDate(lastMonth.getDate() - 30);
   let habitProgressLastMonth = $derived(
@@ -108,6 +109,7 @@
           {isLastWeek}
           {isLastDayOfMonth}
           habitProgress={habitProgress[dateKey]}
+          streakType={streakData[dateKey]}
         />
       {/snippet}
     </ScrollableCalendar>

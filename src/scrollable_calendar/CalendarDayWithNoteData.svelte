@@ -8,12 +8,14 @@
     date: Date;
     isLastWeek: boolean;
     isLastDayOfMonth: boolean;
-    habitProgress: (HabitDayProgress & { streakType: StreakType }) | null;
+    habitProgress: HabitDayProgress | null;
+    streakType: StreakType | null;
   }
   export type StreakType = "start" | "middle" | "end" | "isolated";
   const app = getContext<App>("obsidian-app");
 
-  let { date, isLastWeek, isLastDayOfMonth, habitProgress }: Props = $props();
+  let { date, isLastWeek, isLastDayOfMonth, habitProgress, streakType }: Props =
+    $props();
   let today = new Date();
   let isToday = $derived(areDatesSameDay(date, today));
 </script>
@@ -24,20 +26,22 @@
   {isLastDayOfMonth ? 'day-last-of-month' : ''}
   {isToday ? 'font-bold' : ''}"
 >
-  {#if habitProgress != null}
+  {#if streakType != null}
     <div
       class="w-auto h-1/2 absolute bg-primary-200
-      {habitProgress.streakType === 'start'
+      {streakType === 'start'
         ? 'rounded-tl-full rounded-bl-full left-1/3 right-0'
         : ''}
-      {habitProgress.streakType === 'middle' ? 'left-0 right-0' : ''}
-      {habitProgress.streakType === 'end'
+      {streakType === 'middle' ? 'left-0 right-0' : ''}
+      {streakType === 'end'
         ? 'rounded-tr-full rounded-br-full left-0 right-1/3'
         : ''}
-      {habitProgress.streakType === 'isolated'
+      {streakType === 'isolated'
         ? 'w-2/3 rounded-full left-1/3 right-1/3'
         : ''}"
     ></div>
+  {/if}
+  {#if habitProgress != null}
     <a
       class="flex flex-grow self-stretch items-center justify-center z-1"
       href={habitProgress.noteHref}

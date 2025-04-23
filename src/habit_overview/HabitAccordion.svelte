@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Accordion, Button } from "flowbite-svelte";
-  import { getHabitProgressWithStreakType } from "src/utils";
   import HabitAccordionItem from "./HabitAccordionItem.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
+  import { getStreakDataByHabit } from "src/utils";
 
   interface Props {
     habits: Habit[];
@@ -16,9 +16,7 @@
   }
 
   let { habits, habitProgressByDate, onEdit, onMoveHabit }: Props = $props();
-  let habitProgressWithStreakType = $derived(
-    getHabitProgressWithStreakType(habitProgressByDate),
-  );
+  let streakData = $derived(getStreakDataByHabit(habitProgressByDate));
   let openHabit = $state<string | null>(null);
 </script>
 
@@ -39,7 +37,8 @@
       {#key habit.noteKey}
         <HabitAccordionItem
           {habit}
-          habitProgress={habitProgressWithStreakType[habit.noteKey]}
+          habitProgress={habitProgressByDate[habit.noteKey]}
+          streakData={streakData[habit.noteKey]}
           onEdit={() => onEdit(habit)}
           onMoveDown={() => onMoveHabit(habit, 1)}
           onMoveUp={() => onMoveHabit(habit, -1)}

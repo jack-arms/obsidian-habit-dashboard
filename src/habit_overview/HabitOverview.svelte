@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-  import { getHabitProgressWithStreakType } from "src/utils";
   import HabitCard from "./HabitCard.svelte";
   import HabitDetails from "./HabitDetails.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
+  import { getStreakDataByHabit } from "src/utils";
 
   interface Props {
     habits: Habit[];
@@ -17,9 +17,7 @@
   }
 
   let { habits, habitProgressByDate, onEdit, onMoveHabit }: Props = $props();
-  let habitProgressWithStreakType = $derived(
-    getHabitProgressWithStreakType(habitProgressByDate),
-  );
+  let streakData = $derived(getStreakDataByHabit(habitProgressByDate));
   let openHabitKey = $state<string | null>(null);
   let openHabit = $derived(habits.find((h) => h.noteKey === openHabitKey));
 </script>
@@ -58,7 +56,8 @@
     {#if openHabit != null}
       <HabitDetails
         habit={openHabit}
-        habitProgress={habitProgressWithStreakType[openHabit.noteKey]}
+        habitProgress={habitProgressByDate[openHabit.noteKey]}
+        streakData={streakData[openHabit.noteKey]}
         onEdit={() => onEdit(openHabit)}
       />
     {/if}
