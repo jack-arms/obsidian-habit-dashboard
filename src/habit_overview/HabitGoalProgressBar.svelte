@@ -1,10 +1,11 @@
 <script lang="ts">
-  import type { GoalIntervalTimeUnit, HabitProgressUnit } from "src/types";
+  import type { GoalIntervalTimeUnit } from "src/types";
+  import type { HabitProgressUnit } from "src/units";
   import { goalIntervalTimeUnitToString } from "src/utils";
 
   interface Props {
     goal: number;
-    goalUnit: HabitProgressUnit;
+    goalUnit: HabitProgressUnit | string | null;
     interval: number;
     intervalTimeUnit: GoalIntervalTimeUnit;
     goalProgress: number;
@@ -12,6 +13,7 @@
 
   let { goal, goalUnit, interval, intervalTimeUnit, goalProgress }: Props =
     $props();
+
   let progressPercent = $derived((goalProgress * 100.0) / goal);
 
   const percentProgressToBarColor = (progressPercent: number) => {

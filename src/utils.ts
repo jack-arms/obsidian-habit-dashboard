@@ -1,25 +1,31 @@
 import type { StreakType } from "./scrollable_calendar/CalendarDayWithNoteData.svelte";
-import type {
-  Habit,
-  GoalIntervalTimeUnit,
-  HabitDayProgress,
-  HabitProgressUnit,
+import {
+  type Habit,
+  type GoalIntervalTimeUnit,
+  type HabitDayProgress,
+  type AggregatedHabitProgress,
 } from "./types";
 import type { App } from "obsidian";
+import {
+  convertUnit,
+  HabitProgressUnits,
+  type HabitProgressUnit,
+  type HabitProgressUnitCategory,
+} from "./units";
 
 export function goalUnitToString(
-  unit: HabitProgressUnit,
-  time: number | null = null
+  unit: string | null,
+  value: number | null = null
 ) {
   switch (unit) {
     case null:
-      return time == null ? "time(s)" : time === 1 ? "time" : "times";
+      return value == null ? "time(s)" : value === 1 ? "time" : "times";
     case "m":
-      return time == null ? "minute(s)" : time === 1 ? "minute" : "minutes";
+      return value == null ? "minute(s)" : value === 1 ? "minute" : "minutes";
     case "h":
-      return time == null ? "hour(s)" : time === 1 ? "hour" : "hours";
+      return value == null ? "hour(s)" : value === 1 ? "hour" : "hours";
   }
-  return "";
+  return unit;
 }
 
 export function goalIntervalTimeUnitToString(
@@ -88,9 +94,9 @@ export function getHabitProgressByDate(
 
 export function getFrontmatterDataToProgress(data: string): {
   value: number;
-  unit: HabitProgressUnit | null;
+  unit: string | null;
 } | null {
-  const match = data.match(/([\d\.]+)(m|h)?/);
+  const match = data.match(/([\d\.]+)(\w+)?/);
   if (match == null || match[1] == null) {
     return null;
   }
@@ -100,7 +106,7 @@ export function getFrontmatterDataToProgress(data: string): {
   }
   return {
     value,
-    unit: match[2] as HabitProgressUnit | null,
+    unit: match[2],
   };
 }
 
@@ -186,31 +192,104 @@ export function localDateKeyFormat(date: Date) {
   ].join("-");
 }
 
-export function getHabitProgressSince(
+export function getAggregatedHabitProgress(
   habitProgress: {
     [date: string]: HabitDayProgress;
   },
-  since: Date,
-  interpretUntypedNumberAsMinutes: boolean = false
-): {
-  totalTimes: number;
-} {
-  let totalTimes = 0;
+  since: Date | null = null
+): AggregatedHabitProgress {
+  let times = 0;
+  let untypedProgress = 0;
+  let progress: {
+    [unit: string]: number;
+  } = {};
   Object.values(habitProgress).forEach(({ date, unit, value }) => {
-    if (new Date(date).getTime() < since.getTime()) {
+    if (since != null && new Date(date).getTime() < since.getTime()) {
       return;
     }
-    totalTimes++;
-    if (
-      (unit != null && ["m", "h"].includes(unit)) ||
-      (unit == null && interpretUntypedNumberAsMinutes)
-    ) {
-      // TODO: handle progress for different types of units
+    times++;
+    if (value == null) {
+      return;
     }
+
+    if (unit == null) {
+      untypedProgress += value;
+      return;
+    }
+    if (!(unit in progress)) {
+      progress[unit] = 0;
+    }
+    progress[unit] += value;
   });
+
   return {
-    totalTimes,
+    times,
+    untypedProgress,
+    progress,
   };
+}
+
+export function getConsolidatedProgressByUnit(progress: {
+  [unit: string]: number;
+}): { [unit: string]: number } {
+  let baseUnitsByCategory: {
+    [category in HabitProgressUnitCategory]?: number;
+  } = {};
+  let customUnits: { [unit: string]: number } = {};
+
+  for (const unit in progress) {
+    if (unit in HabitProgressUnits) {
+      const { toBase, category } =
+        HabitProgressUnits[unit as HabitProgressUnit];
+      let current = (baseUnitsByCategory[category] ?? 0) + toBase;
+      baseUnitsByCategory[category] = current;
+    } else {
+      customUnits[unit] = progress[unit];
+    }
+  }
+
+  const joined: { [unit: string]: number } = {};
+  for (const unit in customUnits) {
+    joined[unit] = customUnits[unit];
+  }
+  for (const category in baseUnitsByCategory) {
+    const totalBaseUnits =
+      baseUnitsByCategory[category as HabitProgressUnitCategory];
+    if (totalBaseUnits != null) {
+      const consolidatedUnits = getConsolidatedUnitsForCategory(
+        category as HabitProgressUnitCategory,
+        totalBaseUnits
+      );
+      for (const unit in consolidatedUnits) {
+        joined[unit] = consolidatedUnits[unit];
+      }
+    }
+  }
+  return joined;
+}
+
+export function getConsolidatedUnitsForCategory(
+  category: HabitProgressUnitCategory,
+  baseUnitProgress: number
+): { [unit: string]: number } {
+  const sortedUnits = Object.keys(HabitProgressUnits)
+    .map((k) => ({
+      unit: k,
+      ...HabitProgressUnits[k as HabitProgressUnit],
+    }))
+    .filter((u) => u.category === category)
+    .sort((a, b) => b.toBase - a.toBase);
+
+  const consolidatedUnits: { [unit: string]: number } = {};
+  let i = 0;
+  while (baseUnitProgress > 0) {
+    consolidatedUnits[sortedUnits[i].unit] = Math.floor(
+      baseUnitProgress / sortedUnits[i].toBase
+    );
+    baseUnitProgress = baseUnitProgress % sortedUnits[i].toBase;
+    i++;
+  }
+  return consolidatedUnits;
 }
 
 export function getHabitGoalProgress(
@@ -231,37 +310,34 @@ export function getHabitGoalProgress(
   startDate.setSeconds(0);
   startDate.setMilliseconds(0);
 
-  let progress = 0;
-  Object.values(habitProgress).forEach(({ date, unit, value }) => {
-    if (new Date(date).getTime() < startDate.getTime()) {
-      return;
+  const aggregatedProgress = getAggregatedHabitProgress(
+    habitProgress,
+    startDate
+  );
+
+  const { goalUnit } = goalInfo;
+  if (goalUnit == null) {
+    // number of times
+    return aggregatedProgress.times;
+  }
+  if (!(goalUnit in HabitProgressUnits)) {
+    // custom unit
+    return aggregatedProgress.progress[goalUnit] ?? 0;
+  }
+
+  // return all progress that can be converted to the goal unit
+  let goalProgress = 0;
+  for (const unit in aggregatedProgress.progress) {
+    if (unit in HabitProgressUnits) {
+      goalProgress +=
+        convertUnit(
+          aggregatedProgress.progress[unit],
+          unit as HabitProgressUnit,
+          goalUnit as HabitProgressUnit
+        ) ?? 0;
     }
-    switch (goalInfo.goalUnit) {
-      case null:
-      case "x":
-        if (value != null) {
-          progress++;
-        }
-        break;
-      case "m":
-        if (unit === "m" && value != null) {
-          progress += value;
-        } else if (unit === "h" && value != null) {
-          progress += value * 60;
-        }
-        break;
-      case "h":
-        if (unit === "m" && value != null) {
-          progress += value / 60.0;
-        } else if (unit === "h" && value != null) {
-          progress += value;
-        }
-        break;
-      default:
-      // TODO: handle other goal units
-    }
-  });
-  return progress;
+  }
+  return goalProgress;
 }
 
 export function getHabitGoalProgressString(

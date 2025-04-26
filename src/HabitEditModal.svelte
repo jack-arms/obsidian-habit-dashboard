@@ -10,7 +10,8 @@
     Dropdown,
   } from "flowbite-svelte";
   import { goalIntervalTimeUnitToString, goalUnitToString } from "./utils";
-  import type { Habit, GoalIntervalTimeUnit, HabitProgressUnit } from "./types";
+  import type { Habit, GoalIntervalTimeUnit } from "./types";
+  import type { HabitProgressUnit } from "./units";
   export type HabitEditModalState =
     | {
         isOpen: true;
@@ -37,7 +38,7 @@
           noteKey: "",
           createDate: new Date().toLocaleDateString(),
         }
-      : JSON.parse(JSON.stringify(currentHabit)),
+      : (JSON.parse(JSON.stringify(currentHabit)) as Habit),
   );
 
   let goalTimeUnitDropDownOpen = $state(false);
@@ -111,7 +112,7 @@
             if (habit.goalInfo == null) {
               habit.goalInfo = {
                 goal: 1,
-                goalTimeUnit: null,
+                goalUnit: null,
                 interval: 1,
                 intervalTimeUnit: "d",
                 goalCreateDate: new Date().toLocaleDateString(),
@@ -130,7 +131,7 @@
               bind:value={habit.goalInfo.goal}
               class="{goalTimeInputError ? 'border-red-500!' : ''} w-10"
             />
-            <Button>{goalUnitToString(habit.goalInfo.goalTimeUnit)}</Button>
+            <Button>{goalUnitToString(habit.goalInfo.goalUnit)}</Button>
             <Dropdown bind:open={goalTimeUnitDropDownOpen}>
               {#each [null, "m", "h"] as HabitProgressUnit[] as goalTimeUnit}
                 <DropdownItem
@@ -138,7 +139,7 @@
                     if (habit.goalInfo == null) {
                       return;
                     }
-                    habit.goalInfo.goalTimeUnit = goalTimeUnit;
+                    habit.goalInfo.goalUnit = goalTimeUnit;
                     goalTimeUnitDropDownOpen = false;
                   }}>{goalUnitToString(goalTimeUnit)}</DropdownItem
                 >

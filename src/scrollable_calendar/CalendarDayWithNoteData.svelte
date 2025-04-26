@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { App } from "obsidian";
   import type { HabitDayProgress } from "src/types";
-  import { areDatesSameDay, localDateKeyFormat } from "src/utils";
+  import { areDatesSameDay } from "src/utils";
   import { getContext } from "svelte";
 
   interface Props {

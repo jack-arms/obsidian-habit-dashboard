@@ -3,9 +3,9 @@
   import {
     localDateKeyFormat,
     getHabitGoalProgress,
-    getHabitProgressSince,
     getLocalDate,
     latestHabitProgress,
+    getAggregatedHabitProgress,
   } from "src/utils";
   import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
@@ -30,7 +30,7 @@
   let lastMonth = new Date();
   lastMonth.setDate(lastMonth.getDate() - 30);
   let habitProgressLastMonth = $derived(
-    getHabitProgressSince(habitProgress, lastMonth),
+    getAggregatedHabitProgress(habitProgress, lastMonth),
   );
 
   let calendarElement = $state<HTMLElement | undefined>(undefined);
@@ -79,8 +79,8 @@
           latestHabitProgress(Object.values(habitProgress)).date,
         ).toLocaleDateString()}
       </li>
-      {#if habitProgressLastMonth.totalTimes > 0}
-        <li>{habitProgressLastMonth.totalTimes} times in last 30 days</li>
+      {#if habitProgressLastMonth.times > 0}
+        <li>{habitProgressLastMonth.times} times in last 30 days</li>
       {:else}
         <li>Not done in the last 30 days.</li>
       {/if}
