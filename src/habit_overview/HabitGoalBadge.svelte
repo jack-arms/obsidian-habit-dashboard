@@ -2,7 +2,7 @@
   import { Flag } from "lucide-svelte";
   import type { GoalIntervalTimeUnit } from "src/types";
   import HabitGoalProgressBar from "./HabitGoalProgressBar.svelte";
-  import type { HabitProgressUnit } from "src/units";
+  import type { HabitProgressUnit } from "src/utils/units";
 
   interface Props {
     goal: number;

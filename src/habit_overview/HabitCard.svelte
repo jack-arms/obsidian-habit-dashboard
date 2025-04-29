@@ -1,7 +1,8 @@
 <script lang="ts">
   import { ArrowDown, ArrowUp, ChevronRight } from "lucide-svelte";
   import { Button, Card } from "flowbite-svelte";
-  import { daysBetween, getHabitGoalProgress } from "../utils";
+  import { daysBetween } from "../utils/utils";
+  import { getHabitGoalProgress } from "../utils/habitDataUtils";
   import HabitGoalBadge from "./HabitGoalBadge.svelte";
   import HabitTimeSinceBadge from "./HabitTimeSinceBadge.svelte";
   import type { Habit, HabitDayProgress } from "src/types";

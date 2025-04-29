@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { GoalIntervalTimeUnit } from "src/types";
-  import type { HabitProgressUnit } from "src/units";
-  import { goalIntervalTimeUnitToString } from "src/utils";
+  import type { HabitProgressUnit } from "src/utils/units";
+  import { goalIntervalTimeUnitToString } from "src/utils/utils";
 
   interface Props {
     goal: number;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Hourglass } from "lucide-svelte";
   import { Card, Checkbox } from "flowbite-svelte";
-  import { daysBetween, latestHabitProgress } from "../utils";
+  import { daysBetween, latestHabitProgress } from "../utils/utils";
   import type { Habit, HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;

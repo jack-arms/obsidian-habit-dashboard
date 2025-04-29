@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getLocalDate } from "src/utils";
+  import { getLocalDate } from "src/utils/utils";
   import { getCalendarRow, getWeekRowsByMonth } from "./CalendarUtils";
   import type { Snippet } from "svelte";
 

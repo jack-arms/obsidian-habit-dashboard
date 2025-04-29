@@ -4,7 +4,7 @@
   import type { ObsidianHabitDashboardPluginSettings } from "./main";
   import { TabItem, Tabs } from "flowbite-svelte";
   import HabitEditModal from "./HabitEditModal.svelte";
-  import { getHabitProgressByDate } from "./utils";
+  import { getHabitProgressByDate } from "./utils/habitDataUtils";
   import HabitCalendarMasterDetail from "./calendar_master_detail/HabitCalendarMasterDetail.svelte";
   import HabitOverview from "./habit_overview/HabitOverview.svelte";
   import HabitAccordion from "./habit_overview/HabitAccordion.svelte";

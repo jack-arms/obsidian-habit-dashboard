@@ -3,7 +3,7 @@
   import HabitCard from "./HabitCard.svelte";
   import HabitDetails from "./HabitDetails.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
-  import { getStreakDataByHabit } from "src/utils";
+  import { getStreakDataByHabit } from "src/utils/habitDataUtils";
 
   interface Props {
     habits: Habit[];

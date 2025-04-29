@@ -9,9 +9,9 @@
     DropdownItem,
     Dropdown,
   } from "flowbite-svelte";
-  import { goalIntervalTimeUnitToString, goalUnitToString } from "./utils";
+  import { goalIntervalTimeUnitToString, goalUnitToString } from "./utils/utils";
   import type { Habit, GoalIntervalTimeUnit } from "./types";
-  import type { HabitProgressUnit } from "./units";
+  import type { HabitProgressUnit } from "./utils/units";
   export type HabitEditModalState =
     | {
         isOpen: true;

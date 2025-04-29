@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-  import { getStreakDataByHabit, localDateKeyFormat } from "../utils";
+  import { localDateKeyFormat } from "../utils/utils";
+  import { getStreakDataByHabit } from "../utils/habitDataUtils";
   import HabitListItem from "./HabitListItem.svelte";
   import ScrollableCalendar from "../scrollable_calendar/ScrollableCalendar.svelte";
   import type { Habit, HabitDayProgress } from "src/types";

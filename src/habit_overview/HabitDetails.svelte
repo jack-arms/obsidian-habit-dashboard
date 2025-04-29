@@ -1,12 +1,11 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
   import {
-    localDateKeyFormat,
     getHabitGoalProgress,
-    getLocalDate,
-    latestHabitProgress,
     getAggregatedHabitProgress,
-  } from "src/utils";
+  } from "src/utils/habitDataUtils";
+  import { latestHabitProgress } from "src/utils/utils";
+  import { localDateKeyFormat, getLocalDate } from "src/utils/utils";
   import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarDayWithNoteData, {

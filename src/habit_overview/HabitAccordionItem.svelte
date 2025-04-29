@@ -11,7 +11,7 @@
     localDateKeyFormat,
     daysBetween,
     latestHabitProgress,
-  } from "../utils";
+  } from "../utils/utils";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay, {
     type StreakType,

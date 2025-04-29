@@ -1,4 +1,4 @@
-import type { HabitProgressUnit } from "./units";
+import type { HabitProgressUnit } from "./utils/units";
 
 export type GoalIntervalTimeUnit = "d" | "w" | "m";
 
