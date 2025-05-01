@@ -1,9 +1,8 @@
-import type { HabitProgressUnit } from "./utils/units";
-
 export type GoalIntervalTimeUnit = "d" | "w" | "m";
 
 export type AggregatedHabitProgress = {
   times: number;
+  minutes: number;
   progress: {
     [unit: string]: number;
   };
@@ -23,9 +22,20 @@ export interface Habit {
   createDate: string;
   goalInfo?: {
     goal: number;
-    goalUnit: HabitProgressUnit | string | null;
+    goalUnit: HabitTimeProgressUnit | string | null;
     interval: number;
     intervalTimeUnit: GoalIntervalTimeUnit;
     goalCreateDate: string;
   };
 }
+
+export const HabitTimeProgressUnits = {
+  m: {
+    toBase: 1,
+  },
+  h: {
+    toBase: 60,
+  },
+} as const;
+
+export type HabitTimeProgressUnit = keyof typeof HabitTimeProgressUnits;

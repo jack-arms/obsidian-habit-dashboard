@@ -4,7 +4,7 @@
     getHabitGoalProgress,
     getAggregatedHabitProgress,
   } from "src/utils/habitDataUtils";
-  import { latestHabitProgress } from "src/utils/utils";
+  import { formatMinutes, latestHabitProgress } from "src/utils/utils";
   import { localDateKeyFormat, getLocalDate } from "src/utils/utils";
   import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
@@ -78,11 +78,22 @@
           latestHabitProgress(Object.values(habitProgress)).date,
         ).toLocaleDateString()}
       </li>
-      {#if habitProgressLastMonth.times > 0}
-        <li>{habitProgressLastMonth.times} times in last 30 days</li>
-      {:else}
-        <li>Not done in the last 30 days.</li>
-      {/if}
+      <li>
+        In the last 30 days:
+        <ul>
+          {#if habitProgressLastMonth.times > 0}
+            <li>{habitProgressLastMonth.times} times</li>
+            {#if habitProgressLastMonth.minutes > 0}
+              <li>{formatMinutes(habitProgressLastMonth.minutes)}</li>
+            {/if}
+            {#each Object.entries(habitProgressLastMonth.progress) as [unit, value]}
+              <li>{value} {unit}</li>
+            {/each}
+          {:else}
+            <li>No progress</li>
+          {/if}
+        </ul>
+      </li>
     </ul>
   </div>
   <div class="flex flex-col space-y-3">
@@ -116,6 +127,10 @@
 </div>
 
 <style>
+  ul {
+    list-style: none;
+  }
+
   li::before {
     content: "\2014" !important;
     padding-right: calc(var(--spacing) * 2);
