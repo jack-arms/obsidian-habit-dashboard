@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { getLocalDate } from "src/utils/utils";
   import { getCalendarRow, getWeekRowsByMonth } from "./CalendarUtils";
   import type { Snippet } from "svelte";
+  import { moment } from "obsidian";
 
   interface Props {
-    endDate: Date;
+    endDate: moment.Moment;
     dayComponent: Snippet<
-      [date: Date, isLastDayOfMonth: boolean, isLastWeek: boolean]
+      [date: moment.Moment, isLastDayOfMonth: boolean, isLastWeek: boolean]
     >;
     numWeeks: number;
     calendarElement?: HTMLElement;
@@ -21,12 +21,12 @@
 
   let weeksByMonth = $derived(
     (() => {
-      let day = getLocalDate(new Date(endDate.valueOf()));
-      let rows = [getCalendarRow(day)];
-      for (let i = 1; i < numWeeks; i++) {
-        day.setDate(day.getDate() - 7);
-        rows = [getCalendarRow(day), ...rows];
-      }
+      const rows = [...new Array(numWeeks)]
+        .map((_, i) => {
+          let day = moment(endDate).subtract(i, "week");
+          return getCalendarRow(day);
+        })
+        .reverse();
       return getWeekRowsByMonth(rows);
     })(),
   );
@@ -66,7 +66,7 @@
             <div class="p-2"></div>
           {:else}
             <div class="month-label border-gray-400 font-bold">
-              {new Date(month).toLocaleString("default", { month: "long" })}
+              {moment().month(month).format("MMMM")}
             </div>
           {/if}
         </div>

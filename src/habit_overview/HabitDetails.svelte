@@ -4,8 +4,11 @@
     getHabitGoalProgress,
     getAggregatedHabitProgress,
   } from "src/utils/habitDataUtils";
-  import { formatMinutes, latestHabitProgress } from "src/utils/utils";
-  import { localDateKeyFormat, getLocalDate } from "src/utils/utils";
+  import {
+    formatMinutes,
+    getDateKey,
+    latestHabitProgress,
+  } from "src/utils/utils";
   import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarDayWithNoteData, {
@@ -13,6 +16,7 @@
   } from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
   import HabitGoalProgressBar from "./HabitGoalProgressBar.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
+  import { moment } from "obsidian";
 
   interface Props {
     habit: Habit;
@@ -26,10 +30,8 @@
   }
 
   let { habit, habitProgress, streakData, onEdit }: Props = $props();
-  let lastMonth = new Date();
-  lastMonth.setDate(lastMonth.getDate() - 30);
   let habitProgressLastMonth = $derived(
-    getAggregatedHabitProgress(habitProgress, lastMonth),
+    getAggregatedHabitProgress(habitProgress, moment().subtract(1, "month")),
   );
 
   let calendarElement = $state<HTMLElement | undefined>(undefined);
@@ -74,9 +76,9 @@
     </div>
     <ul>
       <li>
-        Last done on {new Date(
+        Last done on {moment(
           latestHabitProgress(Object.values(habitProgress)).date,
-        ).toLocaleDateString()}
+        ).format("dddd, MMMM D, YYYY")}
       </li>
       <li>
         In the last 30 days:
@@ -103,17 +105,13 @@
         <h3 class="m-0!">Calendar</h3>
       </div>
     </div>
-    <ScrollableCalendar
-      endDate={getLocalDate(new Date())}
-      numWeeks={12}
-      bind:calendarElement
-    >
+    <ScrollableCalendar endDate={moment()} numWeeks={12} bind:calendarElement>
       {#snippet dayComponent(
-        date: Date,
+        date: moment.Moment,
         isLastWeek: boolean,
         isLastDayOfMonth: boolean,
       )}
-        {@const dateKey = localDateKeyFormat(date)}
+        {@const dateKey = getDateKey(date)}
         <CalendarDayWithNoteData
           {date}
           {isLastWeek}

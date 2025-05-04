@@ -1,11 +1,12 @@
 <script lang="ts">
   import { ArrowDown, ArrowUp, ChevronRight } from "lucide-svelte";
   import { Button, Card } from "flowbite-svelte";
-  import { daysBetween } from "../utils/utils";
   import { getHabitGoalProgress } from "../utils/habitDataUtils";
   import HabitGoalBadge from "./HabitGoalBadge.svelte";
   import HabitTimeSinceBadge from "./HabitTimeSinceBadge.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
+  import { moment } from "obsidian";
+  import { latestHabitProgress } from "src/utils/utils";
   interface Props {
     habit: Habit;
     habitProgress: { [date: string]: HabitDayProgress };
@@ -18,14 +19,9 @@
   let { habit, habitProgress, onMoveDown, onMoveUp, isOpen, onOpen }: Props =
     $props();
   let daysSince = $derived(
-    daysBetween(
-      new Date(),
-      new Date(
-        Object.values(habitProgress).reduce(
-          (a, b) => (a.date > b.date ? a : b),
-          Object.values(habitProgress)[0],
-        ).date,
-      ),
+    moment().diff(
+      moment(latestHabitProgress(Object.values(habitProgress)).date),
+      "days",
     ),
   );
 </script>

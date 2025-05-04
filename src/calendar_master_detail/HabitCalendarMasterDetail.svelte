@@ -1,11 +1,12 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-  import { localDateKeyFormat } from "../utils/utils";
+  import { getDateKey } from "../utils/utils";
   import { getStreakDataByHabit } from "../utils/habitDataUtils";
   import HabitListItem from "./HabitListItem.svelte";
   import ScrollableCalendar from "../scrollable_calendar/ScrollableCalendar.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
   import CalendarDayWithNoteData from "../scrollable_calendar/CalendarDayWithNoteData.svelte";
+  import { moment } from "obsidian";
 
   interface Props {
     habits: Habit[];
@@ -49,13 +50,13 @@
   <div class="flex flex-col px-4">
     <h2>Calendar</h2>
     <div class="self-center">
-      <ScrollableCalendar endDate={new Date()} numWeeks={12}>
+      <ScrollableCalendar endDate={moment()} numWeeks={12}>
         {#snippet dayComponent(
-          date: Date,
+          date: moment.Moment,
           isLastWeek: boolean,
           isLastDayOfMonth: boolean,
         )}
-          {@const dateKey = localDateKeyFormat(date)}
+          {@const dateKey = getDateKey(date)}
           <CalendarDayWithNoteData
             {date}
             {isLastWeek}

@@ -2,6 +2,7 @@ import {
   getAggregatedHabitProgress,
   getFrontmatterDataToProgress,
 } from "../habitDataUtils";
+import { moment } from "obsidian";
 
 describe(getFrontmatterDataToProgress, () => {
   test("misc cases", () => {
@@ -62,7 +63,7 @@ describe(getAggregatedHabitProgress, () => {
   });
 
   test("data in range", () => {
-    expect(getAggregatedHabitProgress(data, new Date("2025-04-28"))).toEqual({
+    expect(getAggregatedHabitProgress(data, moment("2025-04-28"))).toEqual({
       times: 3,
       minutes: 80,
       progress: {

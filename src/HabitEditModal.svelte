@@ -18,6 +18,7 @@
     GoalIntervalTimeUnit,
     HabitTimeProgressUnit,
   } from "./types";
+  import moment from "moment";
   export type HabitEditModalState =
     | {
         isOpen: true;
@@ -42,7 +43,7 @@
       ? {
           name: "",
           noteKey: "",
-          createDate: new Date().toLocaleDateString(),
+          createDate: moment().format("MM-DD-Y"),
         }
       : (JSON.parse(JSON.stringify(currentHabit)) as Habit),
   );
@@ -121,7 +122,7 @@
                 goalUnit: null,
                 interval: 1,
                 intervalTimeUnit: "d",
-                goalCreateDate: new Date().toLocaleDateString(),
+                goalCreateDate: moment().format("MM-DD-Y"),
               };
             } else {
               habit.goalInfo = undefined;

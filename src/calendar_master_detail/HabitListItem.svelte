@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { moment } from "obsidian";
   import { Hourglass } from "lucide-svelte";
   import { Card, Checkbox } from "flowbite-svelte";
-  import { daysBetween, latestHabitProgress } from "../utils/utils";
+  import { latestHabitProgress } from "../utils/utils";
   import type { Habit, HabitDayProgress } from "src/types";
   interface Props {
     habit: Habit;
@@ -12,9 +13,9 @@
 
   let { habit, habitProgress, onClick, isSelected }: Props = $props();
   let daysSince = $derived(
-    daysBetween(
-      new Date(),
-      new Date(latestHabitProgress(Object.values(habitProgress)).date),
+    moment().diff(
+      moment(latestHabitProgress(Object.values(habitProgress)).date),
+      "days",
     ),
   );
 </script>

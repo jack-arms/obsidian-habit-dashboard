@@ -7,17 +7,15 @@
     Pencil,
   } from "lucide-svelte";
   import { AccordionItem, Button } from "flowbite-svelte";
-  import {
-    localDateKeyFormat,
-    daysBetween,
-    latestHabitProgress,
-  } from "../utils/utils";
+  import { latestHabitProgress, getDateKey } from "../utils/utils";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarStreakDay, {
     type StreakType,
   } from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
   import HabitHeader from "./HabitTimeSinceBadge.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
+  import { moment } from "obsidian";
+
   interface Props {
     habit: Habit;
     habitProgress: {
@@ -43,9 +41,9 @@
     setIsOpen,
   }: Props = $props();
   let daysSince = $derived(
-    daysBetween(
-      new Date(),
-      new Date(latestHabitProgress(Object.values(habitProgress)).date),
+    moment().diff(
+      moment(latestHabitProgress(Object.values(habitProgress)).date),
+      "days",
     ),
   );
   let calendarElement = $state<HTMLElement | undefined>(undefined);
@@ -58,14 +56,10 @@
     }
   });
 
-  const fourWeeksAgo = (() => {
-    let date = new Date();
-    date.setDate(date.getDate() - (7 * 4 - 1));
-    return date;
-  })();
+  const fourWeeksAgo = moment().subtract(4, "weeks");
   const hasDataInLast4Weeks = $derived(
-    Object.keys(habitProgress).some(
-      (h) => new Date(h).getTime() > fourWeeksAgo.getTime(),
+    Object.keys(habitProgress).some((h) =>
+      moment(h).isSameOrAfter(fourWeeksAgo),
     ),
   );
 </script>
@@ -139,16 +133,16 @@
           </div>
         </div>
         <ScrollableCalendar
-          endDate={new Date()}
+          endDate={moment()}
           numWeeks={4}
           bind:calendarElement
         >
           {#snippet dayComponent(
-            date: Date,
+            date: moment.Moment,
             isLastWeek: boolean,
             isLastDayOfMonth: boolean,
           )}
-            {@const dateKey = localDateKeyFormat(date)}
+            {@const dateKey = getDateKey(date)}
             <CalendarStreakDay
               {date}
               {isLastWeek}

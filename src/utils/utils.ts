@@ -37,29 +37,8 @@ export function goalIntervalTimeUnitToString(
   }
 }
 
-export function daysBetween(date1: Date, date2: Date) {
-  return (
-    Math.floor(date1.getTime() / (1000 * 3600 * 24)) -
-    Math.floor(date2.getTime() / (1000 * 3600 * 24))
-  );
-}
-
-export function areDatesSameDay(d1: Date, d2: Date) {
-  return (
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate()
-  );
-}
-
-export function localDateKeyFormat(date: Date) {
-  const localDate = new Date(date.valueOf());
-  localDate.setMinutes(localDate.getMinutes() + localDate.getTimezoneOffset());
-  return [
-    localDate.getFullYear(),
-    String(localDate.getMonth() + 1).padStart(2, "0"),
-    String(localDate.getDate()).padStart(2, "0"),
-  ].join("-");
+export function getDateKey(moment: moment.Moment) {
+  return moment.format("Y-MM-DD");
 }
 
 export function getHabitGoalProgressString(
@@ -104,11 +83,6 @@ export function formatMinutes(minutes: number) {
   const minuteString =
     modMinutes > 0 ? `${modMinutes} minute${modMinutes > 1 ? "s" : ""}` : "";
   return [hourString, minuteString].join(", ");
-}
-
-export function getLocalDate(date: Date) {
-  date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-  return date;
 }
 
 export function latestHabitProgress(habitProgress: HabitDayProgress[]) {

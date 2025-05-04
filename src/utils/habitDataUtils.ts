@@ -6,13 +6,8 @@ import {
   type HabitTimeProgressUnit,
 } from "src/types";
 import type { StreakType } from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
-import {
-  goalIntervalToDays,
-  latestHabitProgress,
-  localDateKeyFormat,
-} from "./utils";
-import type { App } from "obsidian";
-import star from "lucide-svelte/icons/star";
+import { getDateKey, goalIntervalToDays, latestHabitProgress } from "./utils";
+import { moment, type App } from "obsidian";
 
 export function getHabitProgressByDate(
   app: App,
@@ -82,7 +77,7 @@ export function getAggregatedHabitProgress(
   habitProgress: {
     [date: string]: HabitDayProgress;
   },
-  since: Date | null = null
+  since: moment.Moment | null = null
 ): AggregatedHabitProgress {
   let times = 0;
   let minutes = 0;
@@ -91,7 +86,7 @@ export function getAggregatedHabitProgress(
     [unit: string]: number;
   } = {};
   Object.values(habitProgress).forEach(({ date, unit, value }) => {
-    if (since != null && new Date(date).getTime() < since.getTime()) {
+    if (since != null && moment(date).isBefore(since, "day")) {
       return;
     }
     times++;
@@ -129,18 +124,14 @@ export function getHabitGoalProgress(
   habitProgress: { [date: string]: HabitDayProgress }
 ): number {
   const days = goalIntervalToDays(goalInfo.interval, goalInfo.intervalTimeUnit);
-  let latestDate = new Date(
+  let latestDate = moment(
     latestHabitProgress(Object.values(habitProgress)).date
   );
 
-  const lookbackDays =
-    latestDate.getTime() === new Date().getTime() ? days - 1 : days;
-  let startDate = new Date();
-  startDate.setDate(startDate.getDate() - lookbackDays);
-  startDate.setHours(0);
-  startDate.setMinutes(0);
-  startDate.setSeconds(0);
-  startDate.setMilliseconds(0);
+  const lookbackDays = latestDate.isSameOrAfter(moment(), "day")
+    ? days - 1
+    : days;
+  const startDate = moment().subtract(lookbackDays, "days");
 
   const aggregatedProgress = getAggregatedHabitProgress(
     habitProgress,
@@ -193,16 +184,8 @@ export function getStreakData(progress: { [date: string]: HabitDayProgress }): {
 } {
   const streakData: { [date: string]: StreakType } = {};
   Object.values(progress).forEach(({ date }) => {
-    const previousDate = (() => {
-      const d = new Date(date);
-      d.setDate(d.getDate() - 1);
-      return localDateKeyFormat(d);
-    })();
-    const nextDate = (() => {
-      const d = new Date(date);
-      d.setDate(d.getDate() + 1);
-      return localDateKeyFormat(d);
-    })();
+    const previousDate = getDateKey(moment(date).subtract(1, "day"));
+    const nextDate = getDateKey(moment(date).add(1, "day"));
 
     const hasPreviousDay = progress[previousDate] != null;
     const hasNextDay = progress[nextDate] != null;

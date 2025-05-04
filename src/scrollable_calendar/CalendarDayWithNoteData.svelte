@@ -1,11 +1,10 @@
 <script lang="ts">
-  import type { App } from "obsidian";
+  import { moment, type App } from "obsidian";
   import type { HabitDayProgress } from "src/types";
-  import { areDatesSameDay } from "src/utils/utils";
   import { getContext } from "svelte";
 
   interface Props {
-    date: Date;
+    date: moment.Moment;
     isLastWeek: boolean;
     isLastDayOfMonth: boolean;
     habitProgress: HabitDayProgress | null;
@@ -16,8 +15,8 @@
 
   let { date, isLastWeek, isLastDayOfMonth, habitProgress, streakType }: Props =
     $props();
-  let today = new Date();
-  let isToday = $derived(areDatesSameDay(date, today));
+  let today = moment();
+  let isToday = $derived(date.isSame(today, "day"));
 </script>
 
 <div
@@ -54,10 +53,10 @@
         );
       }}
     >
-      {date.getDate()}
+      {date.date()}
     </a>
   {:else}
-    {date.getDate()}
+    {date.date()}
   {/if}
   {#if isToday}
     <div
