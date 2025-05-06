@@ -23,7 +23,7 @@
     (() => {
       const rows = [...new Array(numWeeks)]
         .map((_, i) => {
-          let day = moment(endDate).subtract(i, "week");
+          let day = moment(endDate).endOf("isoWeek").subtract(i, "week");
           return getCalendarRow(day);
         })
         .reverse();
