@@ -2,12 +2,15 @@
   import { ArrowDown, ArrowUp, ChevronRight } from "lucide-svelte";
   import { Button, Card } from "flowbite-svelte";
   import { getHabitGoalProgress } from "../utils/habitDataUtils";
-  import HabitGoalBadge from "./HabitGoalBadge.svelte";
   import HabitTimeSinceBadge from "./HabitTimeSinceBadge.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
   import { moment } from "obsidian";
-  import { latestHabitProgress } from "src/utils/utils";
+  import {
+    goalIntervalTimeUnitToString,
+    latestHabitProgress,
+  } from "src/utils/utils";
   import HabitGoalIndicator from "./HabitGoalIndicator.svelte";
+  import HabitGoalProgressCircle from "./HabitGoalProgressCircle.svelte";
   interface Props {
     habit: Habit;
     habitProgress: { [date: string]: HabitDayProgress };
@@ -46,7 +49,21 @@
         <span class="font-bold">{habit.name}</span>
         <HabitTimeSinceBadge {daysSince} />
         {#if goalProgress != null && goalInfo != null}
-          <HabitGoalBadge {goalProgress} {...goalInfo} />
+          <div class="flex flex-col flex-grow items-center space-y-1">
+            <div class="w-12">
+              <HabitGoalProgressCircle {goalProgress} {...goalInfo} stroke={8}>
+                {#snippet progressComponent(habitProgress: number)}
+                  {habitProgress}
+                {/snippet}
+              </HabitGoalProgressCircle>
+            </div>
+            <span class="flex flex-row text-xs items-center">
+              {goalInfo.goal}{goalInfo.goalUnit ?? "X"} / {goalIntervalTimeUnitToString(
+                goalInfo.intervalTimeUnit,
+                goalInfo.interval,
+              )}
+            </span>
+          </div>
         {/if}
       </div>
       <ChevronRight class="ml-2" />

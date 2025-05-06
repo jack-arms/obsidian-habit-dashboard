@@ -7,6 +7,7 @@
   import {
     formatMinutes,
     getDateKey,
+    goalIntervalTimeUnitToString,
     latestHabitProgress,
   } from "src/utils/utils";
   import { Calendar, Flag, Notebook, Pencil } from "lucide-svelte";
@@ -14,9 +15,9 @@
   import CalendarDayWithNoteData, {
     type StreakType,
   } from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
-  import HabitGoalProgressBar from "./HabitGoalProgressBar.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
   import { moment } from "obsidian";
+  import HabitGoalProgressCircle from "./HabitGoalProgressCircle.svelte";
 
   interface Props {
     habit: Habit;
@@ -64,8 +65,22 @@
         <Flag />
         <h3 class="m-0!">Goal</h3>
       </div>
-      <div class="flex w-60 h-15">
-        <HabitGoalProgressBar {...goalInfo} {goalProgress} />
+      <div class="flex flex-col items-center space-y-2 p-2 w-fit">
+        <div class="w-30 h-30">
+          <HabitGoalProgressCircle stroke={8} {...goalInfo} {goalProgress}>
+            {#snippet progressComponent(habitProgress: number)}
+              <span class="text-xl">
+                {habitProgress}
+              </span>
+            {/snippet}
+          </HabitGoalProgressCircle>
+        </div>
+        <span class="flex flex-row text-lg items-center">
+          {goalInfo.goal}{goalInfo.goalUnit ?? "X"} / {goalIntervalTimeUnitToString(
+            goalInfo.intervalTimeUnit,
+            goalInfo.interval,
+          )}
+        </span>
       </div>
     </div>
   {/if}
