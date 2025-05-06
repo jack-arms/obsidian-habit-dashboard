@@ -7,6 +7,7 @@
   import type { Habit, HabitDayProgress } from "src/types";
   import { moment } from "obsidian";
   import { latestHabitProgress } from "src/utils/utils";
+  import HabitGoalIndicator from "./HabitGoalIndicator.svelte";
   interface Props {
     habit: Habit;
     habitProgress: { [date: string]: HabitDayProgress };
@@ -24,6 +25,10 @@
       "days",
     ),
   );
+
+  let { goalInfo } = habit;
+  let goalProgress =
+    goalInfo != null ? getHabitGoalProgress(goalInfo, habitProgress) : null;
 </script>
 
 <div class="flex flex-row items-center">
@@ -35,11 +40,12 @@
   >
     <div class="flex flex-row items-center">
       <div class="flex flex-row items-center flex-grow space-x-3 h-14">
+        {#if goalProgress != null && goalInfo != null}
+          <HabitGoalIndicator {goalProgress} goal={goalInfo.goal} />
+        {/if}
         <span class="font-bold">{habit.name}</span>
         <HabitTimeSinceBadge {daysSince} />
-        {#if habit.goalInfo != null}
-          {@const { goalInfo } = habit}
-          {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
+        {#if goalProgress != null && goalInfo != null}
           <HabitGoalBadge {goalProgress} {...goalInfo} />
         {/if}
       </div>
