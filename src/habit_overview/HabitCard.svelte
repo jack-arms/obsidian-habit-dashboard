@@ -9,7 +9,6 @@
     goalIntervalTimeUnitToString,
     latestHabitProgress,
   } from "src/utils/utils";
-  import HabitGoalIndicator from "./HabitGoalIndicator.svelte";
   import HabitGoalProgressCircle from "./HabitGoalProgressCircle.svelte";
   interface Props {
     habit: Habit;
@@ -43,15 +42,12 @@
   >
     <div class="flex flex-row items-center">
       <div class="flex flex-row items-center flex-grow space-x-3 h-14">
-        {#if goalProgress != null && goalInfo != null}
-          <HabitGoalIndicator {goalProgress} goal={goalInfo.goal} />
-        {/if}
         <span class="font-bold">{habit.name}</span>
         <HabitTimeSinceBadge {daysSince} />
         {#if goalProgress != null && goalInfo != null}
           <div class="flex flex-col flex-grow items-center space-y-1">
             <div class="w-12">
-              <HabitGoalProgressCircle {goalProgress} {...goalInfo} stroke={8}>
+              <HabitGoalProgressCircle {goalProgress} {...goalInfo} stroke={10}>
                 {#snippet progressComponent(habitProgress: number)}
                   {habitProgress}
                 {/snippet}

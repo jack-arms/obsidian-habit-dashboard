@@ -18,7 +18,6 @@
 
 <div class="flex flex-row relative items-center justify-center">
   <svg viewBox={`0 0 ${SIZE} ${SIZE}`} class="text-gray-200 dark:text-gray-700">
-    <!-- Background circle -->
     <circle
       class="stroke-current"
       stroke-width={stroke}
@@ -27,8 +26,6 @@
       cx={SIZE / 2}
       cy={SIZE / 2}
     />
-
-    <!-- Progress circle -->
     <circle
       class={circleClass}
       stroke-width={stroke}
@@ -41,17 +38,6 @@
       stroke-linecap="round"
       transform={`rotate(-90 ${SIZE / 2} ${SIZE / 2})`}
     />
-
-    <!-- Center text -->
-    <!-- <text
-    x="50%"
-    y="50%"
-    text-anchor="middle"
-    dominant-baseline="middle"
-    class="text-sm font-medium fill-current text-gray-700 dark:text-white"
-  >
-    {progress}%
-  </text> -->
   </svg>
   <div class="absolute">
     {@render children()}
