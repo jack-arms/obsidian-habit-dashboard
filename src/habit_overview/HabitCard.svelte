@@ -35,7 +35,7 @@
 
 <div class="flex flex-row items-center">
   <Card
-    class="h-auto! relative rounded-none! shadow-none! text-base text-gray-900 dark:text-white{isOpen
+    class="h-auto! relative rounded-none! shadow-none! text-base text-gray-900 dark:text-white {isOpen
       ? 'bg-gray-100!'
       : 'bg-transparent!'}"
     on:click={() => onOpen()}
