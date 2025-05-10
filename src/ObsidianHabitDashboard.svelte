@@ -3,7 +3,9 @@
   import { type Habit } from "./types";
   import type { ObsidianHabitDashboardPluginSettings } from "./main";
   import { TabItem, Tabs } from "flowbite-svelte";
-  import HabitEditModal from "./HabitEditModal.svelte";
+  import HabitEditModal, {
+    type HabitEditModalState,
+  } from "./HabitEditModal.svelte";
   import { getHabitProgressByDate } from "./utils/habitDataUtils";
   import HabitCalendarMasterDetail from "./calendar_master_detail/HabitCalendarMasterDetail.svelte";
   import HabitOverview from "./habit_overview/HabitOverview.svelte";
@@ -30,9 +32,7 @@
     | "component_library"
   >("overview");
 
-  let modalState = $state<
-    { isOpen: true; currentHabit: Habit | null } | { isOpen: false }
-  >({
+  let modalState = $state<HabitEditModalState>({
     isOpen: false,
   });
 

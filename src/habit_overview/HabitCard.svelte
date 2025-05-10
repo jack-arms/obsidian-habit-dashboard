@@ -27,10 +27,6 @@
       "days",
     ),
   );
-
-  let { goalInfo } = habit;
-  let goalProgress =
-    goalInfo != null ? getHabitGoalProgress(goalInfo, habitProgress) : null;
 </script>
 
 <div class="flex flex-row items-center">
@@ -44,7 +40,12 @@
       <div class="flex flex-row items-center flex-grow space-x-3 h-14">
         <span class="font-bold">{habit.name}</span>
         <HabitTimeSinceBadge {daysSince} />
-        {#if goalProgress != null && goalInfo != null}
+        {#if habit.goalInfo != null}
+          {@const { goalInfo } = habit}
+          {@const goalProgress = getHabitGoalProgress(
+            habit.goalInfo,
+            habitProgress,
+          )}
           <div class="flex flex-col flex-grow items-center space-y-1">
             <div class="w-12">
               <HabitGoalProgressCircle {goalProgress} {...goalInfo} stroke={10}>
@@ -57,6 +58,7 @@
               {goalInfo.goal}{goalInfo.goalUnit ?? "X"} / {goalIntervalTimeUnitToString(
                 goalInfo.intervalTimeUnit,
                 goalInfo.interval,
+                true,
               )}
             </span>
           </div>

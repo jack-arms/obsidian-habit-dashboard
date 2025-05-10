@@ -34,6 +34,7 @@
   let habitProgressLastMonth = $derived(
     getAggregatedHabitProgress(habitProgress, moment().subtract(1, "month")),
   );
+  let goalInfo = habit.goalInfo;
 
   let calendarElement = $state<HTMLElement | undefined>(undefined);
   $effect(() => {
@@ -76,9 +77,11 @@
           </HabitGoalProgressCircle>
         </div>
         <span class="flex flex-row text-lg items-center">
-          {goalInfo.goal}{goalInfo.goalUnit ?? "X"} / {goalIntervalTimeUnitToString(
+          {goalInfo.goal}{goalInfo.goalUnit ?? "X"} /
+          {goalIntervalTimeUnitToString(
             goalInfo.intervalTimeUnit,
             goalInfo.interval,
+            true,
           )}
         </span>
       </div>

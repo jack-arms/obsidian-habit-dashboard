@@ -21,19 +21,25 @@ export function goalUnitToString(
 
 export function goalIntervalTimeUnitToString(
   intervalTimeUnit: GoalIntervalTimeUnit,
-  interval: number | null = null
+  interval: number | null = null,
+  includeCount: boolean = false
 ) {
+  let intervalString;
   switch (intervalTimeUnit) {
     case "d":
-      return interval == null ? "day(s)" : interval === 1 ? "day" : "days";
+      intervalString =
+        interval == null ? "day(s)" : interval === 1 ? "day" : "days";
     case "w":
-      return interval == null ? "week(s)" : interval === 1 ? "week" : "weeks";
+      intervalString =
+        interval == null ? "week(s)" : interval === 1 ? "week" : "weeks";
     case "m":
-      return interval == null
-        ? "month(s)"
-        : interval === 1
-        ? "month"
-        : "months";
+      intervalString =
+        interval == null ? "month(s)" : interval === 1 ? "month" : "months";
+  }
+  if (interval != null && interval >= 2 && includeCount) {
+    return interval + " " + intervalString;
+  } else {
+    return intervalString;
   }
 }
 
