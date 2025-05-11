@@ -29,12 +29,15 @@ export function goalIntervalTimeUnitToString(
     case "d":
       intervalString =
         interval == null ? "day(s)" : interval === 1 ? "day" : "days";
+      break;
     case "w":
       intervalString =
         interval == null ? "week(s)" : interval === 1 ? "week" : "weeks";
+      break;
     case "m":
       intervalString =
         interval == null ? "month(s)" : interval === 1 ? "month" : "months";
+      break;
   }
   if (interval != null && interval >= 2 && includeCount) {
     return interval + " " + intervalString;
