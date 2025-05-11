@@ -124,9 +124,11 @@ export function getHabitGoalProgress(
   habitProgress: { [date: string]: HabitDayProgress }
 ): number {
   const days = goalIntervalToDays(goalInfo.interval, goalInfo.intervalTimeUnit);
-  let latestDate = moment(
-    latestHabitProgress(Object.values(habitProgress)).date
-  );
+  const latestProgress = latestHabitProgress(Object.values(habitProgress));
+  if (latestProgress == null) {
+    return 0;
+  }
+  let latestDate = moment(latestProgress.date);
 
   const lookbackDays = latestDate.isSameOrAfter(moment(), "day")
     ? days - 1

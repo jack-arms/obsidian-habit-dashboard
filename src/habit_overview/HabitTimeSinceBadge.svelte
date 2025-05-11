@@ -11,6 +11,6 @@
 <div class="flex items-center">
   <div class="inline-flex items-center">
     <Hourglass class="h-4 w-auto" />
-    {daysSince}
+    {daysSince ?? "–"}
   </div>
 </div>

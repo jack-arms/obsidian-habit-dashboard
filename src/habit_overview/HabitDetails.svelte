@@ -34,7 +34,9 @@
   let habitProgressLastMonth = $derived(
     getAggregatedHabitProgress(habitProgress, moment().subtract(1, "month")),
   );
-  let goalInfo = habit.goalInfo;
+  let latestProgress = $derived(
+    latestHabitProgress(Object.values(habitProgress)),
+  );
 
   let calendarElement = $state<HTMLElement | undefined>(undefined);
   $effect(() => {
@@ -94,9 +96,13 @@
     </div>
     <ul>
       <li>
-        Last done on {moment(
-          latestHabitProgress(Object.values(habitProgress)).date,
-        ).format("dddd, MMMM D, YYYY")}
+        {#if latestProgress != null}
+          Last done on {moment(latestProgress.date).format(
+            "dddd, MMMM D, YYYY",
+          )}
+        {:else}
+          Not yet done
+        {/if}
       </li>
       <li>
         In the last 30 days:

@@ -21,11 +21,9 @@
 
   let { habit, habitProgress, onMoveDown, onMoveUp, isOpen, onOpen }: Props =
     $props();
+  let latestDay = $derived(latestHabitProgress(Object.values(habitProgress)));
   let daysSince = $derived(
-    moment().diff(
-      moment(latestHabitProgress(Object.values(habitProgress)).date),
-      "days",
-    ),
+    latestDay != null ? moment().diff(moment(latestDay.date), "days") : null,
   );
 </script>
 
