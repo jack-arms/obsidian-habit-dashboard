@@ -8,7 +8,6 @@
     Toggle,
     DropdownItem,
     Dropdown,
-    FloatingLabelInput,
   } from "flowbite-svelte";
   import {
     goalIntervalTimeUnitToString,
@@ -65,14 +64,14 @@
 
   let habitNameInputError = $state(false);
   let habitNoteKeyInputError = $state(false);
-  let goalTimeInputError = $state(false);
+  let goalAmountInputError = $state(false);
   let goalIntervalInputError = $state(false);
   let goalUnitInputError = $state(false);
 
   const validateForm = () => {
     habitNameInputError = habit.name == "";
     habitNoteKeyInputError = habit.noteKey == "";
-    goalTimeInputError = !goalInfoInputDisabled && goalInfo.goal < 1;
+    goalAmountInputError = !goalInfoInputDisabled && goalInfo.goal < 1;
     goalIntervalInputError = !goalInfoInputDisabled && goalInfo.interval < 1;
     goalUnitInputError =
       !goalInfoInputDisabled &&
@@ -82,7 +81,7 @@
     return !(
       habitNameInputError ||
       habitNoteKeyInputError ||
-      goalTimeInputError ||
+      goalAmountInputError ||
       goalIntervalInputError ||
       goalUnitInputError
     );
@@ -90,50 +89,54 @@
 </script>
 
 <Modal
-  class="min-w-m max-w-lg"
+  class="min-w-s max-w-md"
+  title={currentHabit == null ? "New habit" : "Edit habit"}
   open={true}
   outsideclose
   classFooter="flex justify-end"
   on:close={() => {
     habitNameInputError = false;
     habitNoteKeyInputError = false;
-    goalTimeInputError = false;
+    goalIntervalInputError = false;
     goalIntervalInputError = false;
     onClose();
   }}
 >
-  <h3 class="text-center w-full absolute" slot="header">
-    {currentHabit == null ? "New habit" : "Edit habit"}
-  </h3>
-  <div class="flex flex-col justify-evenly habit-modal space-y-4 px-12">
-    <FloatingLabelInput
-      bind:value={habit.name}
-      color={habitNameInputError ? "red" : undefined}
-      style="filled"
-      id="name-input"
-      name="name-input"
-      type="text"
-      classInput="px-2.5! pb-2.5! pt-5!"
-      classLabel="cursor-text"
-    >
-      Name
-    </FloatingLabelInput>
-    <FloatingLabelInput
-      bind:value={habit.noteKey}
-      color={habitNoteKeyInputError ? "red" : undefined}
-      style="filled"
-      id="frontmatter-key-input"
-      name="frontmatter-key-input"
-      type="text"
-      classInput="px-2.5! pb-2.5! pt-5!"
-      classLabel="cursor-text"
-    >
-      Frontmatter key
-    </FloatingLabelInput>
+  <div class="flex flex-col justify-evenly habit-modal space-y-4 p-4">
+    <div class="flex flex-row space-x-4">
+      <div class="flex flex-col flex-grow">
+        <Label
+          for="name-input"
+          color={habitNameInputError ? "red" : undefined}
+          class="mb-2"
+        >
+          Name
+        </Label>
+        <Input
+          id="name-input"
+          bind:value={habit.name}
+          color={habitNameInputError ? "red" : undefined}
+        />
+      </div>
+      <div class="flex flex-col flex-grow">
+        <Label
+          for="frontmatter-key-input"
+          color={habitNoteKeyInputError ? "red" : undefined}
+          class="mb-2"
+        >
+          Frontmatter key
+        </Label>
+        <Input
+          id="frontmatter-key-input"
+          bind:value={habit.name}
+          color={habitNoteKeyInputError ? "red" : undefined}
+        />
+      </div>
+    </div>
 
-    <hr />
+    <hr class="mt-4!" />
 
-    <div class="flex flex-row">
+    <div class="flex flex-col space-y-4">
       <div class="flex flex-row items-center">
         <Label for="goal-toggle" class="pr-2 flex flex-row">
           <Flag class="w-5 h-5 mr-2" />
@@ -145,76 +148,96 @@
           on:change={() => (goalInfoInputDisabled = !goalInfoInputDisabled)}
         />
       </div>
-      
-      <div class="flex flex-col space-y-4 p-2">
-        <div class="flex flex-row items-center h-12">
-          <Input
-            type="number"
-            bind:value={goalInfo.goal}
-            disabled={goalInfoInputDisabled}
-            class="{goalTimeInputError
-              ? 'border-red-500!'
-              : ''} w-10 mr-4 h-full! text-center"
-          />
-          <Button
-            class="flex flex-row h-full!"
-            disabled={goalInfoInputDisabled}
+
+      <div class="flex flex-row">
+        <div class="flex flex-col">
+          <Label
+            for="goal-amount-input"
+            color={goalAmountInputError ? "red" : undefined}
+            class="mb-2 contrast-50 {!goalAmountInputError
+              ? goalInfoInputDisabled
+                ? 'text-gray-300'
+                : 'text-gray-900'
+              : ''}"
           >
-            {goalUnitToString(
-              isCustomGoalTimeUnit ? "custom" : goalInfo.goalUnit,
-            )}
-            <ChevronDown class="ml-1" />
-          </Button>
-          <Dropdown bind:open={goalTimeUnitDropDownOpen}>
-            {#each [null, "m", "h", "custom"] as (HabitTimeProgressUnit | "custom")[] as goalTimeUnit}
-              <DropdownItem
-                on:click={() => {
-                  if (goalTimeUnit === "custom") {
-                    isCustomGoalTimeUnit = true;
-                    goalInfo.goalUnit = "";
-                  } else {
-                    isCustomGoalTimeUnit = false;
-                    goalInfo.goalUnit = goalTimeUnit;
-                  }
-                  goalTimeUnitDropDownOpen = false;
-                }}>{goalUnitToString(goalTimeUnit)}</DropdownItem
-              >
-            {/each}
-          </Dropdown>
-          {#if isCustomGoalTimeUnit && !goalInfoInputDisabled && goalInfo.goalUnit != null}
-            <FloatingLabelInput
-              bind:value={goalInfo.goalUnit}
-              color={goalUnitInputError ? "red" : undefined}
-              style="filled"
-              id="habit-unit-key-input"
-              name="habit-unit-key-input"
-              type="text"
-              classInput="px-2.5! pb-2.5! pt-5!"
-              classLabel="cursor-text"
-              classDiv="ml-4"
-            >
-              Unit
-            </FloatingLabelInput>
-          {/if}
+            Goal amount
+          </Label>
+          <div class="flex flex-row">
+            <Input
+              id="goal-amount-input"
+              type="number"
+              bind:value={goalInfo.goal}
+              disabled={goalInfoInputDisabled}
+              class="w-10 mr-2 text-center"
+            />
+            <Button class="flex flex-row" disabled={goalInfoInputDisabled}>
+              {goalUnitToString(
+                isCustomGoalTimeUnit ? "custom" : goalInfo.goalUnit,
+              )}
+              <ChevronDown class="ml-1" />
+            </Button>
+            <Dropdown bind:open={goalTimeUnitDropDownOpen}>
+              {#each [null, "m", "h", "custom"] as (HabitTimeProgressUnit | "custom")[] as goalTimeUnit}
+                <DropdownItem
+                  on:click={() => {
+                    if (goalTimeUnit === "custom") {
+                      isCustomGoalTimeUnit = true;
+                      goalInfo.goalUnit = "";
+                    } else {
+                      isCustomGoalTimeUnit = false;
+                      goalInfo.goalUnit = goalTimeUnit;
+                    }
+                    goalTimeUnitDropDownOpen = false;
+                  }}>{goalUnitToString(goalTimeUnit)}</DropdownItem
+                >
+              {/each}
+            </Dropdown>
+          </div>
         </div>
+        {#if isCustomGoalTimeUnit && goalInfo.goalUnit != null}
+          <div class="flex flex-col ml-4">
+            <Label
+              for="habit-unit-key-input"
+              class="mb-2  contrast-50 {!goalUnitInputError
+                ? goalInfoInputDisabled
+                  ? 'text-gray-300'
+                  : 'text-gray-900'
+                : ''}"
+              color={goalUnitInputError ? "red" : undefined}
+            >
+              Frontmatter data unit
+            </Label>
+            <Input
+              id="habit-unit-key-input"
+              class="w-20"
+              bind:value={goalInfo.goalUnit}
+              disabled={goalInfoInputDisabled}
+              color={goalUnitInputError ? "red" : undefined}
+            />
+          </div>
+        {/if}
+      </div>
 
-        <span
-          class="text-base font-bold {goalInfoInputDisabled
-            ? 'text-gray-300'
+      <div class="flex flex-col">
+        <Label
+          color={goalIntervalInputError ? "red" : undefined}
+          class="mb-2 contrast-50 {!goalIntervalInputError
+            ? goalInfoInputDisabled
+              ? 'text-gray-300'
+              : 'text-gray-900'
             : ''}"
-          >every:
-        </span>
-
-        <div class="flex flex-row items-center space-x-2 h-12">
+        >
+          Time span
+        </Label>
+        <div class="flex flex-row">
           <Input
             type="number"
             disabled={goalInfoInputDisabled}
             bind:value={goalInfo.interval}
-            class="{goalIntervalInputError
-              ? 'border-red-500!'
-              : ''} w-10 mr-4 h-full! text-center"
+            color={goalIntervalInputError ? "red" : undefined}
+            class="w-10 mr-2 text-center"
           />
-          <Button disabled={goalInfoInputDisabled} class="h-full!">
+          <Button disabled={goalInfoInputDisabled}>
             {goalIntervalTimeUnitToString(goalInfo.intervalTimeUnit)}
             <ChevronDown class="ml-1" />
           </Button>
@@ -259,8 +282,8 @@
         Save
       </Button>
     </div>
-  </div>
-</Modal>
+  </div></Modal
+>
 
 <style>
   .habit-modal :global input[type="checkbox"] {
