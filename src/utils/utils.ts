@@ -15,6 +15,8 @@ export function goalUnitToString(
       return value == null ? "minute(s)" : value === 1 ? "minute" : "minutes";
     case "h":
       return value == null ? "hour(s)" : value === 1 ? "hour" : "hours";
+    case "custom":
+      return "custom";
   }
   return unit;
 }
