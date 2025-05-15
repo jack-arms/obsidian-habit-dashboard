@@ -12,7 +12,7 @@
   import CalendarStreakDay, {
     type StreakType,
   } from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
-  import HabitHeader from "./HabitTimeSinceBadge.svelte";
+  import HabitTimeSinceBadge from "./HabitTimeSinceBadge.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
   import { moment } from "obsidian";
 
@@ -40,12 +40,10 @@
     open,
     setIsOpen,
   }: Props = $props();
-  let daysSince = $derived(
-    moment().diff(
-      moment(latestHabitProgress(Object.values(habitProgress)).date),
-      "days",
-    ),
+  let latestDate = $derived(
+    latestHabitProgress(Object.values(habitProgress)).date,
   );
+  let daysSince = $derived(moment().diff(moment(latestDate), "days"));
   let calendarElement = $state<HTMLElement | undefined>(undefined);
   $effect(() => {
     if (open && calendarElement != null) {
@@ -80,7 +78,7 @@
     slot="header"
     class="flex flex-grow items-center pl-5 pt-5 pb-5 space-x-2!"
   >
-    <HabitHeader {daysSince} />
+    <HabitTimeSinceBadge date={latestDate} {daysSince} />
   </div>
   <div class="flex flex-col space-y-3 relative">
     <div class="flex items-center space-x-2 absolute right-0">

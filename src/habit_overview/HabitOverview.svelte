@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
   import HabitCard from "./HabitCard.svelte";
-  import HabitDetails from "./HabitDetails.svelte";
+  import HabitDetails from "./habit_details/HabitDetails.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
   import { getStreakDataByHabit } from "src/utils/habitDataUtils";
 
