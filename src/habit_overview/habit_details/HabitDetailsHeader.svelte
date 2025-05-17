@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex flex-row space-x-4 items-center">
-  <h2>{habit.name}</h2>
+  <h2 class="my-0!">{habit.name}</h2>
   <HabitTimeSinceBadge date={latestDay.date} {daysSince} />
   <Button
     class="h-9! p-2! text-sm! font-medium text-white! bg-(--color-accent)! flex flex-row items-center space-x-1"

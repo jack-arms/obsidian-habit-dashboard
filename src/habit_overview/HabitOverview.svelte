@@ -24,9 +24,11 @@
 </script>
 
 <div class="flex flex-row">
-  <div class="flex flex-col w-sm border-r border-gray-300 pr-4">
+  <div class="flex flex-col w-md border-r border-gray-300 p-8 pl-4 space-y-4">
     <div class="flex flex-row items-center space-x-4">
-      <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">
+      <h3
+        class="my-0! text-xl font-bold leading-none text-gray-900 dark:text-white"
+      >
         Habits
       </h3>
       <Button
@@ -54,7 +56,7 @@
       {/each}
     </div>
   </div>
-  <div class="px-4">
+  <div class="p-8">
     {#if openHabit != null}
       <HabitDetails
         habit={openHabit}

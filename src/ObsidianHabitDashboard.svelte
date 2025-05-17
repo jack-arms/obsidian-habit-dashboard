@@ -63,7 +63,7 @@
   };
 </script>
 
-<div class="flex flex-col h-full p-1">
+<div class="flex flex-col h-full">
   <h1 class="font-bold text-center">Obsidian Habit Dashboard</h1>
   <Tabs
     contentClass="flex flex-grow border-t border-gray-300"

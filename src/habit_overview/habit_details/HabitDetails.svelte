@@ -37,7 +37,7 @@
   });
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col space-y-6">
   <HabitDetailsHeader {habit} {habitProgress} {onEdit} />
   <div class="flex flex-col space-y-6">
     <div class="flex flex-row space-x-6 items-start">
@@ -68,15 +68,15 @@
               )}
             </span>
           </div>
-        </div>
+        </Card>
       {/if}
-      <div class="flex flex-col">
-        <div class="flex flex-row items-center space-x-2 mb-2">
+      <Card class="flex flex-col w-auto space-y-4 text-gray-900">
+        <div class="flex flex-row items-center space-x-2">
           <Notebook />
           <h3 class="m-0!">Progress</h3>
         </div>
         <HabitDetailsProgress {habitProgress} />
-      </div>
+      </Card>
     </div>
     <div class="flex flex-col space-y-4">
       <div class="flex flex-row items-center space-y-4">
