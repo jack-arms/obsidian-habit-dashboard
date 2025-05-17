@@ -30,7 +30,7 @@
         Habits
       </h3>
       <Button
-        class="h-9! p-2! text-sm! font-medium text-primary-600! dark:text-primary-500 flex flex-row items-center space-x-1"
+        class="h-9! p-2! text-sm! font-medium text-white! bg-(--color-accent)! flex flex-row items-center space-x-1"
         on:click={() => onEdit(null)}
       >
         <Plus />

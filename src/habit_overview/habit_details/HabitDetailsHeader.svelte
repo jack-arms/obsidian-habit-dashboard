@@ -25,11 +25,11 @@
   <h2>{habit.name}</h2>
   <HabitTimeSinceBadge date={latestDay.date} {daysSince} />
   <Button
-    class="h-9! p-2! text-sm! font-medium text-primary-600! dark:text-primary-500 flex flex-row items-center space-x-1"
+    class="h-9! p-2! text-sm! font-medium text-white! bg-(--color-accent)! flex flex-row items-center space-x-1"
     outline={true}
     on:click={() => onEdit(null)}
   >
-    <Pencil class="me-2 h-5 w-5" />
+    <Pencil strokeWidth={1} class="fill-white me-2 h-5 w-5" />
     <span>Edit</span>
   </Button>
 </div>
