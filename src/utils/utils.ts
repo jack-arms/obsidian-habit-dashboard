@@ -90,10 +90,10 @@ export function goalIntervalToDays(
 export function formatMinutes(minutes: number) {
   const hours = Math.floor(minutes / 60);
   const modMinutes = minutes % 60;
-  const hourString = hours > 0 ? `${hours} hour${hours > 1 ? "s" : ""}` : "";
+  const hourString = hours > 0 ? `${hours} hour${hours > 1 ? "s" : ""}` : null;
   const minuteString =
-    modMinutes > 0 ? `${modMinutes} minute${modMinutes > 1 ? "s" : ""}` : "";
-  return [hourString, minuteString].join(", ");
+    modMinutes > 0 ? `${modMinutes} minute${modMinutes > 1 ? "s" : ""}` : null;
+  return [hourString, minuteString].filter(Boolean).join(", ");
 }
 
 export function latestHabitProgress(habitProgress: HabitDayProgress[]) {
