@@ -24,15 +24,15 @@
 
 {#if latestProgress != null}
   <div class="flex flex-col items-start space-x-2">
-    <h4
-      class="flex flex-row items-center space-x-2 m-0! mb-1! {habitProgressLastMonth.times >
+    <span
+      class="flex flex-row items-center space-x-2 m-0! mb-1! font-bold {habitProgressLastMonth.times ===
       0
         ? 'text-gray-200'
-        : ''}"
+        : 'text-gray-900'}"
     >
       <History />
       <span>In the last 30 days:</span>
-    </h4>
+    </span>
     <div class="flex flex-row space-x-2">
       <Badge color="purple" class="text-sm p-2 rounded-lg">
         {habitProgressLastMonth.times} times</Badge

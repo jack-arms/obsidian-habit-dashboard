@@ -11,6 +11,7 @@
   import HabitGoalProgressCircle from "../HabitGoalProgressCircle.svelte";
   import HabitDetailsProgress from "./HabitDetailsProgress.svelte";
   import HabitDetailsHeader from "./HabitDetailsHeader.svelte";
+  import { Card } from "flowbite-svelte";
 
   interface Props {
     habit: Habit;
@@ -38,13 +39,13 @@
 
 <div class="flex flex-col">
   <HabitDetailsHeader {habit} {habitProgress} {onEdit} />
-  <div class="flex flex-col space-y-4">
-    <div class="flex flex-row space-x-8">
+  <div class="flex flex-col space-y-6">
+    <div class="flex flex-row space-x-6 items-start">
       {#if habit.goalInfo != null}
         {@const { goalInfo } = habit}
         {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
-        <div class="flex flex-col">
-          <div class="flex flex-row items-center space-x-2 mb-2">
+        <Card class="flex flex-col w-auto space-y-4">
+          <div class="flex flex-row items-center space-x-2 text-gray-900">
             <Flag />
             <h3 class="m-0!">Goal</h3>
           </div>
@@ -77,9 +78,9 @@
         <HabitDetailsProgress {habitProgress} />
       </div>
     </div>
-    <div class="flex flex-col space-y-3">
-      <div class="flex flex-row items-center">
-        <div class="flex flex-row items-center space-x-2 mb-2">
+    <div class="flex flex-col space-y-4">
+      <div class="flex flex-row items-center space-y-4">
+        <div class="flex flex-row items-center space-x-2">
           <Calendar />
           <h3 class="m-0!">Calendar</h3>
         </div>
