@@ -18,7 +18,7 @@
     GoalIntervalTimeUnit,
     HabitTimeProgressUnit,
   } from "./types";
-  import moment from "moment";
+  import { moment } from "obsidian";
   export type HabitEditModalState =
     | {
         isOpen: true;
@@ -104,11 +104,11 @@
 >
   <div class="flex flex-col justify-evenly habit-modal space-y-4 p-4">
     <div class="flex flex-row space-x-4">
-      <div class="flex flex-col flex-grow">
+      <div class="flex flex-col flex-grow space-y-2">
         <Label
           for="name-input"
           color={habitNameInputError ? "red" : undefined}
-          class="mb-2"
+          class="font-bold"
         >
           Name
         </Label>
@@ -118,11 +118,11 @@
           color={habitNameInputError ? "red" : undefined}
         />
       </div>
-      <div class="flex flex-col flex-grow">
+      <div class="flex flex-col flex-grow space-y-2">
         <Label
           for="frontmatter-key-input"
           color={habitNoteKeyInputError ? "red" : undefined}
-          class="mb-2"
+          class="font-bold"
         >
           Frontmatter key
         </Label>
@@ -138,7 +138,10 @@
 
     <div class="flex flex-col space-y-4">
       <div class="flex flex-row items-center">
-        <Label for="goal-toggle" class="pr-2 flex flex-row">
+        <Label
+          for="goal-toggle"
+          class="pr-2 flex flex-row items-center font-bold text-md"
+        >
           <Flag class="w-5 h-5 mr-2" />
           Goal
         </Label>
@@ -146,19 +149,20 @@
           id="goal-toggle"
           checked={!goalInfoInputDisabled}
           on:change={() => (goalInfoInputDisabled = !goalInfoInputDisabled)}
+          classDiv={goalInfoInputDisabled ? "" : "bg-(--text-accent)!"}
         />
       </div>
 
       <div class="flex flex-row">
-        <div class="flex flex-col">
+        <div class="flex flex-col space-y-2">
           <Label
             for="goal-amount-input"
             color={goalAmountInputError ? "red" : undefined}
-            class="mb-2 contrast-50 {!goalAmountInputError
+            class="{!goalAmountInputError
               ? goalInfoInputDisabled
-                ? 'text-gray-300'
-                : 'text-gray-900'
-              : ''}"
+                ? 'text-gray-300 contrast-50'
+                : 'text-gray-900 contrast-100'
+              : ''} font-bold"
           >
             Goal amount
           </Label>
@@ -195,14 +199,14 @@
           </div>
         </div>
         {#if isCustomGoalTimeUnit && goalInfo.goalUnit != null}
-          <div class="flex flex-col ml-4">
+          <div class="flex flex-col ml-4 space-y-2">
             <Label
               for="habit-unit-key-input"
-              class="mb-2  contrast-50 {!goalUnitInputError
+              class="{!goalUnitInputError
                 ? goalInfoInputDisabled
-                  ? 'text-gray-300'
-                  : 'text-gray-900'
-                : ''}"
+                  ? 'text-gray-300 contrast-50'
+                  : 'text-gray-900 contrast-100'
+                : ''} font-bold"
               color={goalUnitInputError ? "red" : undefined}
             >
               Frontmatter data unit
@@ -218,19 +222,21 @@
         {/if}
       </div>
 
-      <div class="flex flex-col">
+      <div class="flex flex-col space-y-2">
         <Label
+          for="goal-time-span-input"
           color={goalIntervalInputError ? "red" : undefined}
-          class="mb-2 contrast-50 {!goalIntervalInputError
+          class="{!goalIntervalInputError
             ? goalInfoInputDisabled
-              ? 'text-gray-300'
-              : 'text-gray-900'
-            : ''}"
+              ? 'text-gray-300 contrast-50'
+              : 'text-gray-900 contrast-100'
+            : ''} font-bold"
         >
           Time span
         </Label>
         <div class="flex flex-row">
           <Input
+            id="goal-time-span-input"
             type="number"
             disabled={goalInfoInputDisabled}
             bind:value={goalInfo.interval}
