@@ -27,7 +27,7 @@
   );
 </script>
 
-<div class="flex flex-row items-center">
+<div class="flex flex-row items-center space-x-2">
   <Card
     class="h-auto! relative rounded-none! shadow-none! text-base text-gray-900 dark:text-white {isOpen
       ? 'bg-gray-100!'
@@ -68,7 +68,7 @@
   <div class="flex flex-col">
     <Button
       disabled={onMoveUp == null}
-      class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-primary-700!"
+      class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-(--icon-color-active)! hover:bg-(--background-modifier-hover)!"
       on:click={(e) => {
         e.stopPropagation();
         onMoveUp?.();
@@ -78,7 +78,7 @@
     </Button>
     <Button
       disabled={onMoveDown == null}
-      class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-primary-700!"
+      class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-(--icon-color-active)! hover:bg-(--background-modifier-hover)!"
       on:click={(e) => {
         e.stopPropagation();
         onMoveDown?.();

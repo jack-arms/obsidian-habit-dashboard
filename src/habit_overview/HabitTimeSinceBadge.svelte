@@ -11,7 +11,9 @@
   let { daysSince, date } = $props();
 </script>
 
-<Badge color="purple" class="text-sm p-2 rounded-lg relative">
+<Badge
+  class="text-sm p-2 rounded-lg relative bg-(--background-modifier-active-hover) text-(--text-accent)"
+>
   <Hourglass class="h-4 w-auto" />
   {daysSince == null ? "–" : daysSince + " days"}
 </Badge>

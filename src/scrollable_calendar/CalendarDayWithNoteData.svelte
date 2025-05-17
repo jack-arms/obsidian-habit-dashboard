@@ -27,7 +27,7 @@
 >
   {#if streakType != null}
     <div
-      class="w-auto h-1/2 absolute bg-primary-200
+      class="w-auto h-1/2 absolute bg-(--background-modifier-active-hover)
       {streakType === 'start'
         ? 'rounded-tl-full rounded-bl-full left-1/3 right-0'
         : ''}
@@ -42,7 +42,7 @@
   {/if}
   {#if habitProgress != null}
     <a
-      class="flex flex-grow self-stretch items-center justify-center z-1"
+      class="flex flex-grow self-stretch items-center justify-center z-1 font-bold! text-(--text-accent)"
       href={habitProgress.noteHref}
       onclick={(e) => {
         e.preventDefault();

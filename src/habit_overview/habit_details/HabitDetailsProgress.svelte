@@ -34,18 +34,25 @@
       <span>In the last 30 days:</span>
     </span>
     <div class="flex flex-row space-x-2">
-      <Badge color="purple" class="text-sm p-2 rounded-lg">
+      <Badge
+        class="text-sm p-2 rounded-lg bg-(--background-modifier-active-hover) text-(--text-accent)"
+      >
         {habitProgressLastMonth.times} times</Badge
       >
       {#if habitProgressLastMonth.minutes > 0}
-        <Badge color="purple" class="text-sm p-2 rounded-lg">
+        <Badge
+          class="text-sm p-2 rounded-lg bg-(--background-modifier-active-hover) text-(--text-accent)"
+        >
           {formatMinutes(habitProgressLastMonth.minutes)}
         </Badge>
       {/if}
       {#each Object.entries(habitProgressLastMonth.progress) as [unit, value]}
-        <Badge color="purple" class="text-sm p-2 rounded-lg"
-          >{value} {unit}</Badge
+        <Badge
+          class="text-sm p-2 rounded-lg bg-(--background-modifier-active-hover) text-(--text-accent)"
         >
+          {value}
+          {unit}
+        </Badge>
       {/each}
     </div>
   </div>
