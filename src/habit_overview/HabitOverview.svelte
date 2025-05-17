@@ -4,6 +4,7 @@
   import HabitDetails from "./habit_details/HabitDetails.svelte";
   import type { Habit, HabitDayProgress } from "src/types";
   import { getStreakDataByHabit } from "src/utils/habitDataUtils";
+  import { Plus } from "lucide-svelte";
 
   interface Props {
     habits: Habit[];
@@ -24,15 +25,16 @@
 
 <div class="flex flex-row">
   <div class="flex flex-col w-sm border-r border-gray-300 pr-4">
-    <div class="flex flex-row items-center">
+    <div class="flex flex-row items-center space-x-4">
       <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">
         Habits
       </h3>
       <Button
-        class="ml-4 text-sm! font-medium text-primary-600! dark:text-primary-500"
+        class="h-9! p-2! text-sm! font-medium text-primary-600! dark:text-primary-500 flex flex-row items-center space-x-1"
         on:click={() => onEdit(null)}
       >
-        Add new
+        <Plus />
+        <span>Add</span>
       </Button>
     </div>
     <div class="flex flex-col">
@@ -52,7 +54,7 @@
       {/each}
     </div>
   </div>
-  <div class="flex flex-col px-4">
+  <div class="px-4">
     {#if openHabit != null}
       <HabitDetails
         habit={openHabit}
