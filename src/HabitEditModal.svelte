@@ -128,7 +128,7 @@
         </Label>
         <Input
           id="frontmatter-key-input"
-          bind:value={habit.name}
+          bind:value={habit.noteKey}
           color={habitNoteKeyInputError ? "red" : undefined}
         />
       </div>
