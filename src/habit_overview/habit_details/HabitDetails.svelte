@@ -40,11 +40,11 @@
 <div class="flex flex-col space-y-6">
   <HabitDetailsHeader {habit} {habitProgress} {onEdit} />
   <div class="flex flex-col space-y-6">
-    <div class="flex flex-row space-x-6 items-start">
+    <div class="flex flex-row space-x-6">
       {#if habit.goalInfo != null}
         {@const { goalInfo } = habit}
         {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
-        <Card class="flex flex-col w-auto space-y-4">
+        <Card class="flex flex-col w-auto space-y-4 text-(--text-normal)">
           <div class="flex flex-row items-center space-x-2 text-gray-900">
             <Flag />
             <h3 class="m-0!">Goal</h3>
@@ -53,7 +53,7 @@
             <div class="w-30 h-30">
               <HabitGoalProgressCircle stroke={8} {...goalInfo} {goalProgress}>
                 {#snippet progressComponent(habitProgress: number)}
-                  <span class="text-xl">
+                  <span class="text-xl font-bold">
                     {habitProgress}
                   </span>
                 {/snippet}
@@ -70,7 +70,7 @@
           </div>
         </Card>
       {/if}
-      <Card class="flex flex-col w-auto space-y-4 text-gray-900">
+      <Card class="flex flex-col w-auto space-y-4 text-gray-900 min-w-xs">
         <div class="flex flex-row items-center space-x-2">
           <Notebook />
           <h3 class="m-0!">Progress</h3>
@@ -78,7 +78,7 @@
         <HabitDetailsProgress {habitProgress} />
       </Card>
     </div>
-    <div class="flex flex-col space-y-4">
+    <Card class="flex flex-col space-y-4 w-auto! max-w-full">
       <div class="flex flex-row items-center space-y-4">
         <div class="flex flex-row items-center space-x-2">
           <Calendar />
@@ -101,6 +101,6 @@
           />
         {/snippet}
       </ScrollableCalendar>
-    </div>
+    </Card>
   </div>
 </div>

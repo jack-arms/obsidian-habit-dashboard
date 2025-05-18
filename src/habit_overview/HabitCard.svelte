@@ -37,7 +37,11 @@
     <div class="flex flex-row items-center">
       <div class="flex flex-row items-center flex-grow space-x-3 h-14">
         <span class="font-bold">{habit.name}</span>
-        <HabitTimeSinceBadge date={latestDay.date} {daysSince} />
+        <HabitTimeSinceBadge
+          variant={habit.goalInfo ? "goal" : "neutral"}
+          date={latestDay.date}
+          {daysSince}
+        />
         {#if habit.goalInfo != null}
           {@const { goalInfo } = habit}
           {@const goalProgress = getHabitGoalProgress(

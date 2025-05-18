@@ -23,7 +23,11 @@
 
 <div class="flex flex-row space-x-4 items-center">
   <h2 class="my-0!">{habit.name}</h2>
-  <HabitTimeSinceBadge date={latestDay.date} {daysSince} />
+  <HabitTimeSinceBadge
+    variant={habit.goalInfo != null ? "goal" : "neutral"}
+    date={latestDay.date}
+    {daysSince}
+  />
   <Button
     class="h-9! p-2! text-sm! font-medium text-white! bg-(--color-accent)! flex flex-row items-center space-x-1"
     outline={true}
