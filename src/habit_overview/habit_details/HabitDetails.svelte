@@ -44,8 +44,10 @@
       {#if habit.goalInfo != null}
         {@const { goalInfo } = habit}
         {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
-        <Card class="flex flex-col w-auto space-y-4 text-(--text-normal)">
-          <div class="flex flex-row items-center space-x-2 text-gray-900">
+        <Card
+          class="flex flex-col w-auto space-y-4 bg-(--background-secondary) text-(--text-normal)"
+        >
+          <div class="flex flex-row items-center space-x-2">
             <Flag />
             <h3 class="m-0!">Goal</h3>
           </div>
@@ -70,7 +72,9 @@
           </div>
         </Card>
       {/if}
-      <Card class="flex flex-col w-auto space-y-4 text-gray-900 min-w-xs">
+      <Card
+        class="flex flex-col w-auto space-y-4 min-w-xs bg-(--background-secondary) text-(--text-normal)"
+      >
         <div class="flex flex-row items-center space-x-2">
           <Notebook />
           <h3 class="m-0!">Progress</h3>
@@ -78,7 +82,9 @@
         <HabitDetailsProgress {habitProgress} />
       </Card>
     </div>
-    <Card class="flex flex-col space-y-4 w-auto! max-w-full">
+    <Card
+      class="flex flex-col space-y-4 w-auto! max-w-full bg-(--background-secondary) text-(--text-normal)"
+    >
       <div class="flex flex-row items-center space-y-4">
         <div class="flex flex-row items-center space-x-2">
           <Calendar />

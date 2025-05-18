@@ -33,8 +33,8 @@
 </script>
 
 <div class="flex flex-col w-150 max-w-full h-70 border-r border-b">
-  <div class="flex flex-row bg-gray-100 font-bold border-b-2 h-10">
-    <div class="p-2 w-8 border-r bg-white"></div>
+  <div class="flex flex-row font-bold border-b-2 h-10">
+    <div class="p-2 w-8 border-r"></div>
     <div class="flex flex-row flex-1 border-t">
       {#each ["M", "Tu", "W", "Th", "F", "Sa", "Su"] as day}
         <div

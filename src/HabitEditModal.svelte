@@ -89,7 +89,8 @@
 </script>
 
 <Modal
-  class="min-w-s max-w-md"
+  class="min-w-s max-w-md bg-(--background-primary) text-(--text-normal)"
+  classHeader="bg-(--background-secondary)"
   title={currentHabit == null ? "New habit" : "Edit habit"}
   open={true}
   outsideclose
@@ -108,7 +109,7 @@
         <Label
           for="name-input"
           color={habitNameInputError ? "red" : undefined}
-          class="font-bold"
+          class="font-bold {!habitNameInputError ? 'text-(--text-normal)' : ''}"
         >
           Name
         </Label>
@@ -122,7 +123,7 @@
         <Label
           for="frontmatter-key-input"
           color={habitNoteKeyInputError ? "red" : undefined}
-          class="font-bold"
+          class="font-bold {!habitNameInputError ? 'text-(--text-normal)' : ''}"
         >
           Frontmatter key
         </Label>

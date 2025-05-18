@@ -26,11 +26,11 @@
 <div class="flex flex-row">
   <div class="flex flex-col w-md border-r border-gray-300 p-8 pl-4 space-y-4">
     <div class="flex flex-row items-center space-x-4">
-      <h3
+      <h2
         class="my-0! text-xl font-bold leading-none text-gray-900 dark:text-white"
       >
         Habits
-      </h3>
+      </h2>
       <Button
         class="h-9! p-2! text-sm! font-medium text-white! bg-(--color-accent)! flex flex-row items-center space-x-1"
         on:click={() => onEdit(null)}

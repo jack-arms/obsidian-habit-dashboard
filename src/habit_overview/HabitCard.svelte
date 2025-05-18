@@ -29,9 +29,9 @@
 
 <div class="flex flex-row items-center space-x-2">
   <Card
-    class="h-auto! relative rounded-none! shadow-none! text-base text-gray-900 dark:text-white {isOpen
-      ? 'bg-gray-100!'
-      : 'bg-transparent!'}"
+    class="h-auto! relative rounded-none! shadow-none! text-(--text-normal) {isOpen
+      ? 'bg-(--color-base-25)'
+      : 'bg-(--background-secondary)'}"
     on:click={() => onOpen()}
   >
     <div class="flex flex-row items-center">

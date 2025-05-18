@@ -27,7 +27,7 @@
 >
   {#if streakType != null}
     <div
-      class="w-auto h-1/2 absolute bg-(--background-modifier-active-hover)
+      class="w-auto h-1/2 absolute bg-(--interactive-accent) opacity-50
       {streakType === 'start'
         ? 'rounded-tl-full rounded-bl-full left-1/3 right-0'
         : ''}
