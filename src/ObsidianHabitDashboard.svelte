@@ -66,8 +66,8 @@
 <div class="flex flex-col h-full">
   <h1 class="font-bold text-center">Obsidian Habit Dashboard</h1>
   <Tabs
-    contentClass="flex flex-grow border-t border-gray-300"
-    activeClasses="bg-gray-100! shadow-none!"
+    contentClass="flex flex-grow border-t border-gray-300 rounded-none bg-(--background-primary)!"
+    activeClasses="shadow-none!"
     inactiveClasses="shadow-none!"
     divider={false}
   >
@@ -106,36 +106,36 @@
       </TabItem>
     {/if}
   </Tabs>
-    <HabitEditModal
+  <HabitEditModal
     bind:open={modalState.open}
-      onClose={() =>
-        (modalState = {
+    onClose={() =>
+      (modalState = {
         open: false,
-        })}
-      onSave={(habit, currentHabit) => {
-        modalState = {
+      })}
+    onSave={(habit, currentHabit) => {
+      modalState = {
         open: false,
-        };
-        if (currentHabit == null) {
-          habits = [...habits, habit];
-        } else {
-          habits = habits.map((h) =>
-            h.noteKey === currentHabit.noteKey ? habit : h,
-          );
-        }
-        saveSettings({
-          habits,
-        });
-      }}
-      onDelete={(habit) => {
-        modalState = {
+      };
+      if (currentHabit == null) {
+        habits = [...habits, habit];
+      } else {
+        habits = habits.map((h) =>
+          h.noteKey === currentHabit.noteKey ? habit : h,
+        );
+      }
+      saveSettings({
+        habits,
+      });
+    }}
+    onDelete={(habit) => {
+      modalState = {
         open: false,
-        };
-        habits = habits.filter((h) => h.noteKey !== habit.noteKey);
-        saveSettings({
-          habits,
-        });
-      }}
+      };
+      habits = habits.filter((h) => h.noteKey !== habit.noteKey);
+      saveSettings({
+        habits,
+      });
+    }}
     currentHabit={modalState.open ? modalState.currentHabit : null}
-    />
+  />
 </div>

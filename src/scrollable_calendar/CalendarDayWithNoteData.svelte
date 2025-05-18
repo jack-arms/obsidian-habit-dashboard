@@ -60,7 +60,7 @@
   {/if}
   {#if isToday}
     <div
-      class="w-12 h-12 rounded-full border-2 border-gray-600 border-dashed absolute"
+      class="w-12 h-12 rounded-full border-2 border-(--text-normal) border-dashed absolute"
     ></div>
   {/if}
 </div>

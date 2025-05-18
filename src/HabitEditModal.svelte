@@ -124,13 +124,13 @@
         <Input
           id="name-input"
           bind:value={habit.name}
-          color={habitNameInputError ? "red" : undefined}
+          class="bg-(--background-modifier-border-hover) text-(--text-normal)"
         />
       </div>
       <div class="flex flex-col flex-grow space-y-2">
         <Label
           for="frontmatter-key-input"
-          color={habitNoteKeyInputError ? "red" : undefined}
+          color={habitNoteKeyInputError ? "red" : "grey"}
           class="font-bold {!habitNameInputError ? 'text-(--text-normal)' : ''}"
         >
           Frontmatter key
@@ -138,7 +138,7 @@
         <Input
           id="frontmatter-key-input"
           bind:value={habit.noteKey}
-          color={habitNoteKeyInputError ? "red" : undefined}
+          class="bg-(--background-modifier-border-hover) text-(--text-normal)"
         />
       </div>
     </div>
@@ -149,7 +149,7 @@
       <div class="flex flex-row items-center">
         <Label
           for="goal-toggle"
-          class="pr-2 flex flex-row items-center font-bold text-md"
+          class="pr-2 flex flex-row items-center text-(--text-normal) font-bold text-md"
         >
           <Flag class="w-5 h-5 mr-2" />
           Goal
@@ -157,8 +157,10 @@
         <Toggle
           id="goal-toggle"
           checked={!goalInfoInputDisabled}
-          on:change={() => (goalInfoInputDisabled = !goalInfoInputDisabled)}
-          classDiv={goalInfoInputDisabled ? "" : "bg-(--text-accent)!"}
+          onchange={() => (goalInfoInputDisabled = !goalInfoInputDisabled)}
+          spanClass={goalInfoInputDisabled
+            ? "bg-(--background-modifier-border-hover)"
+            : "bg-(--color-accent)!"}
         />
       </div>
 
@@ -169,8 +171,8 @@
             color={goalAmountInputError ? "red" : undefined}
             class="{!goalAmountInputError
               ? goalInfoInputDisabled
-                ? 'text-gray-300 contrast-50'
-                : 'text-gray-900 contrast-100'
+                ? 'text-(--text-muted) contrast-50'
+                : 'text-(--text-normal) contrast-100'
               : ''} font-bold"
           >
             Goal amount
@@ -181,18 +183,18 @@
               type="number"
               bind:value={goalInfo.goal}
               disabled={goalInfoInputDisabled}
-              class="w-10 mr-2 text-center"
+              class="w-10 mr-2 text-center bg-(--background-modifier-form-field)"
             />
             <Button class="flex flex-row" disabled={goalInfoInputDisabled}>
               {goalUnitToString(
                 isCustomGoalTimeUnit ? "custom" : goalInfo.goalUnit,
               )}
-              <ChevronDown class="ml-1" />
+              <ChevronDown class="ml-4" />
             </Button>
             <Dropdown bind:open={goalTimeUnitDropDownOpen}>
               {#each [null, "m", "h", "custom"] as (HabitTimeProgressUnit | "custom")[] as goalTimeUnit}
                 <DropdownItem
-                  on:click={() => {
+                  onclick={() => {
                     if (goalTimeUnit === "custom") {
                       isCustomGoalTimeUnit = true;
                       goalInfo.goalUnit = "";
@@ -213,8 +215,8 @@
               for="habit-unit-key-input"
               class="{!goalUnitInputError
                 ? goalInfoInputDisabled
-                  ? 'text-gray-300 contrast-50'
-                  : 'text-gray-900 contrast-100'
+                  ? 'text-(--text-muted) contrast-50'
+                  : 'text-(--text-normal) contrast-100'
                 : ''} font-bold"
               color={goalUnitInputError ? "red" : undefined}
             >
@@ -237,8 +239,8 @@
           color={goalIntervalInputError ? "red" : undefined}
           class="{!goalIntervalInputError
             ? goalInfoInputDisabled
-              ? 'text-gray-300 contrast-50'
-              : 'text-gray-900 contrast-100'
+              ? 'text-(--text-muted) contrast-50'
+              : 'text-(--text-normal) contrast-100'
             : ''} font-bold"
         >
           Time span
@@ -259,7 +261,7 @@
           <Dropdown bind:open={goalIntervalUnitDropDownOpen}>
             {#each ["d", "w", "m"] as Array<GoalIntervalTimeUnit> as intervalTimeUnit}
               <DropdownItem
-                on:click={() => {
+                onclick={() => {
                   goalInfo.intervalTimeUnit = intervalTimeUnit;
                   goalIntervalUnitDropDownOpen = false;
                 }}
@@ -275,8 +277,8 @@
       {#if currentHabit != null}
         <Button
           outline={false}
-          class="flex justfiy-end bg-red-500! hover:bg-red-600! active:bg-red-700! text-white! m-1"
-          on:click={() => onDelete(currentHabit)}
+          class="flex justfiy-end bg-(--text-error)! text-white! m-1"
+          onclick={() => onDelete(currentHabit)}
         >
           Delete
         </Button>
@@ -284,7 +286,7 @@
       <Button
         outline={false}
         class="flex justfiy-end m-1"
-        on:click={() => {
+        onclick={() => {
           if (validateForm()) {
             const savedGoalInfo = goalInfoInputDisabled
               ? undefined
@@ -297,8 +299,8 @@
         Save
       </Button>
     </div>
-  </div></Modal
->
+  </div>
+</Modal>
 
 <style>
   .habit-modal :global input[type="checkbox"] {
