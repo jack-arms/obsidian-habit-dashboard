@@ -33,7 +33,7 @@
   >("overview");
 
   let modalState = $state<HabitEditModalState>({
-    isOpen: false,
+    open: false,
   });
 
   let habitProgressByDate = $derived(
@@ -45,7 +45,7 @@
 
   const onEdit = (habit: Habit | null) =>
     (modalState = {
-      isOpen: true,
+      open: true,
       currentHabit: habit,
     });
 
@@ -106,15 +106,15 @@
       </TabItem>
     {/if}
   </Tabs>
-  {#if modalState.isOpen}
     <HabitEditModal
+    bind:open={modalState.open}
       onClose={() =>
         (modalState = {
-          isOpen: false,
+        open: false,
         })}
       onSave={(habit, currentHabit) => {
         modalState = {
-          isOpen: false,
+        open: false,
         };
         if (currentHabit == null) {
           habits = [...habits, habit];
@@ -129,14 +129,13 @@
       }}
       onDelete={(habit) => {
         modalState = {
-          isOpen: false,
+        open: false,
         };
         habits = habits.filter((h) => h.noteKey !== habit.noteKey);
         saveSettings({
           habits,
         });
       }}
-      currentHabit={modalState.currentHabit}
+    currentHabit={modalState.open ? modalState.currentHabit : null}
     />
-  {/if}
 </div>

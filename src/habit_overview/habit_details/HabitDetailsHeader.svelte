@@ -31,7 +31,7 @@
   <Button
     class="h-9! p-2! text-sm! font-medium text-white! bg-(--color-accent)! flex flex-row items-center space-x-1"
     outline={true}
-    on:click={() => onEdit(null)}
+    onclick={() => onEdit(null)}
   >
     <Pencil strokeWidth={1} class="fill-white me-2 h-5 w-5" />
     <span>Edit</span>

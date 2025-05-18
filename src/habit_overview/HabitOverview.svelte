@@ -33,7 +33,9 @@
       </h2>
       <Button
         class="h-9! p-2! text-sm! font-medium text-white! bg-(--color-accent)! flex flex-row items-center space-x-1"
-        on:click={() => onEdit(null)}
+        onclick={() => {
+          onEdit(null);
+        }}
       >
         <Plus />
         <span>Add</span>

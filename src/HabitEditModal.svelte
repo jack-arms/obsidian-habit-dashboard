@@ -21,21 +21,28 @@
   import { moment } from "obsidian";
   export type HabitEditModalState =
     | {
-        isOpen: true;
+        open: true;
         currentHabit: Habit | null;
       }
     | {
-        isOpen: false;
+        open: false;
       };
 
   interface Props {
+    open: boolean;
     onClose: () => void;
     onSave: (habit: Habit, currentHabit: Habit | null) => void;
     onDelete: (habit: Habit) => void;
     currentHabit: Habit | null;
   }
 
-  let { onSave, onDelete, onClose, currentHabit }: Props = $props();
+  let {
+    open = $bindable(),
+    onSave,
+    onDelete,
+    onClose,
+    currentHabit,
+  }: Props = $props();
 
   let habit = $state(
     currentHabit == null
@@ -92,8 +99,9 @@
   class="min-w-s max-w-md bg-(--background-primary) text-(--text-normal)"
   classHeader="bg-(--background-secondary)"
   title={currentHabit == null ? "New habit" : "Edit habit"}
-  open={true}
+  bind:open
   outsideclose
+  transition={() => ({})}
   classFooter="flex justify-end"
   on:close={() => {
     habitNameInputError = false;

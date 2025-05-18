@@ -32,7 +32,8 @@
     class="h-auto! relative rounded-none! shadow-none! text-(--text-normal) {isOpen
       ? 'bg-(--color-base-25)'
       : 'bg-(--background-secondary)'}"
-    on:click={() => onOpen()}
+    on
+    onclick={() => onOpen()}
   >
     <div class="flex flex-row items-center">
       <div class="flex flex-row items-center flex-grow space-x-3 h-14">
@@ -72,8 +73,8 @@
   <div class="flex flex-col">
     <Button
       disabled={onMoveUp == null}
-      class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-(--icon-color-active)! hover:bg-(--background-modifier-hover)!"
-      on:click={(e) => {
+      class="p-2! h-auto! shadow-none! focus-within:ring-0 bg-transparent! hover:text-(--icon-color-active)! hover:bg-(--background-modifier-hover)!"
+      onclick={(e: any) => {
         e.stopPropagation();
         onMoveUp?.();
       }}
@@ -82,8 +83,8 @@
     </Button>
     <Button
       disabled={onMoveDown == null}
-      class="p-2! h-auto! shadow-none! focus-within:ring-0 hover:text-(--icon-color-active)! hover:bg-(--background-modifier-hover)!"
-      on:click={(e) => {
+      class="p-2! h-auto! shadow-none! focus-within:ring-0 bg-transparent! hover:text-(--icon-color-active)! hover:bg-(--background-modifier-hover)!"
+      onclick={(e: any) => {
         e.stopPropagation();
         onMoveDown?.();
       }}

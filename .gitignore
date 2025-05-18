@@ -2,6 +2,7 @@ node_modules/
 dist/
 data.json
 main.js
+main.css
 styles.css
 .vscode/
 *.code-workspace
