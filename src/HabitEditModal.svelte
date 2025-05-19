@@ -1,14 +1,6 @@
 <script lang="ts">
-  import { ChevronDown, Flag } from "lucide-svelte";
-  import {
-    Button,
-    Modal,
-    Label,
-    Input,
-    Toggle,
-    DropdownItem,
-    Dropdown,
-  } from "flowbite-svelte";
+  import { Flag } from "lucide-svelte";
+  import { Button, Modal, Label, Input, Toggle } from "flowbite-svelte";
   import {
     goalIntervalTimeUnitToString,
     goalUnitToString,
@@ -36,6 +28,20 @@
     currentHabit: Habit | null;
   }
 
+  const getEmptyHabitInput = () => ({
+    name: "",
+    noteKey: "",
+    createDate: moment().format("Y-MM-DD"),
+  });
+
+  const getEmptyGoalInfo = () => ({
+    goal: 1,
+    goalUnit: null,
+    interval: 1,
+    intervalTimeUnit: "w" as GoalIntervalTimeUnit,
+    goalCreateDate: moment().format("Y-MM-DD"),
+  });
+
   let {
     open = $bindable(),
     onSave,
@@ -44,25 +50,23 @@
     currentHabit,
   }: Props = $props();
 
-  let habit = $state(
-    currentHabit == null
-      ? {
-          name: "",
-          noteKey: "",
-          createDate: moment().format("Y-MM-DD"),
-        }
-      : (JSON.parse(JSON.stringify(currentHabit)) as Habit),
-  );
-  let goalInfo = $state(
-    currentHabit?.goalInfo == null
-      ? {
-          goal: 1,
-          goalUnit: null,
-          interval: 1,
-          intervalTimeUnit: "w" as GoalIntervalTimeUnit,
-        }
-      : { ...currentHabit.goalInfo },
-  );
+  let habit = $state<Habit>(getEmptyHabitInput());
+
+  let goalInfo = $state<NonNullable<Habit["goalInfo"]>>(getEmptyGoalInfo());
+  $effect(() => {
+    if (open) {
+      habit =
+        currentHabit == null
+          ? getEmptyHabitInput()
+          : (JSON.parse(JSON.stringify(currentHabit)) as Habit);
+
+      goalInfo =
+        currentHabit?.goalInfo == null
+          ? getEmptyGoalInfo()
+          : { ...currentHabit.goalInfo };
+    }
+  });
+
   let goalInfoInputDisabled = $state(currentHabit?.goalInfo == null);
 
   let goalTimeUnitDropDownOpen = $state(false);
@@ -103,7 +107,7 @@
   outsideclose
   transition={() => ({})}
   classFooter="flex justify-end"
-  on:close={() => {
+  onclose={() => {
     habitNameInputError = false;
     habitNoteKeyInputError = false;
     goalIntervalInputError = false;
@@ -185,10 +189,7 @@
               class="w-10 h-(--input-height) mr-2 text-center bg-(--background-modifier-form-field)"
             />
             <select
-              disabled={goalInfoInputDisabled}
-              class={goalInfoInputDisabled
-                ? "hover:bg-(--background-primary)! pointer-events-none text-(--text-muted)! opacity-70!"
-                : ""}
+              value={goalInfo.goalUnit}
               onchange={(e) => {
                 if (e.currentTarget.value === "custom") {
                   isCustomGoalTimeUnit = true;
@@ -198,6 +199,10 @@
                   goalInfo.goalUnit = e.currentTarget.value;
                 }
               }}
+              disabled={goalInfoInputDisabled}
+              class={goalInfoInputDisabled
+                ? "hover:bg-(--background-primary)! pointer-events-none text-(--text-muted)! opacity-70!"
+                : ""}
             >
               {#each [null, "m", "h", "custom"] as (HabitTimeProgressUnit | "custom")[] as goalTimeUnit}
                 <option value={goalTimeUnit}>
@@ -252,7 +257,8 @@
             class="w-10 h-(--input-height) bg-(--background-modifier-form-field) mr-2 text-center"
           />
           <select
-            onselect={(e) => {
+            value={goalInfo.intervalTimeUnit}
+            onchange={(e) => {
               goalInfo.intervalTimeUnit = e.currentTarget
                 .value as GoalIntervalTimeUnit;
             }}
