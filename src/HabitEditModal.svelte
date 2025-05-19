@@ -180,44 +180,42 @@
           <div class="flex flex-row">
             <Input
               id="goal-amount-input"
-              type="number"
               bind:value={goalInfo.goal}
               disabled={goalInfoInputDisabled}
               class="w-10 h-(--input-height) mr-2 text-center bg-(--background-modifier-form-field)"
             />
-            <Button class="flex flex-row" disabled={goalInfoInputDisabled}>
-              {goalUnitToString(
-                isCustomGoalTimeUnit ? "custom" : goalInfo.goalUnit,
-              )}
-              <ChevronDown class="ml-4" />
-            </Button>
-            <Dropdown bind:open={goalTimeUnitDropDownOpen}>
+            <select
+              disabled={goalInfoInputDisabled}
+              class={goalInfoInputDisabled
+                ? "hover:bg-(--background-primary)! pointer-events-none text-(--text-muted)! opacity-70!"
+                : ""}
+              onchange={(e) => {
+                if (e.currentTarget.value === "custom") {
+                  isCustomGoalTimeUnit = true;
+                  goalInfo.goalUnit = "";
+                } else {
+                  isCustomGoalTimeUnit = false;
+                  goalInfo.goalUnit = e.currentTarget.value;
+                }
+              }}
+            >
               {#each [null, "m", "h", "custom"] as (HabitTimeProgressUnit | "custom")[] as goalTimeUnit}
-                <DropdownItem
-                  onclick={() => {
-                    if (goalTimeUnit === "custom") {
-                      isCustomGoalTimeUnit = true;
-                      goalInfo.goalUnit = "";
-                    } else {
-                      isCustomGoalTimeUnit = false;
-                      goalInfo.goalUnit = goalTimeUnit;
-                    }
-                    goalTimeUnitDropDownOpen = false;
-                  }}>{goalUnitToString(goalTimeUnit)}</DropdownItem
-                >
+                <option value={goalTimeUnit}>
+                  {goalUnitToString(goalTimeUnit)}
+                </option>
               {/each}
-            </Dropdown>
+            </select>
           </div>
         </div>
         {#if isCustomGoalTimeUnit && goalInfo.goalUnit != null}
           <div class="flex flex-col ml-4 space-y-2">
             <Label
               for="habit-unit-key-input"
-              class="{!goalUnitInputError
+              class="font-bold {!goalUnitInputError
                 ? goalInfoInputDisabled
                   ? 'text-(--text-muted) contrast-50'
                   : 'text-(--text-normal) contrast-100'
-                : ''} font-bold"
+                : ''}"
               color={goalUnitInputError ? "red" : undefined}
             >
               Frontmatter data unit
@@ -248,28 +246,27 @@
         <div class="flex flex-row">
           <Input
             id="goal-time-span-input"
-            type="number"
             disabled={goalInfoInputDisabled}
             bind:value={goalInfo.interval}
             color={goalIntervalInputError ? "red" : undefined}
-            class="w-10 h-(--input-height) mr-2 text-center"
+            class="w-10 h-(--input-height) bg-(--background-modifier-form-field) mr-2 text-center"
           />
-          <Button disabled={goalInfoInputDisabled}>
-            {goalIntervalTimeUnitToString(goalInfo.intervalTimeUnit)}
-            <ChevronDown class="ml-1" />
-          </Button>
-          <Dropdown bind:open={goalIntervalUnitDropDownOpen}>
+          <select
+            onselect={(e) => {
+              goalInfo.intervalTimeUnit = e.currentTarget
+                .value as GoalIntervalTimeUnit;
+            }}
+            disabled={goalInfoInputDisabled}
+            class={goalInfoInputDisabled
+              ? "hover:bg-(--background-primary)! pointer-events-none text-(--text-muted)! opacity-70!"
+              : ""}
+          >
             {#each ["d", "w", "m"] as Array<GoalIntervalTimeUnit> as intervalTimeUnit}
-              <DropdownItem
-                onclick={() => {
-                  goalInfo.intervalTimeUnit = intervalTimeUnit;
-                  goalIntervalUnitDropDownOpen = false;
-                }}
-              >
+              <option value={intervalTimeUnit}>
                 {goalIntervalTimeUnitToString(intervalTimeUnit)}
-              </DropdownItem>
+              </option>
             {/each}
-          </Dropdown>
+          </select>
         </div>
       </div>
     </div>
