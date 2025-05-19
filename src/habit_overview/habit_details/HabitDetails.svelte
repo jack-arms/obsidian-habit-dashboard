@@ -45,7 +45,7 @@
         {@const { goalInfo } = habit}
         {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
         <Card
-          class="flex flex-col p-4 w-auto space-y-4 bg-(--background-primary) text-(--text-normal)"
+          class="flex flex-col p-4 w-auto space-y-4 bg-(--background-primary) text-(--text-normal) border-(--background-modifier-border)"
         >
           <div class="flex flex-row items-center space-x-2">
             <Flag />
@@ -53,7 +53,12 @@
           </div>
           <div class="flex flex-col items-center space-y-2 px-2 w-fit">
             <div class="w-30 h-30">
-              <HabitGoalProgressCircle stroke={8} {...goalInfo} {goalProgress}>
+              <HabitGoalProgressCircle
+                stroke={8}
+                {...goalInfo}
+                {goalProgress}
+                svgClass="text-(--background-secondary)"
+              >
                 {#snippet progressComponent(habitProgress: number)}
                   <span class="text-xl font-bold">
                     {habitProgress}
@@ -73,7 +78,7 @@
         </Card>
       {/if}
       <Card
-        class="flex flex-col p-4 w-auto space-y-4 min-w-xs bg-(--background-primary) text-(--text-normal)"
+        class="flex flex-col p-4 w-auto space-y-4 min-w-xs bg-(--background-primary) text-(--text-normal) border-(--background-modifier-border)"
       >
         <div class="flex flex-row items-center space-x-2">
           <Notebook />
@@ -83,7 +88,7 @@
       </Card>
     </div>
     <Card
-      class="flex flex-col p-4 space-y-4 w-auto! max-w-full bg-(--background-primary) text-(--text-normal)"
+      class="flex flex-col p-4 space-y-4 w-auto! max-w-full bg-(--background-primary) text-(--text-normal) border-(--background-modifier-border)"
     >
       <div class="flex flex-row items-center space-y-4">
         <div class="flex flex-row items-center space-x-2">

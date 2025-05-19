@@ -66,7 +66,7 @@
 <div class="flex flex-col h-full">
   <h1 class="font-bold text-center">Obsidian Habit Dashboard</h1>
   <Tabs
-    contentClass="flex flex-grow border-t border-gray-300 rounded-none bg-(--background-primary)!"
+    contentClass="flex flex-grow border-t rounded-none bg-(--background-primary)!"
     activeClasses="shadow-none!"
     inactiveClasses="shadow-none!"
     divider={false}

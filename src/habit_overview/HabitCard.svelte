@@ -29,9 +29,9 @@
 
 <div class="flex flex-row items-center space-x-2">
   <Card
-    class="p-4 relative rounded-none! shadow-none! text-(--text-normal) {isOpen
-      ? 'bg-(--background-secondary)'
-      : 'bg-(--background-primary)'}"
+    class="p-4 relative rounded-none! text-(--text-normal) border-(--background-modifier-border) bg-(--background-primary) {isOpen
+      ? 'outline-(--interactive-accent-hover) outline-2 z-1 shadow-xl!'
+      : 'shadow-none!'}"
     onclick={() => onOpen()}
   >
     <div class="flex flex-row items-center">
@@ -50,7 +50,12 @@
           )}
           <div class="flex flex-col flex-grow items-center space-y-1">
             <div class="w-12">
-              <HabitGoalProgressCircle {goalProgress} {...goalInfo} stroke={10}>
+              <HabitGoalProgressCircle
+                {goalProgress}
+                {...goalInfo}
+                stroke={10}
+                svgClass={"text-(--background-secondary-alt)"}
+              >
                 {#snippet progressComponent(habitProgress: number)}
                   {habitProgress}
                 {/snippet}

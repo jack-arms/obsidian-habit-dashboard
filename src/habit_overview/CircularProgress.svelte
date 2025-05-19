@@ -6,8 +6,15 @@
     stroke: number;
     children: Snippet | null;
     circleClass: string | null;
+    svgClass: string | null;
   }
-  let { progress, stroke, children = null, circleClass = null } = $props();
+  let {
+    progress,
+    stroke,
+    children = null,
+    circleClass = null,
+    svgClass = null,
+  } = $props();
 
   const SIZE = 100;
 
@@ -17,7 +24,7 @@
 </script>
 
 <div class="flex flex-row relative items-center justify-center">
-  <svg viewBox={`0 0 ${SIZE} ${SIZE}`} class="text-gray-200 dark:text-gray-700">
+  <svg viewBox={`0 0 ${SIZE} ${SIZE}`} class={svgClass}>
     <circle
       class="stroke-current"
       stroke-width={stroke}

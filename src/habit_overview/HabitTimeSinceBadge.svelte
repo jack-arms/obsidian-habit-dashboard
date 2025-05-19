@@ -23,7 +23,7 @@
 </Badge>
 <Tooltip
   placement="bottom"
-  class="transform-none! bg-(--background-secondary) border-(--background-modifier-border)"
+  class="transform-none! text-(--text-normal) bg-(--background-secondary) border-(--background-modifier-border)"
 >
   {moment(date).format("dddd, MMMM D, YYYY")}
 </Tooltip>
