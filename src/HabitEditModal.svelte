@@ -124,7 +124,7 @@
         <Input
           id="name-input"
           bind:value={habit.name}
-          class="bg-(--background-modifier-border-hover) text-(--text-normal)"
+          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal)"
         />
       </div>
       <div class="flex flex-col flex-grow space-y-2">
@@ -138,7 +138,7 @@
         <Input
           id="frontmatter-key-input"
           bind:value={habit.noteKey}
-          class="bg-(--background-modifier-border-hover) text-(--text-normal)"
+          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal)"
         />
       </div>
     </div>
@@ -183,7 +183,7 @@
               type="number"
               bind:value={goalInfo.goal}
               disabled={goalInfoInputDisabled}
-              class="w-10 mr-2 text-center bg-(--background-modifier-form-field)"
+              class="w-10 h-(--input-height) mr-2 text-center bg-(--background-modifier-form-field)"
             />
             <Button class="flex flex-row" disabled={goalInfoInputDisabled}>
               {goalUnitToString(
@@ -224,7 +224,7 @@
             </Label>
             <Input
               id="habit-unit-key-input"
-              class="w-20"
+              class="w-20 h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal)"
               bind:value={goalInfo.goalUnit}
               disabled={goalInfoInputDisabled}
               color={goalUnitInputError ? "red" : undefined}
@@ -252,7 +252,7 @@
             disabled={goalInfoInputDisabled}
             bind:value={goalInfo.interval}
             color={goalIntervalInputError ? "red" : undefined}
-            class="w-10 mr-2 text-center"
+            class="w-10 h-(--input-height) mr-2 text-center"
           />
           <Button disabled={goalInfoInputDisabled}>
             {goalIntervalTimeUnitToString(goalInfo.intervalTimeUnit)}
