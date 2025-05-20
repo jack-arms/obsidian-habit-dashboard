@@ -5,7 +5,7 @@
   import { TabItem, Tabs } from "flowbite-svelte";
   import HabitEditModal, {
     type HabitEditModalState,
-  } from "./HabitEditModal.svelte";
+  } from "./habit_edit/HabitEditModal.svelte";
   import { getHabitProgressByDate } from "./utils/habitDataUtils";
   import HabitCalendarMasterDetail from "./calendar_master_detail/HabitCalendarMasterDetail.svelte";
   import HabitOverview from "./habit_overview/HabitOverview.svelte";

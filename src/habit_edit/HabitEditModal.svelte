@@ -4,13 +4,19 @@
   import {
     goalIntervalTimeUnitToString,
     goalUnitToString,
-  } from "./utils/utils";
+  } from "../utils/utils";
   import type {
     Habit,
     GoalIntervalTimeUnit,
     HabitTimeProgressUnit,
-  } from "./types";
+    Nullable,
+  } from "../types";
   import { moment } from "obsidian";
+  import {
+    validateForm,
+    type FormHabit,
+    type FormHabitGoalInfo,
+  } from "./editUtils";
   export type HabitEditModalState =
     | {
         open: true;
@@ -29,17 +35,15 @@
   }
 
   const getEmptyHabitInput = () => ({
-    name: "",
-    noteKey: "",
-    createDate: moment().format("Y-MM-DD"),
+    name: null,
+    noteKey: null,
   });
 
   const getEmptyGoalInfo = () => ({
-    goal: 1,
+    goal: null,
     goalUnit: null,
-    interval: 1,
-    intervalTimeUnit: "w" as GoalIntervalTimeUnit,
-    goalCreateDate: moment().format("Y-MM-DD"),
+    interval: null,
+    intervalTimeUnit: null,
   });
 
   let {
@@ -50,9 +54,9 @@
     currentHabit,
   }: Props = $props();
 
-  let habit = $state<Habit>(getEmptyHabitInput());
+  let habit = $state<Nullable<FormHabit>>(getEmptyHabitInput());
+  let goalInfo = $state<Nullable<FormHabitGoalInfo>>(getEmptyGoalInfo());
 
-  let goalInfo = $state<NonNullable<Habit["goalInfo"]>>(getEmptyGoalInfo());
   $effect(() => {
     if (open) {
       habit =
@@ -78,40 +82,22 @@
   let goalAmountInputError = $state(false);
   let goalIntervalInputError = $state(false);
   let goalUnitInputError = $state(false);
-
-  const validateForm = () => {
-    habitNameInputError = habit.name == "";
-    habitNoteKeyInputError = habit.noteKey == "";
-    goalAmountInputError = !goalInfoInputDisabled && goalInfo.goal < 1;
-    goalIntervalInputError = !goalInfoInputDisabled && goalInfo.interval < 1;
-    goalUnitInputError =
-      !goalInfoInputDisabled &&
-      isCustomGoalTimeUnit &&
-      goalInfo.goalUnit === "";
-
-    return !(
-      habitNameInputError ||
-      habitNoteKeyInputError ||
-      goalAmountInputError ||
-      goalIntervalInputError ||
-      goalUnitInputError
-    );
-  };
 </script>
 
 <Modal
   class="min-w-s max-w-md bg-(--background-primary) text-(--text-normal)"
-  classHeader="bg-(--background-secondary)"
+  headerClass="bg-(--background-secondary)"
   title={currentHabit == null ? "New habit" : "Edit habit"}
   bind:open
   outsideclose
   transition={() => ({})}
-  classFooter="flex justify-end"
+  footerClass="flex justify-end"
   onclose={() => {
     habitNameInputError = false;
     habitNoteKeyInputError = false;
     goalIntervalInputError = false;
     goalIntervalInputError = false;
+    goalUnitInputError = false;
     onClose();
   }}
 >
@@ -127,22 +113,22 @@
         </Label>
         <Input
           id="name-input"
-          bind:value={habit.name}
-          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal)"
+          bind:value={() => habit.name ?? "", (v) => (habit.name = v)}
+          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)"
         />
       </div>
       <div class="flex flex-col flex-grow space-y-2">
         <Label
           for="frontmatter-key-input"
-          color={habitNoteKeyInputError ? "red" : "grey"}
+          color={habitNoteKeyInputError ? "red" : undefined}
           class="font-bold {!habitNameInputError ? 'text-(--text-normal)' : ''}"
         >
           Frontmatter key
         </Label>
         <Input
           id="frontmatter-key-input"
-          bind:value={habit.noteKey}
-          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal)"
+          bind:value={() => habit.noteKey ?? "", (v) => (habit.noteKey = v)}
+          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)"
         />
       </div>
     </div>
@@ -184,12 +170,23 @@
           <div class="flex flex-row">
             <Input
               id="goal-amount-input"
-              bind:value={goalInfo.goal}
+              bind:value={
+                () => (goalInfo.goal ?? "") + "",
+                (v) => {
+                  if (v === "") {
+                    goalInfo.goal = null;
+                  }
+                  const parsed = Number.parseInt(v);
+                  if (!Number.isNaN(parsed)) {
+                    goalInfo.goal = parsed;
+                  }
+                }
+              }
               disabled={goalInfoInputDisabled}
-              class="w-10 h-(--input-height) mr-2 text-center bg-(--background-modifier-form-field)"
+              class="w-10 h-(--input-height) mr-2 text-center bg-(--background-modifier-form-field) border-(--background-modifier-border-focus) text-(--text-normal)"
             />
             <select
-              value={goalInfo.goalUnit}
+              value={goalInfo.goalUnit ?? ""}
               onchange={(e) => {
                 if (e.currentTarget.value === "custom") {
                   isCustomGoalTimeUnit = true;
@@ -200,11 +197,11 @@
                 }
               }}
               disabled={goalInfoInputDisabled}
-              class={goalInfoInputDisabled
-                ? "hover:bg-(--background-primary)! pointer-events-none text-(--text-muted)! opacity-70!"
-                : ""}
+              class="dropdown {goalInfoInputDisabled
+                ? 'hover:bg-(--background-primary)! pointer-events-none text-(--text-muted)! opacity-70!'
+                : ''}"
             >
-              {#each [null, "m", "h", "custom"] as (HabitTimeProgressUnit | "custom")[] as goalTimeUnit}
+              {#each ["", "m", "h", "custom"] as (HabitTimeProgressUnit | "" | "custom")[] as goalTimeUnit}
                 <option value={goalTimeUnit}>
                   {goalUnitToString(goalTimeUnit)}
                 </option>
@@ -221,13 +218,12 @@
                   ? 'text-(--text-muted) contrast-50'
                   : 'text-(--text-normal) contrast-100'
                 : ''}"
-              color={goalUnitInputError ? "red" : undefined}
             >
               Frontmatter data unit
             </Label>
             <Input
               id="habit-unit-key-input"
-              class="w-20 h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal)"
+              class="w-20 h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)"
               bind:value={goalInfo.goalUnit}
               disabled={goalInfoInputDisabled}
               color={goalUnitInputError ? "red" : undefined}
@@ -252,20 +248,31 @@
           <Input
             id="goal-time-span-input"
             disabled={goalInfoInputDisabled}
-            bind:value={goalInfo.interval}
+            bind:value={
+              () => (goalInfo.interval ?? "") + "",
+              (v) => {
+                if (v === "") {
+                  goalInfo.interval = null;
+                }
+                const parsed = Number.parseInt(v);
+                if (!Number.isNaN(parsed)) {
+                  goalInfo.interval = parsed;
+                }
+              }
+            }
             color={goalIntervalInputError ? "red" : undefined}
-            class="w-10 h-(--input-height) bg-(--background-modifier-form-field) mr-2 text-center"
+            class="w-10 h-(--input-height) bg-(--background-modifier-form-field) mr-2 text-center border-(--background-modifier-border-focus) text-(--text-normal)"
           />
           <select
-            value={goalInfo.intervalTimeUnit}
+            value={goalInfo.intervalTimeUnit ?? "w"}
             onchange={(e) => {
               goalInfo.intervalTimeUnit = e.currentTarget
                 .value as GoalIntervalTimeUnit;
             }}
             disabled={goalInfoInputDisabled}
-            class={goalInfoInputDisabled
-              ? "hover:bg-(--background-primary)! pointer-events-none text-(--text-muted)! opacity-70!"
-              : ""}
+            class="dropdown {goalInfoInputDisabled
+              ? 'hover:bg-(--background-primary)! pointer-events-none text-(--text-muted)! opacity-70!'
+              : ''}"
           >
             {#each ["d", "w", "m"] as Array<GoalIntervalTimeUnit> as intervalTimeUnit}
               <option value={intervalTimeUnit}>
@@ -290,12 +297,69 @@
         outline={false}
         class="flex justfiy-end m-1"
         onclick={() => {
-          if (validateForm()) {
-            const savedGoalInfo = goalInfoInputDisabled
-              ? undefined
-              : { ...goalInfo, goalCreateDate: moment().format("Y-MM-DD") };
+          const {
+            validatedName,
+            validatedNoteKey,
+            validatedGoalAmountInput,
+            validatedGoalIntervalInput,
+            validatedGoalUnitInput,
+          } = validateForm(
+            habit,
+            goalInfo,
+            goalInfoInputDisabled,
+            isCustomGoalTimeUnit,
+          );
 
-            onSave({ ...habit, goalInfo: savedGoalInfo }, currentHabit);
+          habitNameInputError = validatedName === undefined;
+          habitNoteKeyInputError = validatedNoteKey === undefined;
+          goalAmountInputError = validatedGoalAmountInput === undefined;
+          goalIntervalInputError = validatedGoalIntervalInput === undefined;
+          goalUnitInputError = validatedGoalUnitInput === undefined;
+
+          let formHabit: FormHabit | null =
+            validatedName != null && validatedNoteKey != null
+              ? { name: validatedName, noteKey: validatedNoteKey }
+              : null;
+
+          let formGoalInfo: FormHabitGoalInfo | null =
+            validatedGoalAmountInput != null &&
+            validatedGoalIntervalInput != null &&
+            validatedGoalUnitInput !== undefined
+              ? {
+                  goal: validatedGoalAmountInput,
+                  goalUnit: goalInfo.goalUnit,
+                  interval: validatedGoalIntervalInput,
+                  intervalTimeUnit: goalInfo.intervalTimeUnit ?? "w",
+                }
+              : null;
+
+          if (
+            !(
+              habitNameInputError ||
+              habitNoteKeyInputError ||
+              goalAmountInputError ||
+              goalIntervalInputError ||
+              goalUnitInputError
+            ) &&
+            formHabit != null
+          ) {
+            onSave(
+              {
+                ...formHabit,
+                createDate:
+                  currentHabit?.createDate ?? moment().format("Y-MM-DD"),
+                goalInfo:
+                  goalInfoInputDisabled || formGoalInfo == null
+                    ? undefined
+                    : {
+                        ...formGoalInfo,
+                        goalCreateDate:
+                          currentHabit?.goalInfo?.goalCreateDate ??
+                          moment().format("Y-MM-DD"),
+                      },
+              },
+              currentHabit,
+            );
           }
         }}
       >

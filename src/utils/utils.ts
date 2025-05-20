@@ -10,6 +10,7 @@ export function goalUnitToString(
 ) {
   switch (unit) {
     case null:
+    case "":
       return value == null ? "time(s)" : value === 1 ? "time" : "times";
     case "m":
       return value == null ? "minute(s)" : value === 1 ? "minute" : "minutes";

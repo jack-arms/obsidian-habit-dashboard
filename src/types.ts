@@ -16,17 +16,19 @@ export type HabitDayProgress = {
   unit: string | null;
 };
 
+export type HabitGoalInfo = {
+  goal: number;
+  goalUnit: HabitTimeProgressUnit | string | null;
+  interval: number;
+  intervalTimeUnit: GoalIntervalTimeUnit;
+  goalCreateDate: string;
+};
+
 export interface Habit {
   name: string;
   noteKey: string;
   createDate: string;
-  goalInfo?: {
-    goal: number;
-    goalUnit: HabitTimeProgressUnit | string | null;
-    interval: number;
-    intervalTimeUnit: GoalIntervalTimeUnit;
-    goalCreateDate: string;
-  };
+  goalInfo?: HabitGoalInfo;
 }
 
 export const HabitTimeProgressUnits = {
@@ -39,3 +41,5 @@ export const HabitTimeProgressUnits = {
 } as const;
 
 export type HabitTimeProgressUnit = keyof typeof HabitTimeProgressUnits;
+
+export type Nullable<T> = { [K in keyof T]: T[K] | null };
