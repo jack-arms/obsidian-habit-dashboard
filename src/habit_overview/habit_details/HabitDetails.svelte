@@ -60,7 +60,7 @@
                 svgClass="text-(--background-secondary)"
               >
                 {#snippet progressComponent(habitProgress: number)}
-                  <span class="text-xl font-bold">
+                  <span class="text-xl {habitProgress > 0 ? 'font-bold' : ''}">
                     {habitProgress}
                   </span>
                 {/snippet}

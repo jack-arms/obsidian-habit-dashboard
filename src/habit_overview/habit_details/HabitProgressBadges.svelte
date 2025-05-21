@@ -25,11 +25,11 @@
       {formatMinutes(habitProgress.minutes)}
     </Badge>
   {/if}
-  {#each Object.entries(habitProgress.progress) as [unit, value]}
+  {#each Object.entries(habitProgress.progress) as Array<[string, number]> as [unit, value]}
     <Badge
       class="text-sm p-2 rounded-lg bg-(--background-modifier-active-hover) text-(--text-accent)"
     >
-      {value}
+      {Number.isInteger(value) ? value : Math.round(value * 100) / 100.0}
       {unit}
     </Badge>
   {/each}

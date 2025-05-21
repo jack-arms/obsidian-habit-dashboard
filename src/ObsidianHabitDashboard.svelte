@@ -14,6 +14,7 @@
   import { setContext } from "svelte";
   import { moment } from "obsidian";
   import { ObsidianHabitDashboardView } from "./ObsidianHabitDashboardView";
+  import { ClipboardList } from "lucide-svelte";
 
   interface Props {
     app: App;
@@ -81,9 +82,10 @@
 
 <div class="flex flex-col h-full">
   <h1
-    class="font-bold text-left ml-4 mb-0! pb-4 border-b border-(--background-modifier-border)"
+    class="flex flex-row items-center font-bold ml-4 mb-0! pb-4 border-b border-(--background-modifier-border) space-x-2"
   >
-    Obsidian Habit Dashboard
+    <ClipboardList />
+    <span>Obsidian Habit Dashboard</span>
   </h1>
   {#if isDev}
     <HabitOverview {habits} {habitProgressByDate} {onEdit} {onMoveHabit} />

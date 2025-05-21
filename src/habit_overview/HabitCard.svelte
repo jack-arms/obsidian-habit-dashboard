@@ -57,7 +57,9 @@
                 svgClass={"text-(--background-secondary-alt)"}
               >
                 {#snippet progressComponent(habitProgress: number)}
-                  {habitProgress}
+                  <span class={habitProgress > 0 ? "font-bold" : ""}
+                    >{habitProgress}</span
+                  >
                 {/snippet}
               </HabitGoalProgressCircle>
             </div>
