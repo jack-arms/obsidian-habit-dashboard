@@ -27,6 +27,10 @@
   setContext<App>("obsidian-app", app);
 
   let habits = $state<Habit[]>(settings.habits);
+  let openHabitKey = $state<string | null>(
+    (() => (habits.length > 0 ? habits[0].noteKey : null))(),
+  );
+
   let lastSync = $state<string>("");
 
   app.workspace.on("active-leaf-change", (leaf) => {
@@ -76,53 +80,62 @@
 </script>
 
 <div class="flex flex-col h-full">
-  <h1 class="font-bold text-center">Obsidian Habit Dashboard</h1>
-  <Tabs
-    contentClass="flex flex-grow border-t rounded-none bg-(--background-primary)!"
-    activeClasses="shadow-none!"
-    inactiveClasses="shadow-none!"
-    divider={false}
+  <h1
+    class="font-bold text-left ml-4 mb-0! pb-4 border-b border-(--background-modifier-border)"
   >
-    <TabItem
-      open={tab === "overview"}
-      title="Overview"
-      on:click={() => tab === "overview"}
-      divClass="flex flex-grow"
+    Obsidian Habit Dashboard
+  </h1>
+  {#if isDev}
+    <HabitOverview {habits} {habitProgressByDate} {onEdit} {onMoveHabit} />
+  {:else}
+    <Tabs
+      contentClass="flex flex-grow border-t rounded-none bg-(--background-primary)!"
+      activeClasses="shadow-none!"
+      inactiveClasses="shadow-none!"
+      divider={false}
     >
-      <HabitOverview
-        {habits}
-        {habitProgressByDate}
-        {onEdit}
-        {onMoveHabit}
-      />
-    </TabItem>
-    <TabItem
-      open={tab === "calendar_master_detail"}
-      title="Calendar"
-      on:click={() => tab === "calendar_master_detail"}
-      divClass="flex flex-grow"
-    >
-      <HabitCalendarMasterDetail {habits} {habitProgressByDate} {onEdit} />
-    </TabItem>
-    <TabItem
-      open={tab === "calendar_accordion"}
-      title="Accordion"
-      on:click={() => tab === "calendar_accordion"}
-      divClass="flex flex-grow"
-    >
-      <HabitAccordion {habits} {habitProgressByDate} {onEdit} {onMoveHabit} />
-    </TabItem>
-    {#if isDev}
       <TabItem
-        open={tab === "component_library"}
-        title="Component library"
-        on:click={() => tab === "component_library"}
+        open={tab === "overview"}
+        title="Overview"
+        on:click={() => tab === "overview"}
         divClass="flex flex-grow"
       >
-        <ComponentLibrary />
+        <HabitOverview
+          {habits}
+          {habitProgressByDate}
+          {onEdit}
+          {onMoveHabit}
+          bind:openHabitKey
+        />
       </TabItem>
-    {/if}
-  </Tabs>
+      <TabItem
+        open={tab === "calendar_master_detail"}
+        title="Calendar"
+        on:click={() => tab === "calendar_master_detail"}
+        divClass="flex flex-grow"
+      >
+        <HabitCalendarMasterDetail {habits} {habitProgressByDate} {onEdit} />
+      </TabItem>
+      <TabItem
+        open={tab === "calendar_accordion"}
+        title="Accordion"
+        on:click={() => tab === "calendar_accordion"}
+        divClass="flex flex-grow"
+      >
+        <HabitAccordion {habits} {habitProgressByDate} {onEdit} {onMoveHabit} />
+      </TabItem>
+      {#if isDev}
+        <TabItem
+          open={tab === "component_library"}
+          title="Component library"
+          on:click={() => tab === "component_library"}
+          divClass="flex flex-grow"
+        >
+          <ComponentLibrary />
+        </TabItem>
+      {/if}
+    </Tabs>
+  {/if}
   <HabitEditModal
     bind:open={modalState.open}
     onClose={() =>
@@ -135,6 +148,7 @@
       };
       if (currentHabit == null) {
         habits = [...habits, habit];
+        openHabitKey = habit.noteKey;
       } else {
         habits = habits.map((h) =>
           h.noteKey === currentHabit.noteKey ? habit : h,

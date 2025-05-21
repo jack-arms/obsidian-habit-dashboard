@@ -15,16 +15,22 @@
     };
     onEdit: (habit: Habit | null) => void;
     onMoveHabit: (habit: Habit, change: 1 | -1) => void;
+    openHabitKey: string | null;
   }
 
-  let { habits, habitProgressByDate, onEdit, onMoveHabit }: Props = $props();
+  let {
+    habits,
+    habitProgressByDate,
+    onEdit,
+    onMoveHabit,
+    openHabitKey = $bindable(),
+  }: Props = $props();
   let streakData = $derived(getStreakDataByHabit(habitProgressByDate));
-  let openHabitKey = $state<string | null>(null);
   let openHabit = $derived(habits.find((h) => h.noteKey === openHabitKey));
 </script>
 
-<div class="flex flex-row">
-  <div class="flex flex-col w-md border-r border-(--dark3) p-8 pl-4 space-y-4">
+<div class="flex flex-row h-full">
+  <div class="flex flex-col w-md pl-4 space-y-4 p-8">
     <div class="flex flex-row items-center space-x-4">
       <h2
         class="my-0! text-xl font-bold leading-none text-gray-900 dark:text-white"
@@ -58,14 +64,15 @@
       {/each}
     </div>
   </div>
-  <div class="p-8">
-    {#if openHabit != null}
+  <div class="border-r border-(--background-modifier-border) h-full"></div>
+  {#if openHabit != null}
+    <div class="p-8">
       <HabitDetails
         habit={openHabit}
         habitProgress={habitProgressByDate[openHabit.noteKey]}
         streakData={streakData[openHabit.noteKey]}
         onEdit={() => onEdit(openHabit)}
       />
-    {/if}
-  </div>
+    </div>
+  {/if}
 </div>
