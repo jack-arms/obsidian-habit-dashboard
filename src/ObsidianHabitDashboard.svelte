@@ -12,6 +12,9 @@
   import HabitAccordion from "./habit_overview/HabitAccordion.svelte";
   import ComponentLibrary from "./component_library/ComponentLibrary.svelte";
   import { setContext } from "svelte";
+  import { moment } from "obsidian";
+  import { ObsidianHabitDashboardView } from "./ObsidianHabitDashboardView";
+
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
@@ -24,6 +27,14 @@
   setContext<App>("obsidian-app", app);
 
   let habits = $state<Habit[]>(settings.habits);
+  let lastSync = $state<string>("");
+
+  app.workspace.on("active-leaf-change", (leaf) => {
+    if (leaf?.view instanceof ObsidianHabitDashboardView) {
+      console.log("sync");
+      lastSync = moment().toISOString();
+    }
+  });
 
   let tab = $state<
     | "overview"
@@ -37,10 +48,11 @@
   });
 
   let habitProgressByDate = $derived(
-    getHabitProgressByDate(
-      app,
-      habits.map((h) => h.noteKey),
-    ),
+    ((_) =>
+      getHabitProgressByDate(
+        app,
+        habits.map((h) => h.noteKey),
+      ))(lastSync),
   );
 
   const onEdit = (habit: Habit | null) =>
@@ -77,7 +89,12 @@
       on:click={() => tab === "overview"}
       divClass="flex flex-grow"
     >
-      <HabitOverview {habits} {habitProgressByDate} {onEdit} {onMoveHabit} />
+      <HabitOverview
+        {habits}
+        {habitProgressByDate}
+        {onEdit}
+        {onMoveHabit}
+      />
     </TabItem>
     <TabItem
       open={tab === "calendar_master_detail"}
