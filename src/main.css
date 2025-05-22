@@ -17,6 +17,8 @@
   --color-primary-900: #a5371b;
 
   --color-red-700: var(--red);
+
+  --shadow-obsidian-input: 0 0 0 2px var(--background-modifier-border-focus);
 }
 
 @source "../node_modules/flowbite-svelte/dist";

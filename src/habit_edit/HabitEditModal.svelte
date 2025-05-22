@@ -180,7 +180,7 @@
         <Input
           id="name-input"
           bind:value={() => habit.name ?? "", (v) => (habit.name = v)}
-          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)"
+          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)! focus:shadow-obsidian-input"
         />
       </div>
       <div class="flex flex-col flex-grow space-y-2">
@@ -194,7 +194,7 @@
         <Input
           id="frontmatter-key-input"
           bind:value={() => habit.noteKey ?? "", (v) => (habit.noteKey = v)}
-          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)"
+          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)! focus:shadow-obsidian-input"
         />
       </div>
     </div>
@@ -249,7 +249,7 @@
                 }
               }
               disabled={goalInfoInputDisabled}
-              class="w-10 h-(--input-height) mr-2 text-center bg-(--background-modifier-form-field) border-(--background-modifier-border-focus) text-(--text-normal)"
+              class="w-10 h-(--input-height) mr-2 text-center bg-(--background-modifier-form-field) text-(--text-normal)! border-(--background-modifier-border-focus)!  focus:shadow-obsidian-input"
             />
             <select
               value={goalInfo.goalUnit ?? ""}
@@ -279,6 +279,7 @@
           <div class="flex flex-col ml-4 space-y-2">
             <Label
               for="habit-unit-key-input"
+              color={goalUnitInputError ? "red" : undefined}
               class="font-bold {!goalUnitInputError
                 ? goalInfoInputDisabled
                   ? 'text-(--text-muted) contrast-50'
@@ -291,8 +292,7 @@
               id="habit-unit-key-input"
               bind:value={goalInfo.goalUnit}
               disabled={goalInfoInputDisabled}
-              class="w-20 h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)"
-              color={goalUnitInputError ? "red" : undefined}
+              class="w-20 h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)! focus:shadow-obsidian-input"
             />
           </div>
         {/if}
@@ -326,8 +326,7 @@
               }
             }
             disabled={goalInfoInputDisabled}
-            color={goalIntervalInputError ? "red" : undefined}
-            class="w-10 h-(--input-height) bg-(--background-modifier-form-field) mr-2 text-center border-(--background-modifier-border-focus) text-(--text-normal)"
+            class="w-10 h-(--input-height) bg-(--background-modifier-form-field) mr-2 text-center border-(--background-modifier-border-focus)! text-(--text-normal) focus:shadow-obsidian-input"
           />
           <select
             value={goalInfo.intervalTimeUnit ?? "w"}
