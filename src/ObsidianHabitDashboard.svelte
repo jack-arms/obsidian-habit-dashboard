@@ -9,7 +9,6 @@
   import { getHabitProgressByDate } from "./utils/habitDataUtils";
   import HabitCalendarMasterDetail from "./calendar_master_detail/HabitCalendarMasterDetail.svelte";
   import HabitOverview from "./habit_overview/HabitOverview.svelte";
-  import HabitAccordion from "./habit_overview/HabitAccordion.svelte";
   import ComponentLibrary from "./component_library/ComponentLibrary.svelte";
   import { setContext } from "svelte";
   import { moment } from "obsidian";
@@ -87,20 +86,23 @@
     <ClipboardList />
     <span>Obsidian Habit Dashboard</span>
   </h1>
-  {#if isDev}
-    <HabitOverview {habits} {habitProgressByDate} {onEdit} {onMoveHabit} />
+  {#if !isDev}
+    <HabitOverview
+      {habits}
+      {habitProgressByDate}
+      {onEdit}
+      {onMoveHabit}
+      bind:openHabitKey
+    />
   {:else}
     <Tabs
       contentClass="flex flex-grow border-t rounded-none bg-(--background-primary)!"
-      activeClasses="shadow-none!"
-      inactiveClasses="shadow-none!"
       divider={false}
     >
       <TabItem
         open={tab === "overview"}
         title="Overview"
-        on:click={() => tab === "overview"}
-        divClass="flex flex-grow"
+        onclick={() => tab === "overview"}
       >
         <HabitOverview
           {habits}
@@ -113,25 +115,15 @@
       <TabItem
         open={tab === "calendar_master_detail"}
         title="Calendar"
-        on:click={() => tab === "calendar_master_detail"}
-        divClass="flex flex-grow"
+        onclick={() => tab === "calendar_master_detail"}
       >
         <HabitCalendarMasterDetail {habits} {habitProgressByDate} {onEdit} />
-      </TabItem>
-      <TabItem
-        open={tab === "calendar_accordion"}
-        title="Accordion"
-        on:click={() => tab === "calendar_accordion"}
-        divClass="flex flex-grow"
-      >
-        <HabitAccordion {habits} {habitProgressByDate} {onEdit} {onMoveHabit} />
       </TabItem>
       {#if isDev}
         <TabItem
           open={tab === "component_library"}
           title="Component library"
-          on:click={() => tab === "component_library"}
-          divClass="flex flex-grow"
+          onclick={() => tab === "component_library"}
         >
           <ComponentLibrary />
         </TabItem>
@@ -144,7 +136,7 @@
       (modalState = {
         open: false,
       })}
-    onSave={(habit, currentHabit) => {
+    onSaveHabit={(habit, currentHabit) => {
       modalState = {
         open: false,
       };

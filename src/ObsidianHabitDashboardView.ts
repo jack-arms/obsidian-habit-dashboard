@@ -1,5 +1,5 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
-import { mount, unmount, type ComponentProps } from "svelte";
+import { mount, unmount } from "svelte";
 import ObsidianHabitDashboard from "./ObsidianHabitDashboard.svelte";
 import type { ObsidianHabitDashboardPluginSettings } from "./main";
 

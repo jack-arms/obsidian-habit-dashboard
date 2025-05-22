@@ -29,7 +29,7 @@
   interface Props {
     open: boolean;
     onClose: () => void;
-    onSave: (habit: Habit, currentHabit: Habit | null) => void;
+    onSaveHabit: (habit: Habit, currentHabit: Habit | null) => void;
     onDelete: (habit: Habit) => void;
     currentHabit: Habit | null;
   }
@@ -48,7 +48,7 @@
 
   let {
     open = $bindable(),
-    onSave,
+    onSaveHabit,
     onDelete,
     onClose,
     currentHabit,
@@ -82,6 +82,72 @@
   let goalAmountInputError = $state(false);
   let goalIntervalInputError = $state(false);
   let goalUnitInputError = $state(false);
+
+  const onSave = () => {
+    const {
+      validatedName,
+      validatedNoteKey,
+      validatedGoalAmountInput,
+      validatedGoalIntervalInput,
+      validatedGoalUnitInput,
+    } = validateForm(
+      habit,
+      goalInfo,
+      goalInfoInputDisabled,
+      isCustomGoalTimeUnit,
+    );
+
+    habitNameInputError = validatedName === undefined;
+    habitNoteKeyInputError = validatedNoteKey === undefined;
+    goalAmountInputError = validatedGoalAmountInput === undefined;
+    goalIntervalInputError = validatedGoalIntervalInput === undefined;
+    goalUnitInputError = validatedGoalUnitInput === undefined;
+
+    let formHabit: FormHabit | null =
+      validatedName != null && validatedNoteKey != null
+        ? { name: validatedName, noteKey: validatedNoteKey }
+        : null;
+
+    let formGoalInfo: FormHabitGoalInfo | null =
+      validatedGoalAmountInput != null &&
+      validatedGoalIntervalInput != null &&
+      validatedGoalUnitInput !== undefined
+        ? {
+            goal: validatedGoalAmountInput,
+            goalUnit: goalInfo.goalUnit,
+            interval: validatedGoalIntervalInput,
+            intervalTimeUnit: goalInfo.intervalTimeUnit ?? "w",
+          }
+        : null;
+
+    if (
+      !(
+        habitNameInputError ||
+        habitNoteKeyInputError ||
+        goalAmountInputError ||
+        goalIntervalInputError ||
+        goalUnitInputError
+      ) &&
+      formHabit != null
+    ) {
+      onSaveHabit(
+        {
+          ...formHabit,
+          createDate: currentHabit?.createDate ?? moment().format("Y-MM-DD"),
+          goalInfo:
+            goalInfoInputDisabled || formGoalInfo == null
+              ? undefined
+              : {
+                  ...formGoalInfo,
+                  goalCreateDate:
+                    currentHabit?.goalInfo?.goalCreateDate ??
+                    moment().format("Y-MM-DD"),
+                },
+        },
+        currentHabit,
+      );
+    }
+  };
 </script>
 
 <Modal
@@ -223,9 +289,9 @@
             </Label>
             <Input
               id="habit-unit-key-input"
-              class="w-20 h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)"
               bind:value={goalInfo.goalUnit}
               disabled={goalInfoInputDisabled}
+              class="w-20 h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)"
               color={goalUnitInputError ? "red" : undefined}
             />
           </div>
@@ -247,7 +313,6 @@
         <div class="flex flex-row">
           <Input
             id="goal-time-span-input"
-            disabled={goalInfoInputDisabled}
             bind:value={
               () => (goalInfo.interval ?? "") + "",
               (v) => {
@@ -260,6 +325,7 @@
                 }
               }
             }
+            disabled={goalInfoInputDisabled}
             color={goalIntervalInputError ? "red" : undefined}
             class="w-10 h-(--input-height) bg-(--background-modifier-form-field) mr-2 text-center border-(--background-modifier-border-focus) text-(--text-normal)"
           />
@@ -296,72 +362,7 @@
       <Button
         outline={false}
         class="flex justfiy-end m-1"
-        onclick={() => {
-          const {
-            validatedName,
-            validatedNoteKey,
-            validatedGoalAmountInput,
-            validatedGoalIntervalInput,
-            validatedGoalUnitInput,
-          } = validateForm(
-            habit,
-            goalInfo,
-            goalInfoInputDisabled,
-            isCustomGoalTimeUnit,
-          );
-
-          habitNameInputError = validatedName === undefined;
-          habitNoteKeyInputError = validatedNoteKey === undefined;
-          goalAmountInputError = validatedGoalAmountInput === undefined;
-          goalIntervalInputError = validatedGoalIntervalInput === undefined;
-          goalUnitInputError = validatedGoalUnitInput === undefined;
-
-          let formHabit: FormHabit | null =
-            validatedName != null && validatedNoteKey != null
-              ? { name: validatedName, noteKey: validatedNoteKey }
-              : null;
-
-          let formGoalInfo: FormHabitGoalInfo | null =
-            validatedGoalAmountInput != null &&
-            validatedGoalIntervalInput != null &&
-            validatedGoalUnitInput !== undefined
-              ? {
-                  goal: validatedGoalAmountInput,
-                  goalUnit: goalInfo.goalUnit,
-                  interval: validatedGoalIntervalInput,
-                  intervalTimeUnit: goalInfo.intervalTimeUnit ?? "w",
-                }
-              : null;
-
-          if (
-            !(
-              habitNameInputError ||
-              habitNoteKeyInputError ||
-              goalAmountInputError ||
-              goalIntervalInputError ||
-              goalUnitInputError
-            ) &&
-            formHabit != null
-          ) {
-            onSave(
-              {
-                ...formHabit,
-                createDate:
-                  currentHabit?.createDate ?? moment().format("Y-MM-DD"),
-                goalInfo:
-                  goalInfoInputDisabled || formGoalInfo == null
-                    ? undefined
-                    : {
-                        ...formGoalInfo,
-                        goalCreateDate:
-                          currentHabit?.goalInfo?.goalCreateDate ??
-                          moment().format("Y-MM-DD"),
-                      },
-              },
-              currentHabit,
-            );
-          }
-        }}
+        onclick={() => onSave()}
       >
         Save
       </Button>
