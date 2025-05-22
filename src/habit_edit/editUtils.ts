@@ -16,9 +16,12 @@ export function validateForm(
   isCustomGoalTimeUnit: boolean
 ) {
   return {
-    validatedName: validate(habit.name, (name) => name != null && name !== ""),
+    validatedName: validate(
+      habit.name?.trim(),
+      (name) => name != null && name !== ""
+    ),
     validatedNoteKey: validate(
-      habit.noteKey,
+      habit.noteKey?.trim(),
       (noteKey) => noteKey != null && noteKey !== ""
     ),
     validatedGoalAmountInput: validate(
@@ -30,7 +33,7 @@ export function validateForm(
       (interval) => goalInfoInputDisabled || (interval != null && interval > 0)
     ),
     validatedGoalUnitInput: validate(
-      goalInfo.goalUnit,
+      goalInfo.goalUnit?.trim() ?? null,
       (unit) =>
         goalInfoInputDisabled ||
         !isCustomGoalTimeUnit ||

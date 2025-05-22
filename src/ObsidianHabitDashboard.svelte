@@ -162,5 +162,6 @@
       });
     }}
     currentHabit={modalState.open ? modalState.currentHabit : null}
+    currentHabits={habits}
   />
 </div>

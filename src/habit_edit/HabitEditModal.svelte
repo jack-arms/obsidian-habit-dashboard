@@ -32,6 +32,7 @@
     onSaveHabit: (habit: Habit, currentHabit: Habit | null) => void;
     onDelete: (habit: Habit) => void;
     currentHabit: Habit | null;
+    currentHabits: Habit[];
   }
 
   const getEmptyHabitInput = () => ({
@@ -52,6 +53,7 @@
     onDelete,
     onClose,
     currentHabit,
+    currentHabits,
   }: Props = $props();
 
   let habit = $state<Nullable<FormHabit>>(getEmptyHabitInput());
@@ -82,6 +84,8 @@
   let goalAmountInputError = $state(false);
   let goalIntervalInputError = $state(false);
   let goalUnitInputError = $state(false);
+  let habitNameDuplicateError = $state(false);
+  let habitNoteKeyDuplicateError = $state(false);
 
   const onSave = () => {
     const {
@@ -102,6 +106,12 @@
     goalAmountInputError = validatedGoalAmountInput === undefined;
     goalIntervalInputError = validatedGoalIntervalInput === undefined;
     goalUnitInputError = validatedGoalUnitInput === undefined;
+    habitNameDuplicateError =
+      validatedName != null &&
+      currentHabits.find((h) => h.name === validatedName) != null;
+    habitNoteKeyDuplicateError =
+      validatedNoteKey != null &&
+      currentHabits.find((h) => h.noteKey === validatedNoteKey) != null;
 
     let formHabit: FormHabit | null =
       validatedName != null && validatedNoteKey != null
@@ -126,7 +136,9 @@
         habitNoteKeyInputError ||
         goalAmountInputError ||
         goalIntervalInputError ||
-        goalUnitInputError
+        goalUnitInputError ||
+        habitNameDuplicateError ||
+        habitNoteKeyDuplicateError
       ) &&
       formHabit != null
     ) {
@@ -241,10 +253,11 @@
                 (v) => {
                   if (v === "") {
                     goalInfo.goal = null;
-                  }
-                  const parsed = Number.parseInt(v);
-                  if (!Number.isNaN(parsed)) {
-                    goalInfo.goal = parsed;
+                  } else if (v.length <= 2) {
+                    const parsed = Number.parseInt(v);
+                    if (!Number.isNaN(parsed)) {
+                      goalInfo.goal = parsed;
+                    }
                   }
                 }
               }
@@ -318,10 +331,11 @@
               (v) => {
                 if (v === "") {
                   goalInfo.interval = null;
-                }
-                const parsed = Number.parseInt(v);
-                if (!Number.isNaN(parsed)) {
-                  goalInfo.interval = parsed;
+                } else if (v.length <= 2) {
+                  const parsed = Number.parseInt(v);
+                  if (!Number.isNaN(parsed)) {
+                    goalInfo.interval = parsed;
+                  }
                 }
               }
             }
@@ -348,6 +362,11 @@
         </div>
       </div>
     </div>
+    {#if habitNameDuplicateError || habitNoteKeyDuplicateError}
+      <span class="text-(--text-error)">
+        A habit with this name or note key already exists.
+      </span>
+    {/if}
     <div class="flex justify-end mt-4">
       {#if currentHabit != null}
         <Button
