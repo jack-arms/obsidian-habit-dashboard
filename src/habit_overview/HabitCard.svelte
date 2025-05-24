@@ -35,12 +35,13 @@
     onclick={() => onOpen()}
   >
     <div class="flex flex-row items-center">
-      <div class="flex flex-row items-center flex-grow space-x-3 h-14">
+      <div class="flex flex-row items-center flex-grow space-x-6 h-auto">
         <span class="font-bold">{habit.name}</span>
         <HabitTimeSinceBadge
           variant={habit.goalInfo ? "goal" : "neutral"}
           date={latestDay.date}
           {daysSince}
+          compact
         />
         {#if habit.goalInfo != null}
           {@const { goalInfo } = habit}
@@ -48,7 +49,7 @@
             habit.goalInfo,
             habitProgress,
           )}
-          <div class="flex flex-col flex-grow items-center space-y-1">
+          <div class="flex flex-col items-center space-y-1 min-w-[75px]">
             <div class="w-12">
               <HabitGoalProgressCircle
                 {goalProgress}
@@ -63,7 +64,7 @@
                 {/snippet}
               </HabitGoalProgressCircle>
             </div>
-            <span class="flex flex-row text-xs items-center">
+            <span class="flex flex-row text-xs text-center items-center">
               {goalInfo.goal}{goalInfo.goalUnit ?? "X"} / {goalIntervalTimeUnitToString(
                 goalInfo.intervalTimeUnit,
                 goalInfo.interval,
@@ -73,7 +74,7 @@
           </div>
         {/if}
       </div>
-      <ChevronRight class="ml-2" />
+      <ChevronRight class="ml-2 shrink-0" />
     </div>
   </Card>
   <div class="flex flex-col">
