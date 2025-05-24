@@ -268,14 +268,17 @@
               class="w-10 h-(--input-height) mr-2 text-center bg-(--background-modifier-form-field) text-(--text-normal)! border-(--background-modifier-border-focus)!  focus:shadow-obsidian-input"
             />
             <select
-              value={goalInfo.goalUnit ?? ""}
+              value={isCustomGoalTimeUnit
+                ? "custom"
+                : (goalInfo.goalUnit ?? "")}
               onchange={(e) => {
                 if (e.currentTarget.value === "custom") {
                   isCustomGoalTimeUnit = true;
                   goalInfo.goalUnit = "";
                 } else {
                   isCustomGoalTimeUnit = false;
-                  goalInfo.goalUnit = e.currentTarget.value;
+                  goalInfo.goalUnit =
+                    e.currentTarget.value === "" ? null : e.currentTarget.value;
                 }
               }}
               disabled={goalInfoInputDisabled}
