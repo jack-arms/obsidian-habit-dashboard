@@ -58,6 +58,7 @@
 
   let habit = $state<Nullable<FormHabit>>(getEmptyHabitInput());
   let goalInfo = $state<Nullable<FormHabitGoalInfo>>(getEmptyGoalInfo());
+  let goalInfoInputDisabled = $state(currentHabit?.goalInfo == null);
 
   $effect(() => {
     if (open) {
@@ -70,10 +71,10 @@
         currentHabit?.goalInfo == null
           ? getEmptyGoalInfo()
           : { ...currentHabit.goalInfo };
+
+      goalInfoInputDisabled = currentHabit?.goalInfo == null;
     }
   });
-
-  let goalInfoInputDisabled = $state(currentHabit?.goalInfo == null);
 
   let goalTimeUnitDropDownOpen = $state(false);
   let isCustomGoalTimeUnit = $state(false);
@@ -107,9 +108,11 @@
     goalIntervalInputError = validatedGoalIntervalInput === undefined;
     goalUnitInputError = validatedGoalUnitInput === undefined;
     habitNameDuplicateError =
+      currentHabit == null &&
       validatedName != null &&
       currentHabits.find((h) => h.name === validatedName) != null;
     habitNoteKeyDuplicateError =
+      currentHabit == null &&
       validatedNoteKey != null &&
       currentHabits.find((h) => h.noteKey === validatedNoteKey) != null;
 
