@@ -45,7 +45,7 @@
         {@const { goalInfo } = habit}
         {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
         <Card
-          class="flex flex-col p-4 w-auto space-y-4 bg-(--background-primary) text-(--text-normal) border-(--background-modifier-border)"
+          class="flex flex-col p-4 w-auto space-y-4 bg-(--background-primary) text-(--text-normal) border-2 border-(--background-modifier-border)"
         >
           <div class="flex flex-row items-center space-x-2">
             <Flag />
@@ -78,7 +78,7 @@
         </Card>
       {/if}
       <Card
-        class="flex flex-col p-4 w-auto space-y-4 min-w-xs bg-(--background-primary) text-(--text-normal) border-(--background-modifier-border)"
+        class="flex flex-col p-4 w-auto space-y-4 min-w-xs bg-(--background-primary) text-(--text-normal) border-2 border-(--background-modifier-border)"
       >
         <div class="flex flex-row items-center space-x-2">
           <Notebook />
@@ -88,7 +88,7 @@
       </Card>
     </div>
     <Card
-      class="flex flex-col p-4 space-y-4 w-auto! max-w-full bg-(--background-primary) text-(--text-normal) border-(--background-modifier-border)"
+      class="flex flex-col p-4 space-y-4 w-auto! max-w-full bg-(--background-primary) text-(--text-normal) border-2 border-(--background-modifier-border)"
     >
       <div class="flex flex-row items-center space-y-4">
         <div class="flex flex-row items-center space-x-2">

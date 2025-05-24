@@ -30,7 +30,7 @@
 </script>
 
 <div class="flex flex-row h-full">
-  <div class="flex flex-col w-md pl-4 space-y-4 p-8">
+  <div class="flex flex-col min-w-md w-md pl-4 space-y-4 p-8">
     <div class="flex flex-row items-center space-x-4">
       <h2
         class="my-0! text-xl font-bold leading-none text-gray-900 dark:text-white"
@@ -64,7 +64,9 @@
       {/each}
     </div>
   </div>
-  <div class="border-r border-(--background-modifier-border) h-full"></div>
+  <div
+    class="border-r border-2 border-(--background-modifier-border) h-full"
+  ></div>
   {#if openHabit != null}
     <div class="p-8">
       <HabitDetails

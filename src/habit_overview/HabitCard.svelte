@@ -29,8 +29,8 @@
 
 <div class="flex flex-row items-center space-x-2">
   <Card
-    class="p-4 relative rounded-none! text-(--text-normal) border-(--background-modifier-border) bg-(--background-primary) {isOpen
-      ? 'outline-(--interactive-accent-hover) outline-2 z-1 shadow-xl!'
+    class="p-4 relative rounded-none! text-(--text-normal) border-2 [&:not(:last-child)]:-mt-px border-(--background-modifier-border) bg-(--background-primary) {isOpen
+      ? 'outline-(--interactive-accent-hover) outline-2 z-1 shadow-xl! border-transparent'
       : 'shadow-none!'}"
     onclick={() => onOpen()}
   >
