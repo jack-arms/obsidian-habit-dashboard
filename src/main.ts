@@ -23,7 +23,7 @@ export default class ObsidianHabitDashboardPlugin extends Plugin {
           this.saveSettings(settings)
         )
     );
-    this.addRibbonIcon("clipboard-list", "Habit Dashboard", () => {
+    this.addRibbonIcon("circle-gauge", "Habit Dashboard", () => {
       this.activateView();
     });
   }

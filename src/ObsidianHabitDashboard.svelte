@@ -13,7 +13,7 @@
   import { setContext } from "svelte";
   import { moment } from "obsidian";
   import { ObsidianHabitDashboardView } from "./ObsidianHabitDashboardView";
-  import { ClipboardList } from "lucide-svelte";
+  import { CircleGauge } from "lucide-svelte";
 
   interface Props {
     app: App;
@@ -83,7 +83,7 @@
   <h1
     class="flex flex-row items-center font-bold ml-4 mb-0! pb-4 border-b border-(--background-modifier-border) space-x-2"
   >
-    <ClipboardList />
+    <CircleGauge />
     <span>Obsidian Habit Dashboard</span>
   </h1>
   {#if !isDev}
