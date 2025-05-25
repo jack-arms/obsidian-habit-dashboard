@@ -11,6 +11,8 @@
     roundForDisplay,
   } from "src/utils/utils";
   import HabitGoalProgressCircle from "./HabitGoalProgressCircle.svelte";
+  import { getContext } from "svelte";
+
   interface Props {
     habit: Habit;
     habitProgress: { [date: string]: HabitDayProgress };
@@ -22,9 +24,12 @@
 
   let { habit, habitProgress, onMoveDown, onMoveUp, isOpen, onOpen }: Props =
     $props();
+  const dateFormat = getContext<string>("date-format");
   let latestDay = $derived(latestHabitProgress(Object.values(habitProgress)));
   let daysSince = $derived(
-    latestDay != null ? moment().diff(moment(latestDay.date), "days") : null,
+    latestDay != null
+      ? moment().diff(moment(latestDay.date, dateFormat), "days")
+      : null,
   );
 </script>
 
@@ -49,6 +54,7 @@
           {@const goalProgress = getHabitGoalProgress(
             habit.goalInfo,
             habitProgress,
+            dateFormat,
           )}
           <div class="flex flex-col items-center space-y-1 min-w-[75px]">
             <div class="w-12">

@@ -77,6 +77,7 @@ export function getAggregatedHabitProgress(
   habitProgress: {
     [date: string]: HabitDayProgress;
   },
+  dateFormat: string,
   since: moment.Moment | null = null
 ): AggregatedHabitProgress {
   let times = 0;
@@ -86,7 +87,7 @@ export function getAggregatedHabitProgress(
     [unit: string]: number;
   } = {};
   Object.values(habitProgress).forEach(({ date, unit, value }) => {
-    if (since != null && moment(date).isBefore(since, "day")) {
+    if (since != null && moment(date, dateFormat).isBefore(since, "day")) {
       return;
     }
     times++;
@@ -121,14 +122,15 @@ export function getAggregatedHabitProgress(
 
 export function getHabitGoalProgress(
   goalInfo: NonNullable<Habit["goalInfo"]>,
-  habitProgress: { [date: string]: HabitDayProgress }
+  habitProgress: { [date: string]: HabitDayProgress },
+  dateFormat: string
 ): number {
   const days = goalIntervalToDays(goalInfo.interval, goalInfo.intervalTimeUnit);
   const latestProgress = latestHabitProgress(Object.values(habitProgress));
   if (latestProgress == null) {
     return 0;
   }
-  let latestDate = moment(latestProgress.date);
+  let latestDate = moment(latestProgress.date, dateFormat);
 
   const lookbackDays = latestDate.isSameOrAfter(moment(), "day")
     ? days - 1
@@ -137,6 +139,7 @@ export function getHabitGoalProgress(
 
   const aggregatedProgress = getAggregatedHabitProgress(
     habitProgress,
+    dateFormat,
     startDate
   );
 
@@ -155,11 +158,14 @@ export function getHabitGoalProgress(
   return minutes / (toBase * 1.0);
 }
 
-export function getStreakDataByHabit(habitProgress: {
-  [noteKey: string]: {
-    [date: string]: HabitDayProgress;
-  };
-}): {
+export function getStreakDataByHabit(
+  habitProgress: {
+    [noteKey: string]: {
+      [date: string]: HabitDayProgress;
+    };
+  },
+  dateFormat: string
+): {
   [noteKey: string]: {
     [date: string]: StreakType;
   };
@@ -171,7 +177,7 @@ export function getStreakDataByHabit(habitProgress: {
   } = {};
 
   Object.keys(habitProgress).forEach((noteKey) => {
-    const streakData = getStreakData(habitProgress[noteKey]);
+    const streakData = getStreakData(habitProgress[noteKey], dateFormat);
     data[noteKey] = {};
     Object.keys(habitProgress[noteKey]).forEach((date) => {
       data[noteKey][date] = streakData[date];
@@ -181,13 +187,18 @@ export function getStreakDataByHabit(habitProgress: {
   return data;
 }
 
-export function getStreakData(progress: { [date: string]: HabitDayProgress }): {
+export function getStreakData(
+  progress: { [date: string]: HabitDayProgress },
+  dateFormat: string
+): {
   [date: string]: StreakType;
 } {
   const streakData: { [date: string]: StreakType } = {};
   Object.values(progress).forEach(({ date }) => {
-    const previousDate = getDateKey(moment(date).subtract(1, "day"));
-    const nextDate = getDateKey(moment(date).add(1, "day"));
+    const previousDate = getDateKey(
+      moment(date, dateFormat).subtract(1, "day")
+    );
+    const nextDate = getDateKey(moment(date, dateFormat).add(1, "day"));
 
     const hasPreviousDay = progress[previousDate] != null;
     const hasNextDay = progress[nextDate] != null;

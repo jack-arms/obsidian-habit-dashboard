@@ -16,6 +16,7 @@
   import HabitDetailsProgress from "./HabitDetailsProgress.svelte";
   import HabitDetailsHeader from "./HabitDetailsHeader.svelte";
   import { Card } from "flowbite-svelte";
+  import { getContext } from "svelte";
 
   interface Props {
     habit: Habit;
@@ -29,6 +30,7 @@
   }
 
   let { habit, habitProgress, streakData, onEdit }: Props = $props();
+  const dateFormat = getContext<string>("date-format");
 
   let calendarElement = $state<HTMLElement | undefined>(undefined);
   $effect(() => {
@@ -47,7 +49,11 @@
     <div class="flex flex-row space-x-6">
       {#if habit.goalInfo != null}
         {@const { goalInfo } = habit}
-        {@const goalProgress = getHabitGoalProgress(goalInfo, habitProgress)}
+        {@const goalProgress = getHabitGoalProgress(
+          goalInfo,
+          habitProgress,
+          dateFormat,
+        )}
         <Card
           class="flex flex-col p-4 w-auto space-y-4 bg-(--background-primary) text-(--text-normal) border-2 border-(--background-modifier-border)"
         >

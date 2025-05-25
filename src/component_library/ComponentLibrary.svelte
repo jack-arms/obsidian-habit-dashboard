@@ -3,30 +3,38 @@
   import { getAggregatedHabitProgress } from "src/utils/habitDataUtils";
   import { moment } from "obsidian";
   import HabitDetailsProgress from "src/habit_overview/habit_details/HabitDetailsProgress.svelte";
+  import { DEFAULT_DATE_FORMAT } from "src/utils/utils";
 
   const yesterday = moment().subtract(1, "days");
-  const habit1Progress = getAggregatedHabitProgress({
-    [yesterday.format("Y-MM-DD")]: {
-      date: yesterday.format("Y-MM-DD"),
-      noteHref: "piano",
-      unit: "m",
-      value: 20,
+  const dateFormat = DEFAULT_DATE_FORMAT;
+  const habit1Progress = getAggregatedHabitProgress(
+    {
+      [yesterday.format("Y-MM-DD")]: {
+        date: yesterday.format("Y-MM-DD"),
+        noteHref: "piano",
+        unit: "m",
+        value: 20,
+      },
     },
-  });
-  const habit2Progress = getAggregatedHabitProgress({
-    [yesterday.format("Y-MM-DD")]: {
-      date: yesterday.format("Y-MM-DD"),
-      noteHref: "guitar",
-      unit: "m",
-      value: 20,
+    dateFormat,
+  );
+  const habit2Progress = getAggregatedHabitProgress(
+    {
+      [yesterday.format("Y-MM-DD")]: {
+        date: yesterday.format("Y-MM-DD"),
+        noteHref: "guitar",
+        unit: "m",
+        value: 20,
+      },
+      [yesterday.subtract(4, "days").format("Y-MM-DD")]: {
+        date: yesterday.subtract(4, "days").format("Y-MM-DD"),
+        noteHref: "guitar",
+        unit: "h",
+        value: 1,
+      },
     },
-    [yesterday.subtract(4, "days").format("Y-MM-DD")]: {
-      date: yesterday.subtract(4, "days").format("Y-MM-DD"),
-      noteHref: "guitar",
-      unit: "h",
-      value: 1,
-    },
-  });
+    dateFormat,
+  );
 </script>
 
 <div class="flex flex-col p-4">

@@ -5,6 +5,7 @@
   import type { Habit, HabitDayProgress } from "src/types";
   import { getStreakDataByHabit } from "src/utils/habitDataUtils";
   import { Plus } from "lucide-svelte";
+  import { getContext } from "svelte";
 
   interface Props {
     habits: Habit[];
@@ -25,7 +26,10 @@
     onMoveHabit,
     openHabitKey = $bindable(),
   }: Props = $props();
-  let streakData = $derived(getStreakDataByHabit(habitProgressByDate));
+  const dateFormat = getContext<string>("date-format");
+  let streakData = $derived(
+    getStreakDataByHabit(habitProgressByDate, dateFormat),
+  );
   let openHabit = $derived(habits.find((h) => h.noteKey === openHabitKey));
 </script>
 

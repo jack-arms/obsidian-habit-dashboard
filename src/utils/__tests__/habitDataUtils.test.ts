@@ -52,7 +52,7 @@ describe(getAggregatedHabitProgress, () => {
     },
   };
   test("all data", () => {
-    expect(getAggregatedHabitProgress(data)).toEqual({
+    expect(getAggregatedHabitProgress(data, "YYYY-MM-DD")).toEqual({
       times: 5,
       minutes: 80,
       progress: {
@@ -63,7 +63,9 @@ describe(getAggregatedHabitProgress, () => {
   });
 
   test("data in range", () => {
-    expect(getAggregatedHabitProgress(data, moment("2025-04-28"))).toEqual({
+    expect(
+      getAggregatedHabitProgress(data, "YYYY-MM-DD", moment("2025-04-28"))
+    ).toEqual({
       times: 3,
       minutes: 80,
       progress: {

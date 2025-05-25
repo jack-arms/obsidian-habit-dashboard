@@ -14,6 +14,7 @@
   import { moment } from "obsidian";
   import { ObsidianHabitDashboardView } from "./ObsidianHabitDashboardView";
   import { CircleGauge } from "lucide-svelte";
+  import { DEFAULT_DATE_FORMAT } from "./utils/utils";
 
   interface Props {
     app: App;
@@ -27,6 +28,7 @@
   let { app, settings, saveSettings, isDev }: Props = $props();
 
   setContext<App>("obsidian-app", app);
+  setContext<string>("date-format", settings.dateFormat ?? DEFAULT_DATE_FORMAT);
 
   let habits = $state<Habit[]>(settings.habits);
   let openHabitKey = $state<string | null>(

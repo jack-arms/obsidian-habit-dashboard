@@ -5,6 +5,7 @@
   import type { Habit, HabitDayProgress } from "src/types";
   import { moment } from "obsidian";
   import HabitTimeSinceBadge from "../HabitTimeSinceBadge.svelte";
+  import { getContext } from "svelte";
 
   interface Props {
     habit: Habit;
@@ -15,9 +16,12 @@
   }
 
   let { habit, habitProgress, onEdit }: Props = $props();
+  const dateFormat = getContext<string>("date-format");
   let latestDay = $derived(latestHabitProgress(Object.values(habitProgress)));
   let daysSince = $derived(
-    latestDay != null ? moment().diff(moment(latestDay.date), "days") : null,
+    latestDay != null
+      ? moment().diff(moment(latestDay.date, dateFormat), "days")
+      : null,
   );
 </script>
 

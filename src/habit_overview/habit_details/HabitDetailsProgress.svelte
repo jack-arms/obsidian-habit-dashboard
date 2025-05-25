@@ -4,6 +4,7 @@
   import { getAggregatedHabitProgress } from "src/utils/habitDataUtils";
   import { ChartColumnIncreasing, History } from "lucide-svelte";
   import HabitProgressBadges from "./HabitProgressBadges.svelte";
+  import { getContext } from "svelte";
 
   interface Props {
     habitProgress: {
@@ -13,11 +14,16 @@
 
   let { habitProgress } = $props();
 
+  const dateFormat = getContext<string>("date-format");
   let habitProgressLastMonth = $derived(
-    getAggregatedHabitProgress(habitProgress, moment().subtract(1, "month")),
+    getAggregatedHabitProgress(
+      habitProgress,
+      dateFormat,
+      moment().subtract(1, "month"),
+    ),
   );
   let habitProgressAllTime = $derived(
-    getAggregatedHabitProgress(habitProgress),
+    getAggregatedHabitProgress(habitProgress, dateFormat),
   );
 </script>
 

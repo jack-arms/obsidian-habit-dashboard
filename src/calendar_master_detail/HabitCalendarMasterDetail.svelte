@@ -7,6 +7,7 @@
   import type { Habit, HabitDayProgress } from "src/types";
   import CalendarDayWithNoteData from "../scrollable_calendar/CalendarDayWithNoteData.svelte";
   import { moment } from "obsidian";
+  import { getContext } from "svelte";
 
   interface Props {
     habits: Habit[];
@@ -17,10 +18,13 @@
   }
 
   let { habits, habitProgressByDate, onEdit }: Props = $props();
+  const dateFormat = getContext<string>("date-format");
 
   let activeHabit = $state<Habit | null>(null);
   let activeHabitKey = $derived(activeHabit?.noteKey);
-  let streakDataByHabit = $derived(getStreakDataByHabit(habitProgressByDate));
+  let streakDataByHabit = $derived(
+    getStreakDataByHabit(habitProgressByDate, dateFormat),
+  );
 </script>
 
 <div class="flex flex-row flex-grow">
@@ -31,7 +35,7 @@
       </h3>
       <Button
         class="ml-4 text-sm! font-medium text-primary-600! dark:text-primary-500"
-        on:click={() => onEdit(null)}
+        onclick={() => onEdit(null)}
       >
         Add new
       </Button>

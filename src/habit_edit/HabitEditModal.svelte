@@ -148,15 +148,14 @@
       onSaveHabit(
         {
           ...formHabit,
-          createDate: currentHabit?.createDate ?? moment().format("Y-MM-DD"),
+          createDate: currentHabit?.createDate ?? moment().format(),
           goalInfo:
             goalInfoInputDisabled || formGoalInfo == null
               ? undefined
               : {
                   ...formGoalInfo,
                   goalCreateDate:
-                    currentHabit?.goalInfo?.goalCreateDate ??
-                    moment().format("Y-MM-DD"),
+                    currentHabit?.goalInfo?.goalCreateDate ?? moment().format(),
                 },
         },
         currentHabit,
