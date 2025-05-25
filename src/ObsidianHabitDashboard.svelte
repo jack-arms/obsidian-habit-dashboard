@@ -88,7 +88,7 @@
     class="flex flex-row items-center font-bold ml-4 mb-0! pb-4 border-b border-(--background-modifier-border) space-x-2"
   >
     <CircleGauge />
-    <span>Obsidian Habit Dashboard</span>
+    <span>Habit Dashboard</span>
   </h1>
   {#if !isDev}
     <HabitOverview
