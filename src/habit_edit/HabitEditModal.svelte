@@ -167,7 +167,7 @@
 
 <Modal
   class="min-w-s max-w-md bg-(--background-primary) text-(--text-normal)"
-  headerClass="bg-(--background-secondary)"
+  headerClass="text-(--text-normal) bg-(--background-secondary)"
   title={currentHabit == null ? "New habit" : "Edit habit"}
   bind:open
   outsideclose
