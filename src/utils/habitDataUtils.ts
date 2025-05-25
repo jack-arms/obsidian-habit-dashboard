@@ -152,7 +152,7 @@ export function getHabitGoalProgress(
 
   const minutes = aggregatedProgress.minutes;
   const { toBase } = HabitTimeProgressUnits[goalUnit as HabitTimeProgressUnit];
-  return minutes * toBase;
+  return minutes / (toBase * 1.0);
 }
 
 export function getStreakDataByHabit(habitProgress: {

@@ -1,6 +1,10 @@
 <script lang="ts">
   import { getHabitGoalProgress } from "src/utils/habitDataUtils";
-  import { getDateKey, goalIntervalTimeUnitToString } from "src/utils/utils";
+  import {
+    getDateKey,
+    goalIntervalTimeUnitToString,
+    roundForDisplay,
+  } from "src/utils/utils";
   import { Calendar, Flag, Notebook } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
   import CalendarDayWithNoteData, {
@@ -61,7 +65,7 @@
               >
                 {#snippet progressComponent(habitProgress: number)}
                   <span class="text-xl {habitProgress > 0 ? 'font-bold' : ''}">
-                    {habitProgress}
+                    {roundForDisplay(habitProgress)}
                   </span>
                 {/snippet}
               </HabitGoalProgressCircle>

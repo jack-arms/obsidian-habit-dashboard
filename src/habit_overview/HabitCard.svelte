@@ -8,6 +8,7 @@
   import {
     goalIntervalTimeUnitToString,
     latestHabitProgress,
+    roundForDisplay,
   } from "src/utils/utils";
   import HabitGoalProgressCircle from "./HabitGoalProgressCircle.svelte";
   interface Props {
@@ -35,7 +36,7 @@
     onclick={() => onOpen()}
   >
     <div class="flex flex-row items-center">
-      <div class="flex flex-row items-center flex-grow space-x-6 h-auto">
+      <div class="flex flex-row items-center flex-grow space-x-4 h-auto">
         <span class="font-bold">{habit.name}</span>
         <HabitTimeSinceBadge
           variant={habit.goalInfo ? "goal" : "neutral"}
@@ -59,7 +60,7 @@
               >
                 {#snippet progressComponent(habitProgress: number)}
                   <span class={habitProgress > 0 ? "font-bold" : ""}
-                    >{habitProgress}</span
+                    >{roundForDisplay(habitProgress)}</span
                   >
                 {/snippet}
               </HabitGoalProgressCircle>

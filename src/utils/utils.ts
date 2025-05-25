@@ -103,3 +103,7 @@ export function latestHabitProgress(habitProgress: HabitDayProgress[]) {
     habitProgress[0]
   );
 }
+
+export function roundForDisplay(value: number) {
+  return Number.isInteger(value) ? value : Math.round(value * 100) / 100.0;
+}
