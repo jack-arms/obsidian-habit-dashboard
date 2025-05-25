@@ -22,7 +22,8 @@
   <Hourglass class="h-4 w-auto" />
   {daysSince == null
     ? "–"
-    : daysSince + (compact ? "d" : daysSince > 0 ? " days" : " day")}
+    : daysSince +
+      (compact ? "d" : daysSince === 0 || daysSince > 1 ? " days" : " day")}
 </Badge>
 <Tooltip
   placement="bottom"
