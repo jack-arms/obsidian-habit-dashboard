@@ -18,7 +18,9 @@
   interface Props {
     app: App;
     settings: ObsidianHabitDashboardPluginSettings;
-    saveSettings: (settings: ObsidianHabitDashboardPluginSettings) => void;
+    saveSettings: (
+      settings: Partial<ObsidianHabitDashboardPluginSettings>,
+    ) => void;
     isDev: boolean;
   }
 

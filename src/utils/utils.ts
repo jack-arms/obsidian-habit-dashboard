@@ -4,6 +4,8 @@ import {
   type HabitDayProgress,
 } from "../types";
 
+export const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
+
 export function goalUnitToString(
   unit: string | null,
   value: number | null = null

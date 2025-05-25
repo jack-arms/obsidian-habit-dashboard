@@ -8,11 +8,11 @@ export const OBSIDIAN_HABIT_DASHBOARD_VIEW = "obsidian-habit-dashboard-view";
 export class ObsidianHabitDashboardView extends ItemView {
   dashboard: ReturnType<typeof ObsidianHabitDashboard> | undefined;
   settings: ObsidianHabitDashboardPluginSettings;
-  saveSettings: (settings: ObsidianHabitDashboardPluginSettings) => void;
+  saveSettings: (settings: Partial<ObsidianHabitDashboardPluginSettings>) => void;
   constructor(
     leaf: WorkspaceLeaf,
     settings: ObsidianHabitDashboardPluginSettings,
-    saveSettings: (settings: ObsidianHabitDashboardPluginSettings) => void
+    saveSettings: (settings: Partial<ObsidianHabitDashboardPluginSettings>) => void
   ) {
     super(leaf);
     this.settings = settings;

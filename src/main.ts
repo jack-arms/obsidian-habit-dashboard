@@ -4,23 +4,32 @@ import {
   ObsidianHabitDashboardView,
 } from "./ObsidianHabitDashboardView";
 import type { Habit } from "./types";
+import ObsidianHabitDashboardSettingsTab from "./ObsidianHabitDashboardSettingsTab";
 
 export interface ObsidianHabitDashboardPluginSettings {
   habits: Habit[];
+  dateFormat: string | null;
 }
 
 const DEFAULT_SETTINGS: ObsidianHabitDashboardPluginSettings = {
   habits: [],
+  dateFormat: null,
 };
 
 export default class ObsidianHabitDashboardPlugin extends Plugin {
+  settings: ObsidianHabitDashboardPluginSettings;
+
   async onload() {
-    const settings = await this.loadSettings();
+    this.settings = await this.loadSettings();
+    this.addSettingTab(new ObsidianHabitDashboardSettingsTab(this.app, this));
     this.registerView(
       OBSIDIAN_HABIT_DASHBOARD_VIEW,
       (leaf) =>
-        new ObsidianHabitDashboardView(leaf, settings, (settings) =>
-          this.saveSettings(settings)
+        new ObsidianHabitDashboardView(leaf, this.settings, (settings) =>
+          this.saveSettings({
+            ...this.settings,
+            ...settings,
+          })
         )
     );
     this.addRibbonIcon("circle-gauge", "Habit Dashboard", () => {
