@@ -9,7 +9,7 @@ A simple full-view plugin opened from the left nav/ribbon in Obsidian to visuali
 
 For each habit, see when you last did it, a progress calendar, and optionally how on track you are with a set goal.
 
-The plugin takes data from [Properties/Frontmatter](https://help.obsidian.md/properties) on daily notes so it's fully compatible with any other plugins, Dataview queries, or any other tool that interacts with your Obsidian vault. The only data stored is the habits you want to track and settings specific to using the plugin.
+The plugin takes data from [properties/frontmatter](https://help.obsidian.md/properties) on daily notes so it's fully compatible with any other plugins, Dataview queries, or any other tool that interacts with your Obsidian vault. The only data stored is the habits you want to track and settings specific to using the plugin.
 
 ## How to use
 
@@ -21,19 +21,13 @@ Habit data is pulled any daily note (e.g. `2025-05-26.md`) with [properties/fron
 
 For example, if you create a new habit with settings like this:
 
-[link to new habit modal with name/key filled in]
-<img width="600" src="https://raw.githubusercontent.com/jack-arms/obsidian-habit-dashboard/refs/heads/main/public/creating_new_habit.png" alt="Screenshot of the plugin's add new habit modal" />
+<img width="250" src="https://raw.githubusercontent.com/jack-arms/obsidian-habit-dashboard/refs/heads/main/public/creating_new_habit.png" alt="Screenshot of the plugin's add new habit modal" />
 
 and then add a daily note with properties filled out like this:
 
-[link to a new daily note with drums frontmatter data filled in (yes)]
-<img width="600" src="https://raw.githubusercontent.com/jack-arms/obsidian-habit-dashboard/refs/heads/main/public/adding_note_property.png" alt="Screenshot of adding properties to a daily note in Obsidian" />
+<img width="250" src="https://raw.githubusercontent.com/jack-arms/obsidian-habit-dashboard/refs/heads/main/public/adding_note_property.png" alt="Screenshot of adding properties to a daily note in Obsidian" />
 
 then that will count as a day when you did that habit. You can optionally set a goal for the amount of time (or any other unit) you want to log for that habit every week, 2 weeks, 3 months, etc.
-
-### Goal progress calculation
-
-Goal progress is determined on a rolling basis. For instance, if you have a weekly habit, all progress for that habit in the past 7 days is counted toward the goal, rather than just the progress since the beginning of the week.
 
 ### Property units
 
@@ -44,6 +38,10 @@ Goal progress is determined on a rolling basis. For instance, if you have a week
 > [!NOTE]
 >
 > Any property/frontmatter entry with an empty value is ignored. If you just want to mark whether you did a habit, try out the [Checkbox property type](https://help.obsidian.md/properties#Property%20types) or just enter in any number or text.
+
+### Goal progress calculation
+
+Goal progress is determined on a rolling basis. For instance, if you have a weekly habit, all progress for that habit in the past 7 days is counted toward the goal, rather than just the progress since the beginning of the week.
 
 ## Feedback
 
