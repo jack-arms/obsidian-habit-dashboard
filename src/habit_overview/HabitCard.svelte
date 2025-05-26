@@ -62,7 +62,6 @@
                 {goalProgress}
                 {...goalInfo}
                 stroke={10}
-                svgClass={"text-(--background-secondary-alt)"}
               >
                 {#snippet progressComponent(habitProgress: number)}
                   <span class={habitProgress > 0 ? "font-bold" : ""}

@@ -63,12 +63,7 @@
           </div>
           <div class="flex flex-col items-center space-y-2 px-2 w-fit">
             <div class="w-30 h-30">
-              <HabitGoalProgressCircle
-                stroke={8}
-                {...goalInfo}
-                {goalProgress}
-                svgClass="text-(--background-secondary)"
-              >
+              <HabitGoalProgressCircle stroke={8} {...goalInfo} {goalProgress}>
                 {#snippet progressComponent(habitProgress: number)}
                   <span class="text-xl {habitProgress > 0 ? 'font-bold' : ''}">
                     {roundForDisplay(habitProgress)}

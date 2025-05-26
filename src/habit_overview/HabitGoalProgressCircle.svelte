@@ -28,7 +28,7 @@
 <CircularProgress
   progress={progressPercent}
   {stroke}
-  {svgClass}
+  svgClass="text-(--background-modifier-border)"
   circleClass="stroke-(--color-accent)"
 >
   {#snippet children()}
