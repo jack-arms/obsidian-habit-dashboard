@@ -82,12 +82,6 @@
 </script>
 
 <div class="flex flex-col h-full">
-  <h1
-    class="flex flex-row items-center font-bold ml-4 mb-0! pb-4 border-b border-(--background-modifier-border) space-x-2"
-  >
-    <CircleGauge />
-    <span>Habit Dashboard</span>
-  </h1>
   {#if !IS_DEV}
     <HabitOverview
       {habits}
