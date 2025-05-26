@@ -1,8 +1,8 @@
 {
   "id": "obsidian-habit-dashboard",
   "name": "Habit Dashboard",
-  "description": "Obsidian plugin for a dashboard to track habits using properties/Frontmatter data set on daily notes. See your progress over time on different activities and optionally set goals.",
-  "version": "0.0.0",
+  "description": "Obsidian plugin for a dashboard to track habits using properties/frontmatter data on daily notes. See your progress over time on different activities with optional goals, or just have a way to quickly remember the last time you did some chore.",
+  "version": "1.0.0",
   "author": "Jack Armstrong",
   "authorUrl": "https://github.com/jack-arms/",
   "isDesktopOnly": true,
