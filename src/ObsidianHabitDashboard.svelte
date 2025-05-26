@@ -39,7 +39,6 @@
 
   app.workspace.on("active-leaf-change", (leaf) => {
     if (leaf?.view instanceof ObsidianHabitDashboardView) {
-      console.log("sync");
       lastSync = moment().toISOString();
     }
   });
