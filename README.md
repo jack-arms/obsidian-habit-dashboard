@@ -9,7 +9,7 @@ A simple full-view plugin opened from the left nav/ribbon in Obsidian to visuali
 
 For each habit, see when you last did it, a progress calendar, and optionally how on track you are with a set goal.
 
-The plugin takes data from [properties/frontmatter](https://help.obsidian.md/properties) on daily notes so it's fully compatible with any other plugins, Dataview queries, or any other tool that interacts with your Obsidian vault. The only data stored is the habits you want to track and settings specific to using the plugin.
+The plugin takes data from [properties/frontmatter](https://help.obsidian.md/properties) on daily notes so it's fully compatible with any other plugins, Dataview queries, or any other tool that interacts with your Obsidian vault. The only data stored by the plugin is the habits you want to track and settings specific to using the plugin.
 
 ## How to use
 
