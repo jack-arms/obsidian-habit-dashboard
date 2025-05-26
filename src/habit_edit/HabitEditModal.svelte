@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Flag } from "lucide-svelte";
+  import { Flag, Info } from "lucide-svelte";
   import { Button, Modal, Label, Input, Toggle } from "flowbite-svelte";
   import {
     goalIntervalTimeUnitToString,
@@ -17,6 +17,7 @@
     type FormHabit,
     type FormHabitGoalInfo,
   } from "./editUtils";
+
   export type HabitEditModalState =
     | {
         open: true;
@@ -73,6 +74,7 @@
           : { ...currentHabit.goalInfo };
 
       goalInfoInputDisabled = currentHabit?.goalInfo == null;
+      showPropertyHelp = false;
     }
   });
 
@@ -87,6 +89,8 @@
   let goalUnitInputError = $state(false);
   let habitNameDuplicateError = $state(false);
   let habitNoteKeyDuplicateError = $state(false);
+
+  let showPropertyHelp = $state(false);
 
   const onSave = () => {
     const {
@@ -181,36 +185,53 @@
     onClose();
   }}
 >
-  <div class="flex flex-col justify-evenly habit-modal space-y-4 p-4">
-    <div class="flex flex-row space-x-4">
-      <div class="flex flex-col flex-grow space-y-2">
-        <Label
-          for="name-input"
-          color={habitNameInputError ? "red" : undefined}
-          class="font-bold {!habitNameInputError ? 'text-(--text-normal)' : ''}"
-        >
-          Name
-        </Label>
-        <Input
-          id="name-input"
-          bind:value={() => habit.name ?? "", (v) => (habit.name = v)}
-          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)! focus:shadow-obsidian-input"
-        />
+  <div class="flex flex-col justify-evenly habit-modal space-y-4">
+    <div class="flex flex-col space-y-2">
+      <div class="flex flex-row space-x-4">
+        <div class="flex flex-col flex-1 space-y-2">
+          <Label
+            for="name-input"
+            color={habitNameInputError ? "red" : undefined}
+            class="font-bold {!habitNameInputError
+              ? 'text-(--text-normal)'
+              : ''}"
+          >
+            Name
+          </Label>
+          <Input
+            id="name-input"
+            bind:value={() => habit.name ?? "", (v) => (habit.name = v)}
+            class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)! focus:shadow-obsidian-input"
+          />
+        </div>
+        <div class="flex flex-col flex-1 space-y-2">
+          <Label
+            for="frontmatter-key-input"
+            color={habitNoteKeyInputError ? "red" : undefined}
+            class="flex flex-row items-center space-x-1 font-bold {!habitNoteKeyInputError
+              ? 'text-(--text-normal)'
+              : ''}"
+          >
+            <span>Daily note property</span>
+            <Info
+              class="cursor-pointer w-5 h-5"
+              onclick={() => (showPropertyHelp = true)}
+            />
+          </Label>
+          <Input
+            id="frontmatter-key-input"
+            bind:value={() => habit.noteKey ?? "", (v) => (habit.noteKey = v)}
+            class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) font-mono border-(--background-modifier-border-focus)! focus:shadow-obsidian-input"
+          />
+        </div>
       </div>
-      <div class="flex flex-col flex-grow space-y-2">
-        <Label
-          for="frontmatter-key-input"
-          color={habitNoteKeyInputError ? "red" : undefined}
-          class="font-bold {!habitNameInputError ? 'text-(--text-normal)' : ''}"
-        >
-          Frontmatter key
-        </Label>
-        <Input
-          id="frontmatter-key-input"
-          bind:value={() => habit.noteKey ?? "", (v) => (habit.noteKey = v)}
-          class="h-(--input-height) bg-(--background-modifier-form-field) text-(--text-normal) border-(--background-modifier-border-focus)! focus:shadow-obsidian-input"
-        />
-      </div>
+      {#if showPropertyHelp}
+        <p class="text-sm">
+          See <a href="https://help.obsidian.md/properties"
+            >Obsidian Help - Properties</a
+          > for how to create and use properties in daily notes.
+        </p>
+      {/if}
     </div>
 
     <hr class="mt-4!" />
