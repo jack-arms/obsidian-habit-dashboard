@@ -14,7 +14,7 @@
   import { moment } from "obsidian";
   import { ObsidianHabitDashboardView } from "./ObsidianHabitDashboardView";
   import { CircleGauge } from "lucide-svelte";
-  import { DEFAULT_DATE_FORMAT } from "./utils/utils";
+  import { DEFAULT_DATE_FORMAT, IS_DEV } from "./utils/utils";
 
   interface Props {
     app: App;
@@ -22,10 +22,9 @@
     saveSettings: (
       settings: Partial<ObsidianHabitDashboardPluginSettings>,
     ) => void;
-    isDev: boolean;
   }
 
-  let { app, settings, saveSettings, isDev }: Props = $props();
+  let { app, settings, saveSettings }: Props = $props();
 
   setContext<App>("obsidian-app", app);
   setContext<string>("date-format", settings.dateFormat ?? DEFAULT_DATE_FORMAT);
@@ -89,7 +88,7 @@
     <CircleGauge />
     <span>Habit Dashboard</span>
   </h1>
-  {#if !isDev}
+  {#if !IS_DEV}
     <HabitOverview
       {habits}
       {habitProgressByDate}
@@ -122,7 +121,7 @@
       >
         <HabitCalendarMasterDetail {habits} {habitProgressByDate} {onEdit} />
       </TabItem>
-      {#if isDev}
+      {#if IS_DEV}
         <TabItem
           open={tab === "component_library"}
           title="Component library"

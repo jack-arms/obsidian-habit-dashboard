@@ -4,8 +4,8 @@ import {
   type Habit,
   type HabitDayProgress,
   type HabitTimeProgressUnit,
+  type StreakType,
 } from "src/types";
-import type { StreakType } from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
 import { getDateKey, goalIntervalToDays, latestHabitProgress } from "./utils";
 import { moment, type App } from "obsidian";
 

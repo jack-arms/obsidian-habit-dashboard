@@ -1,6 +1,6 @@
 <script lang="ts">
   import { moment, type App } from "obsidian";
-  import type { HabitDayProgress } from "src/types";
+  import type { HabitDayProgress, StreakType } from "src/types";
   import { getContext } from "svelte";
 
   interface Props {
@@ -10,7 +10,6 @@
     habitProgress: HabitDayProgress | null;
     streakType: StreakType | null;
   }
-  export type StreakType = "start" | "middle" | "end" | "isolated";
   const app = getContext<App>("obsidian-app");
 
   let { date, isLastWeek, isLastDayOfMonth, habitProgress, streakType }: Props =

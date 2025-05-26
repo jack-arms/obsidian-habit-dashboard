@@ -43,3 +43,5 @@ export const HabitTimeProgressUnits = {
 export type HabitTimeProgressUnit = keyof typeof HabitTimeProgressUnits;
 
 export type Nullable<T> = { [K in keyof T]: T[K] | null };
+
+export type StreakType = "start" | "middle" | "end" | "isolated";

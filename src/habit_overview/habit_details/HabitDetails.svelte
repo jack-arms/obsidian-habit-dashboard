@@ -7,10 +7,8 @@
   } from "src/utils/utils";
   import { Calendar, Flag, Notebook } from "lucide-svelte";
   import ScrollableCalendar from "src/scrollable_calendar/ScrollableCalendar.svelte";
-  import CalendarDayWithNoteData, {
-    type StreakType,
-  } from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
-  import type { Habit, HabitDayProgress } from "src/types";
+  import CalendarDayWithNoteData from "src/scrollable_calendar/CalendarDayWithNoteData.svelte";
+  import type { Habit, HabitDayProgress, StreakType } from "src/types";
   import { moment } from "obsidian";
   import HabitGoalProgressCircle from "../HabitGoalProgressCircle.svelte";
   import HabitDetailsProgress from "./HabitDetailsProgress.svelte";
